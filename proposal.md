@@ -808,7 +808,8 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
 - **Language**: TypeScript for type safety and better AI-assisted development
 - **Styling**: Tailwind CSS for rapid, responsive UI development
 - **State Management**: Zustand for lightweight, scalable global state management
-- **Data Visualization**: Recharts for interactive, customizable supply chain visualizations
+- **Data Visualization**: Recharts for interactive, customizable supply chain visualization
+- **Shadcn UI**: Shadcn UI for rapid, responsive UI development
 - **Forms**: React Hook Form with Zod validation for robust form handling
 - **Authentication UI**: Supabase Auth UI components + custom styling
 - **Real-time Updates**: Supabase Realtime client for live game monitoring and multiplayer
@@ -839,13 +840,6 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
 
 **API Architecture**: RESTful API design with versioning (/api/v1/) and clear resource-oriented endpoints. Supabase Realtime for live game updates instead of WebSockets.
 
-**Key Endpoints**:
-- Auth: Handled by Supabase Auth (signUp, signIn, signOut, resetPassword)
-- Games: /api/v1/games, /api/v1/games/:id, /api/v1/games/:id/rounds
-- Classes: /api/v1/classes, /api/v1/classes/:id/students, /api/v1/classes/:id/games
-- Assessments: /api/v1/assessments/generate, /api/v1/assessments/:id/submit
-- Payments: /api/v1/subscriptions, /api/v1/webhooks/stripe
-- AI: /api/v1/ai/generate-decision, /api/v1/ai/generate-questions
 
 ### Database Specification
 - **Database Type**: Supabase (PostgreSQL-based relational database)
@@ -862,37 +856,9 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
 - **Soft deletes** for user data (GDPR compliance)
 - **Supabase Auth integration**: Users table managed by Supabase Auth with extended profile data
 
-**Core Tables**:
-1. auth.users (managed by Supabase Auth - authentication)
-2. user_profiles (extended user information linked to auth.users)
-3. teachers (teacher-specific data and subscriptions)
-4. classes (class management)
-5. class_students (many-to-many relationship)
-6. games (game instances)
-7. game_sessions (active gameplay)
-8. players (participants in sessions)
-9. game_rounds (weekly game state - high volume)
-10. player_states (player data per round - high volume)
-11. assessments (generated questions and answers)
-12. subscriptions (payment and access control)
-13. payments (transaction records)
-
-**Data Relationships**:
-- auth.users (Supabase) has one user_profile (one-to-one)
-- One user_profile can be a teacher (one-to-one via teachers table)
-- One teacher has many classes
-- One class has many students (many-to-many via class_students)
-- One class has many games
-- One game has one session when active
-- One session has exactly 4 players (1-4 human, rest AI)
-- One session has many rounds (20-52 typically)
-- One round has 4 player_states (one per supply chain position)
-
 **Supabase-Specific Features**:
 - **Real-time subscriptions**: Frontend can subscribe to game_rounds and player_states changes for live updates
 - **RLS Policies**: Students can only view their own games; teachers can view their class games
-- **Database Functions**: Use PostgreSQL functions for complex game logic calculations
-- **Triggers**: Automatic timestamp updates, cost calculations, and data validation
 
 ### AI Integration Specification
 **AI Use Cases**:
@@ -902,7 +868,7 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
 4. **Performance Analysis**: Generate insights about decision patterns and strategy effectiveness
 
 **Implementation**:
-- **Model**: OpenAI GPT-4-turbo for reasoning and consistency
+- **Model**: Gemini 2.5 pro/flash
 - **Prompt Design**:
   - AI players receive game rules, current state, and role context
   - Question generator receives game transcript and specific events
