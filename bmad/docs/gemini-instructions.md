@@ -7,15 +7,14 @@ BMAD agents are installed as slash commands in `.gemini/commands/bmad/`.
 ### How to Use
 
 1. **Type Slash Command**: Start with `/` to see available commands
-2. **Select Agent**: Type `/bmad-{agent-name}` (e.g., `/bmad-dev`)
+2. **Select Agent**: Type `/agents:{agent-name}` (e.g., `/agents:dev`)
 3. **Execute**: Press Enter to activate that agent persona
 
 ### Examples
 
 ```
-/bmad:bmm:agents:dev - Activate development agent
-/bmad:bmm:agents:architect - Activate architect agent
-/bmad:bmm:workflows:dev-story - Execute dev-story workflow
+/agents:dev - Activate development agent
+/agents:architect - Activate architect agent
 ```
 
 ### Notes
