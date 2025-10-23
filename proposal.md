@@ -810,7 +810,6 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
 - **State Management**: Zustand for lightweight, scalable global state management
 - **Data Visualization**: Recharts for interactive, customizable supply chain visualization
 - **Shadcn UI**: Shadcn UI for rapid, responsive UI development
-- **Forms**: React Hook Form with Zod validation for robust form handling
 - **Authentication UI**: Supabase Auth UI components + custom styling
 - **Real-time Updates**: Supabase Realtime client for live game monitoring and multiplayer
 - **API Communication**: Axios with interceptors for authenticated requests
@@ -827,7 +826,7 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
 - **ORM**: SQLAlchemy for database operations and type safety
 - **Database Migrations**: Alembic for version-controlled schema changes
 - **AI Integration**:
-  - OpenAI GPT-4 API for AI player decisions and question generation
+  - GEMINI 2.5 Pro/Flash for AI player decisions and question generation
   - Custom prompt engineering for consistent AI behavior
   - Fallback logic for API failures
 - **Payment Processing**: Stripe API for subscription management and payment processing
