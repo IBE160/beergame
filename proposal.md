@@ -869,6 +869,7 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
 
 **Implementation**:
 - **Model**: Gemini 2.5 pro/flash
+- **Library**: Pydantic AI see research report: @docs/research-technical-2025-10-27.md
 - **Prompt Design**:
   - AI players receive game rules, current state, and role context
   - Question generator receives game transcript and specific events
