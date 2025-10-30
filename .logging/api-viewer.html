@@ -1101,10 +1101,32 @@
                 // Only render new parts from this request (differential rendering)
                 const newParts = requestParts.slice(renderedPartsCount);
 
-                // Render new user messages
+                // Group consecutive messages by role and render as single cards
+                let currentGroup = [];
+                let currentRole = null;
+
                 newParts.forEach(part => {
-                    html += renderChatMessage(part, 'user');
+                    const role = part.role || 'user';
+
+                    // Skip model messages (they're rendered from response_text)
+                    if (role === 'model') {
+                        return;
+                    }
+
+                    // If role changed, render the current group and start a new one
+                    if (currentRole !== null && currentRole !== role) {
+                        html += renderGroupedChatMessage(currentGroup, currentRole);
+                        currentGroup = [];
+                    }
+
+                    currentRole = role;
+                    currentGroup.push(part);
                 });
+
+                // Render the last group
+                if (currentGroup.length > 0) {
+                    html += renderGroupedChatMessage(currentGroup, currentRole);
+                }
 
                 // Render model response
                 if (entry.response?.response_text) {
@@ -1117,6 +1139,42 @@
 
             html += `</div>`; // Close chat-container
 
+            return html;
+        }
+
+        // Render grouped chat messages (multiple messages with same role in one card)
+        function renderGroupedChatMessage(messages, role) {
+            if (!messages || messages.length === 0) {
+                return '';
+            }
+
+            const styleType = (role === 'model') ? 'model' : 'user';
+            const messageId = `msg-${messageIdCounter++}`;
+
+            let html = `<div class="chat-message chat-${styleType}" id="${messageId}">`;
+            html += `<button class="chat-copy-btn" onclick="copyMessageText('${messageId}')" title="Copy message">📋</button>`;
+            html += `<div class="chat-message-role">${role}</div>`;
+            html += `<div class="chat-message-content">`;
+
+            // Render all parts from all messages
+            messages.forEach(msg => {
+                if (msg.parts && Array.isArray(msg.parts)) {
+                    msg.parts.forEach(part => {
+                        if (part.text) {
+                            html += `<div class="chat-message-text">${wrapTextWithTruncation(part.text)}</div>`;
+                        }
+                        if (part.functionCall) {
+                            html += renderFunctionCall(part.functionCall);
+                        }
+                        if (part.functionResponse) {
+                            html += renderFunctionResponse(part.functionResponse);
+                        }
+                    });
+                }
+            });
+
+            html += `</div>`; // Close chat-message-content
+            html += `</div>`; // Close chat-message
             return html;
         }
 
@@ -1162,29 +1220,39 @@
             let html = '';
 
             if (response.response_text && Array.isArray(response.response_text)) {
+                // Collect all parts from all candidates into a single array
+                let allParts = [];
+
                 response.response_text.forEach(resp => {
                     if (resp.candidates && Array.isArray(resp.candidates)) {
                         resp.candidates.forEach(candidate => {
                             if (candidate.content && candidate.content.parts) {
-                                const messageId = `msg-${messageIdCounter++}`;
-
-                                html += `<div class="chat-message chat-model" id="${messageId}">`;
-                                html += `<button class="chat-copy-btn" onclick="copyMessageText('${messageId}')" title="Copy message">📋</button>`;
-                                html += `<div class="chat-message-role">model</div>`;
-                                html += `<div class="chat-message-content">`;
-
                                 candidate.content.parts.forEach(part => {
-                                    if (part.text) {
-                                        html += `<div class="chat-message-text">${wrapTextWithTruncation(part.text)}</div>`;
-                                    }
+                                    allParts.push(part);
                                 });
-
-                                html += `</div>`; // Close chat-message-content
-                                html += `</div>`; // Close chat-message
                             }
                         });
                     }
                 });
+
+                // Render all collected parts in a single model card
+                if (allParts.length > 0) {
+                    const messageId = `msg-${messageIdCounter++}`;
+
+                    html += `<div class="chat-message chat-model" id="${messageId}">`;
+                    html += `<button class="chat-copy-btn" onclick="copyMessageText('${messageId}')" title="Copy message">📋</button>`;
+                    html += `<div class="chat-message-role">model</div>`;
+                    html += `<div class="chat-message-content">`;
+
+                    allParts.forEach(part => {
+                        if (part.text) {
+                            html += `<div class="chat-message-text">${wrapTextWithTruncation(part.text)}</div>`;
+                        }
+                    });
+
+                    html += `</div>`; // Close chat-message-content
+                    html += `</div>`; // Close chat-message
+                }
             }
 
             return html;
