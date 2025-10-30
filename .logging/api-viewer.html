@@ -49,37 +49,33 @@
 
         .sidebar.collapsed {
             width: 60px;
-            height: 78.5px;
         }
 
         /* Hide text content when sidebar is collapsed */
         .sidebar.collapsed .sidebar-header h1,
-        .sidebar.collapsed .sidebar-header p,
-        .sidebar.collapsed .file-list {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.2s ease, visibility 0.2s ease;
+        .sidebar.collapsed .sidebar-header p {
+            display: none;
         }
 
-        .sidebar-header h1,
-        .sidebar-header p,
-        .file-list {
-            opacity: 1;
-            visibility: visible;
-            transition: opacity 0.3s ease 0.1s, visibility 0.3s ease 0.1s;
+        .sidebar.collapsed .file-list {
+            display: none;
         }
 
         .sidebar-header {
-            padding: 16.9px;
+            height: 72px;
+            padding: 16px 24px;
             padding-right: 56px; /* Make room for burger menu */
             border-bottom: 1px solid var(--border-color);
             position: relative;
             transition: padding 0.3s ease;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .sidebar.collapsed .sidebar-header {
-            padding: 12px;
-            padding-right: 12px;
+            padding: 16px 12px;
         }
 
         .sidebar-header h1 {
@@ -149,10 +145,12 @@
         }
 
         .content-header {
+            height: 72px;
             background: var(--bg-main);
             border-bottom: 1px solid var(--border-color);
             padding: 16px 24px;
             display: none;
+            box-sizing: border-box;
         }
 
         .content-header h2 {
