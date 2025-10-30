@@ -474,7 +474,7 @@
         .truncatable-text.expanded::after {
             content: 'Double-click to open/close';
             display: block;
-            border-top: 4px solid #e0e0e0;
+           /* border-top: 4px solid #e0e0e0; */
             color: #999;
             font-size: 11px;
             font-style: italic;
@@ -1157,21 +1157,40 @@
             html += `<div class="chat-message-content">`;
 
             // Render all parts from all messages
+            let textBuffer = '';
+
             messages.forEach(msg => {
                 if (msg.parts && Array.isArray(msg.parts)) {
                     msg.parts.forEach(part => {
                         if (part.text) {
-                            html += `<div class="chat-message-text">${wrapTextWithTruncation(part.text)}</div>`;
+                            // Accumulate text parts
+                            textBuffer += part.text;
                         }
-                        if (part.functionCall) {
-                            html += renderFunctionCall(part.functionCall);
-                        }
-                        if (part.functionResponse) {
-                            html += renderFunctionResponse(part.functionResponse);
+
+                        // Handle non-text parts
+                        if (part.functionCall || part.functionResponse) {
+                            // Flush text buffer first if there's any
+                            if (textBuffer) {
+                                html += `<div class="chat-message-text">${wrapTextWithTruncation(textBuffer)}</div>`;
+                                textBuffer = '';
+                            }
+
+                            // Render the function part
+                            if (part.functionCall) {
+                                html += renderFunctionCall(part.functionCall);
+                            }
+                            if (part.functionResponse) {
+                                html += renderFunctionResponse(part.functionResponse);
+                            }
                         }
                     });
                 }
             });
+
+            // Flush any remaining text
+            if (textBuffer) {
+                html += `<div class="chat-message-text">${wrapTextWithTruncation(textBuffer)}</div>`;
+            }
 
             html += `</div>`; // Close chat-message-content
             html += `</div>`; // Close chat-message
@@ -1244,11 +1263,18 @@
                     html += `<div class="chat-message-role">model</div>`;
                     html += `<div class="chat-message-content">`;
 
+                    // Concatenate all text parts into a single string
+                    let textBuffer = '';
                     allParts.forEach(part => {
                         if (part.text) {
-                            html += `<div class="chat-message-text">${wrapTextWithTruncation(part.text)}</div>`;
+                            textBuffer += part.text;
                         }
                     });
+
+                    // Render the concatenated text as a single block
+                    if (textBuffer) {
+                        html += `<div class="chat-message-text">${wrapTextWithTruncation(textBuffer)}</div>`;
+                    }
 
                     html += `</div>`; // Close chat-message-content
                     html += `</div>`; // Close chat-message
