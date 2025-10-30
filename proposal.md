@@ -36,7 +36,7 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
     - extra costs (transport, lost sales, etc.)
     - Communication possibilities among players:
       - One level, two levels, three levels insights into inventory levels and backorders
-- Interactive game dashboard displaying:
+- Interactive and real time game dashboard displaying:
   - Current inventory levels and backorders
   - Incoming orders and shipments in transit
   - Week/round indicator (configurable 20-52 weeks)
