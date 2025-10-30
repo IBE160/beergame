@@ -56,11 +56,12 @@ def get_existing_sessions(output_dir: Path) -> Dict[str, Path]:
     sessions = {}
 
     # Pattern: YYYY-MM-DD_HH-MM-SS-{session-id}.json
+    pattern = re.compile(r'(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})-(.+)\.json')
+
     for file_path in output_dir.glob("*.json"):
-        # Extract session ID from filename (everything after last dash before .json)
-        parts = file_path.stem.rsplit('-', 1)
-        if len(parts) == 2:
-            session_id = parts[1]
+        match = pattern.match(file_path.name)
+        if match:
+            session_id = match.group(7)  # Group 7 captures the session ID
             sessions[session_id] = file_path
 
     return sessions
@@ -158,7 +159,7 @@ def save_session_data(session_id: str, session_data: dict, first_timestamp: str,
         temp_file = output_file.with_suffix(".tmp")
         with temp_file.open("w", encoding="utf-8") as f:
             json.dump(data_list, f, ensure_ascii=False, indent=2)
-        temp_file.rename(output_file)
+        temp_file.replace(output_file)
     else:
         # Create new file
         if verbose:
@@ -167,32 +168,39 @@ def save_session_data(session_id: str, session_data: dict, first_timestamp: str,
 
     return output_file
 
-def process_log_file(log_path: Path, verbose: bool = False) -> Dict[str, Dict[str, any]]:
+def process_log_file(log_path: Path, output_dir: Path, verbose: bool = False) -> Dict[str, any]:
     """
-    Parse log file and extract API events grouped by prompt_id.
+    Parse log file and extract API events grouped by session.
+    Processes records in order and creates/updates session files as needed.
 
     Returns:
-        Dict mapping prompt_id to {request, response, error} dictionaries
+        Dict with processing statistics
     """
     if not log_path.exists():
         print(f"❌ Log file not found: {log_path}")
         return {}
 
-    # Counters for progress
+    # Get existing sessions
+    existing_sessions = get_existing_sessions(output_dir)
+    print(f"📂 Found {len(existing_sessions)} existing session file(s)")
+
+    # Stats
     stats = {
         "total_records": 0,
         "requests": 0,
         "responses": 0,
         "errors": 0,
-        "skipped": 0
+        "skipped": 0,
+        "sessions_processed": 0,
+        "sessions_updated": 0,
+        "sessions_created": 0
     }
 
-    # Group events by prompt_id
-    grouped_events: Dict[str, Dict[str, any]] = defaultdict(lambda: {
-        "request": None,
-        "response": None,
-        "error": None
-    })
+    # Current session tracking
+    current_session_id = None
+    current_session_data = {}  # prompt_id -> {prompt_id, request, response, error}
+    current_session_first_timestamp = None
+    session_files_written = []
 
     print(f"📖 Reading log file: {log_path}")
     print(f"⏳ Processing events...")
@@ -204,47 +212,128 @@ def process_log_file(log_path: Path, verbose: bool = False) -> Dict[str, Dict[st
             for record in records:
                 stats["total_records"] += 1
 
-                # Progress indicator every 100 records
+                # Progress indicator
                 if verbose and stats["total_records"] % 100 == 0:
                     print(f"   Processed {stats['total_records']} records...")
 
+                # Extract metadata
                 event_name = get_event_name(record)
                 attrs = extract_attributes(record)
                 prompt_id = get_prompt_id(attrs)
+                session_id = get_session_id(attrs)
+                timestamp = get_event_timestamp(record)
 
-                # Skip records without prompt_id or irrelevant events
-                if not prompt_id:
+                # Skip records without session_id or prompt_id
+                if not session_id or not prompt_id:
                     stats["skipped"] += 1
                     continue
 
-                # Process based on event type
+                # Check if session changed
+                if current_session_id is not None and session_id != current_session_id:
+                    # Save current session before switching
+                    if current_session_data:
+                        file_path = save_session_data(
+                            current_session_id,
+                            current_session_data,
+                            current_session_first_timestamp,
+                            existing_sessions,
+                            output_dir,
+                            verbose
+                        )
+                        session_files_written.append(file_path)
+                        stats["sessions_processed"] += 1
+
+                        if current_session_id in existing_sessions:
+                            stats["sessions_updated"] += 1
+                        else:
+                            stats["sessions_created"] += 1
+
+                    # Reset for new session
+                    current_session_data = {}
+                    current_session_first_timestamp = None
+
+                # Set current session
+                if current_session_id != session_id:
+                    current_session_id = session_id
+                    print(f"🔄 Processing session: {session_id}")
+
+                    # Load existing data if session file exists
+                    if session_id in existing_sessions:
+                        print(f"   ↪ Appending to existing session file")
+                        existing_data = load_session_file(existing_sessions[session_id])
+                        # Convert list to dict keyed by prompt_id
+                        for entry in existing_data:
+                            # Extract prompt_id from request, response, or error attributes
+                            entry_prompt_id = None
+                            if entry.get("request") and "prompt_id" in entry["request"]:
+                                entry_prompt_id = entry["request"]["prompt_id"]
+                            elif entry.get("response") and "prompt_id" in entry["response"]:
+                                entry_prompt_id = entry["response"]["prompt_id"]
+                            elif entry.get("error") and "prompt_id" in entry["error"]:
+                                entry_prompt_id = entry["error"]["prompt_id"]
+
+                            if entry_prompt_id:
+                                current_session_data[entry_prompt_id] = entry
+
+                # Track first timestamp for this session
+                if current_session_first_timestamp is None and timestamp:
+                    current_session_first_timestamp = timestamp
+
+                # Initialize entry if needed
+                if prompt_id not in current_session_data:
+                    current_session_data[prompt_id] = {
+                        "request": None,
+                        "response": None,
+                        "error": None
+                    }
+
+                # Process based on event type (parse JSON fields before storing)
                 if event_name == EVENT_REQUEST:
-                    grouped_events[prompt_id]["request"] = attrs
+                    current_session_data[prompt_id]["request"] = parse_json_fields(attrs, JSON_STRING_FIELDS, verbose)
                     stats["requests"] += 1
                     if verbose:
-                        print(f"   ✓ Found API request: {prompt_id}")
+                        print(f"   ✓ Request: {prompt_id}")
 
                 elif event_name == EVENT_RESPONSE:
-                    grouped_events[prompt_id]["response"] = attrs
+                    current_session_data[prompt_id]["response"] = parse_json_fields(attrs, JSON_STRING_FIELDS, verbose)
                     stats["responses"] += 1
                     if verbose:
-                        print(f"   ✓ Found API response: {prompt_id}")
+                        print(f"   ✓ Response: {prompt_id}")
 
                 elif event_name == EVENT_ERROR:
-                    grouped_events[prompt_id]["error"] = attrs
+                    current_session_data[prompt_id]["error"] = parse_json_fields(attrs, JSON_STRING_FIELDS, verbose)
                     stats["errors"] += 1
                     if verbose:
-                        print(f"   ✓ Found API error: {prompt_id}")
+                        print(f"   ✓ Error: {prompt_id}")
                 else:
                     stats["skipped"] += 1
 
+            # Save final session
+            if current_session_id and current_session_data:
+                file_path = save_session_data(
+                    current_session_id,
+                    current_session_data,
+                    current_session_first_timestamp,
+                    existing_sessions,
+                    output_dir,
+                    verbose
+                )
+                session_files_written.append(file_path)
+                stats["sessions_processed"] += 1
+
+                if current_session_id in existing_sessions:
+                    stats["sessions_updated"] += 1
+                else:
+                    stats["sessions_created"] += 1
+
         except Exception as e:
-            print(f"⚠️  Warning: Error parsing log file (likely incomplete JSON): {e}")
+            print(f"⚠️  Warning: Error parsing log file: {e}")
             if verbose:
                 import traceback
                 traceback.print_exc()
 
-    return dict(grouped_events), stats
+    stats["session_files"] = session_files_written
+    return stats
 
 def format_output(grouped_events: Dict[str, Dict[str, any]], parse_json: bool = True, verbose: bool = False) -> List[dict]:
     """
@@ -270,7 +359,6 @@ def format_output(grouped_events: Dict[str, Dict[str, any]], parse_json: bool = 
             error = events.get("error")
 
         entry = {
-            "prompt_id": prompt_id,
             "request": request,
             "response": response,
             "error": error
@@ -297,13 +385,13 @@ def save_session_file(data: List[dict], session_id: str, first_timestamp: str, o
 
     output_file = output_dir / f"{timestamp_str}-{session_id}.json"
 
-    # Write to temp file first, then rename (atomic operation)
+    # Write to temp file first, then replace (atomic operation)
     temp_file = output_file.with_suffix(".tmp")
 
     with temp_file.open("w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    temp_file.rename(output_file)
+    temp_file.replace(output_file)
 
     return output_file
 
@@ -315,7 +403,7 @@ def clear_log_file(log_path: Path, verbose: bool = False):
     with log_path.open("w", encoding="utf-8") as f:
         f.write("")  # Truncate to empty
 
-def print_summary(stats: dict, grouped_events: dict, output_file: Path):
+def print_summary(stats: dict):
     """Print processing summary."""
     print("\n" + "="*60)
     print("📊 Processing Summary")
@@ -325,18 +413,16 @@ def print_summary(stats: dict, grouped_events: dict, output_file: Path):
     print(f"API responses found:      {stats['responses']}")
     print(f"API errors found:         {stats['errors']}")
     print(f"Records skipped:          {stats['skipped']}")
-    print(f"\nUnique prompt IDs:        {len(grouped_events)}")
+    print(f"\nSessions processed:       {stats['sessions_processed']}")
+    print(f"  - New sessions:         {stats['sessions_created']}")
+    print(f"  - Updated sessions:     {stats['sessions_updated']}")
 
-    # Count complete triplets
-    complete_pairs = sum(1 for e in grouped_events.values()
-                        if e["request"] and e["response"])
-    complete_errors = sum(1 for e in grouped_events.values()
-                         if e["request"] and e["error"])
+    if stats.get('session_files'):
+        print(f"\n✅ Session files:")
+        for file_path in stats['session_files']:
+            size = file_path.stat().st_size
+            print(f"   - {file_path.name} ({size:,} bytes)")
 
-    print(f"Request-Response pairs:   {complete_pairs}")
-    print(f"Request-Error pairs:      {complete_errors}")
-    print(f"\n✅ Output saved to:       {output_file}")
-    print(f"   File size:              {output_file.stat().st_size:,} bytes")
     print("="*60)
 
 # ---------- Main Function ----------
@@ -400,32 +486,21 @@ def main():
             print(f"✓ Lock acquired\n")
 
             # Process log file
-            grouped_events, stats = process_log_file(LOG_FILE, args.verbose)
+            stats = process_log_file(LOG_FILE, args.output_dir, args.verbose)
 
-            if not grouped_events:
-                print(f"\n⚠️  No API events found in log file.")
+            if stats.get('sessions_processed', 0) == 0:
+                print(f"\n⚠️  No sessions found in log file.")
                 return 0
-
-            # Format output
-            print(f"\n📝 Formatting output...")
-            parse_json_mode = not args.raw  # Parse by default unless --raw specified
-            if args.raw and args.verbose:
-                print(f"   ⚠ Raw mode enabled: JSON strings will not be parsed")
-            output_data = format_output(grouped_events, parse_json=parse_json_mode, verbose=args.verbose)
-
-            # Save to file
-            print(f"💾 Saving to file...")
-            output_file = save_output(output_data, args.output_dir)
 
             # Clear log file if requested
             if not args.no_clear:
                 clear_log_file(LOG_FILE, args.verbose)
-                print(f"✓ Log file cleared")
+                print(f"\n✓ Log file cleared")
             else:
-                print(f"⚠️  Log file NOT cleared (--no-clear specified)")
+                print(f"\n⚠️  Log file NOT cleared (--no-clear specified)")
 
             # Print summary
-            print_summary(stats, grouped_events, output_file)
+            print_summary(stats)
 
             return 0
 

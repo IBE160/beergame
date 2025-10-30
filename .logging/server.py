@@ -42,15 +42,15 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
             requests_dir = Path('requests')
             if requests_dir.exists():
                 files = []
-                for json_file in sorted(requests_dir.glob('api-requests-*.json'), reverse=True):
+                for json_file in sorted(requests_dir.glob('*.json'), reverse=True):
                     stat = json_file.stat()
-                    # Parse timestamp from filename: api-requests-YYYY-MM-DD_HH-MM-SS.json
-                    match = re.match(r'api-requests-(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})\.json', json_file.name)
+                    timestamp = None
+
+                    # Match session-based format: YYYY-MM-DD_HH-MM-SS-{session-id}.json
+                    match = re.match(r'(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})-(.+)\.json', json_file.name)
                     if match:
-                        year, month, day, hour, minute, second = match.groups()
+                        year, month, day, hour, minute, second, session_id = match.groups()
                         timestamp = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
-                    else:
-                        timestamp = None
 
                     files.append({
                         'filename': json_file.name,

@@ -43,11 +43,43 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: width 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+            height: 78.5px;
+        }
+
+        /* Hide text content when sidebar is collapsed */
+        .sidebar.collapsed .sidebar-header h1,
+        .sidebar.collapsed .sidebar-header p,
+        .sidebar.collapsed .file-list {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+
+        .sidebar-header h1,
+        .sidebar-header p,
+        .file-list {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.3s ease 0.1s, visibility 0.3s ease 0.1s;
         }
 
         .sidebar-header {
-            padding: 20px;
+            padding: 16.9px;
+            padding-right: 56px; /* Make room for burger menu */
             border-bottom: 1px solid var(--border-color);
+            position: relative;
+            transition: padding 0.3s ease;
+        }
+
+        .sidebar.collapsed .sidebar-header {
+            padding: 12px;
+            padding-right: 12px;
         }
 
         .sidebar-header h1 {
@@ -177,7 +209,95 @@
             border-bottom: 2px solid var(--border-color);
         }
 
-        /* Messages */
+        /* Continuous Chat Styles */
+        .chat-header {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .chat-session-info {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .chat-session-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 11px;
+        }
+
+        .chat-session-id {
+            font-family: monospace;
+            color: var(--text-primary);
+            background: var(--bg-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-left: 8px;
+        }
+
+        .chat-container {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .chat-message {
+            margin-bottom: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid;
+        }
+
+        .chat-message.chat-user {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .chat-message.chat-model {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .chat-message-role {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .chat-message.chat-user .chat-message-role {
+            background: #1976d2;
+            color: white;
+        }
+
+        .chat-message.chat-model .chat-message-role {
+            background: #388e3c;
+            color: white;
+        }
+
+        .chat-message-content {
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .chat-message-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: var(--text-primary);
+        }
+
+        /* Legacy Messages (for backward compatibility) */
         .message {
             margin-bottom: 16px;
             padding: 12px;
@@ -260,6 +380,28 @@
         /* Default gradient for white background */
         .text-line-11::after {
             background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.95) 70%, white 100%);
+        }
+
+        /* Chat user message gradient (light blue) */
+        .chat-message.chat-user .text-line-11::after {
+            background: linear-gradient(to bottom, transparent 0%, rgba(227, 242, 253, 0.95) 70%, #e3f2fd 100%);
+            content: 'Double-click to open/close';
+            display: block;
+            color: #999;
+            font-size: 11px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Chat model message gradient (light green) */
+        .chat-message.chat-model .text-line-11::after {
+            background: linear-gradient(to bottom, transparent 0%, rgba(232, 245, 233, 0.95) 70%, #e8f5e9 100%);
+            content: 'Double-click to open/close';
+            display: block;
+            color: #999;
+            font-size: 11px;
+            font-style: italic;
+            text-align: center;
         }
 
         /* User message gradient (light blue) */
@@ -451,19 +593,19 @@
             background: var(--text-secondary);
         }
 
-        /* Mobile Menu Toggle */
+        /* Menu Toggle Button - Always Visible */
         .menu-toggle {
-            display: none;
-            position: fixed;
+            display: block;
+            position: absolute;
             top: 16px;
-            left: 16px;
-            z-index: 1001;
+            right: 12px;
+            z-index: 100;
             background: var(--primary-color);
             color: white;
             border: none;
             border-radius: 8px;
-            width: 44px;
-            height: 44px;
+            width: 36px;
+            height: 36px;
             cursor: pointer;
             box-shadow: var(--shadow);
             transition: all 0.3s ease;
@@ -472,26 +614,38 @@
         .menu-toggle:hover {
             background: #1557b0;
             box-shadow: var(--shadow-hover);
+            transform: scale(1.05);
+        }
+
+        .menu-toggle:active {
+            transform: scale(0.95);
         }
 
         .menu-toggle span {
             display: block;
-            width: 22px;
+            width: 18px;
             height: 2px;
             background: white;
-            margin: 5px auto;
+            margin: 4px auto;
             transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* Animate burger icon when sidebar is collapsed */
+        .sidebar.collapsed .menu-toggle span:nth-child(1) {
+            transform: translateY(6px) rotate(45deg);
+        }
+
+        .sidebar.collapsed .menu-toggle span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .sidebar.collapsed .menu-toggle span:nth-child(3) {
+            transform: translateY(-6px) rotate(-45deg);
         }
 
         .menu-backdrop {
             display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
         }
 
         /* Collapsible Cards */
@@ -626,42 +780,16 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
-            .menu-toggle {
-                display: block;
-            }
-
             .sidebar {
                 position: fixed;
                 top: 0;
                 left: 0;
                 bottom: 0;
                 z-index: 1000;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
             }
 
-            .sidebar.open {
-                transform: translateX(0);
-            }
-
-            .sidebar-header {
-                padding-left: 70px;
-            }
-
-            .file-list {
-                padding-right: 8px;
-            }
-
-            .menu-backdrop.open {
-                display: block;
-            }
-
-            .main-content {
-                margin-left: 0;
-            }
-
-            .content-header {
-                padding-left: 70px;
+            .sidebar.collapsed {
+                transform: translateX(-60px);
             }
 
             .content-body {
@@ -679,14 +807,13 @@
     </style>
 </head>
 <body>
-    <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-    <div class="menu-backdrop" onclick="toggleMenu()"></div>
     <div class="sidebar">
         <div class="sidebar-header">
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>📊 API Requests</h1>
             <p>Gemini CLI Telemetry</p>
         </div>
@@ -717,12 +844,10 @@
         let files = [];
         let currentFile = null;
 
-        // Toggle mobile menu
+        // Toggle sidebar visibility
         function toggleMenu() {
             const sidebar = document.querySelector('.sidebar');
-            const backdrop = document.querySelector('.menu-backdrop');
-            sidebar.classList.toggle('open');
-            backdrop.classList.toggle('open');
+            sidebar.classList.toggle('collapsed');
         }
 
         // Toggle card collapse
@@ -832,14 +957,6 @@
             try {
                 currentFile = filename;
 
-                // Close mobile menu after selection
-                const sidebar = document.querySelector('.sidebar');
-                const backdrop = document.querySelector('.menu-backdrop');
-                if (sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open');
-                    backdrop.classList.remove('open');
-                }
-
                 // Update active state
                 document.querySelectorAll('.file-item').forEach(item => {
                     item.classList.toggle('active', item.dataset.filename === filename);
@@ -876,10 +993,116 @@
             }
         }
 
-        // Render data
+        // Render data as continuous chat
         function renderData(data) {
             const contentBody = document.getElementById('contentBody');
-            contentBody.innerHTML = data.map(entry => renderEntry(entry)).join('');
+            contentBody.innerHTML = renderContinuousChat(data);
+        }
+
+        // Render continuous chat with differential algorithm
+        function renderContinuousChat(entries) {
+            let html = '';
+            let renderedPartsCount = 0;
+
+            // Add session info header
+            if (entries.length > 0) {
+                const firstEntry = entries[0];
+                const sessionId = firstEntry.request && firstEntry.request["session.id"]
+                    ? firstEntry.request["session.id"]
+                    : extractPromptId(firstEntry);
+
+                html += `<div class="chat-header">`;
+                html += `<div class="chat-session-info">`;
+                html += `<span class="chat-session-label">Session ID:</span> `;
+                html += `<span class="chat-session-id">${sessionId}</span>`;
+                html += `</div>`;
+                html += `</div>`;
+            }
+
+            // Create continuous chat container
+            html += `<div class="chat-container">`;
+
+            entries.forEach((entry, index) => {
+                const requestParts = entry.request?.request_text || [];
+
+                // Only render new parts from this request (differential rendering)
+                const newParts = requestParts.slice(renderedPartsCount);
+
+                // Render new user messages
+                newParts.forEach(part => {
+                    html += renderChatMessage(part, 'user');
+                });
+
+                // Render model response
+                if (entry.response?.response_text) {
+                    html += renderChatResponse(entry.response);
+                }
+
+                // Update counter for next iteration
+                renderedPartsCount = requestParts.length;
+            });
+
+            html += `</div>`; // Close chat-container
+
+            return html;
+        }
+
+        // Render a chat message (user or model)
+        function renderChatMessage(msg, type = 'user') {
+            const role = msg.role || type;
+            // Always use model styling if role is 'model', regardless of type
+            const styleType = (role === 'model') ? 'model' : type;
+            let html = `<div class="chat-message chat-${styleType}">`;
+            html += `<div class="chat-message-role">${role}</div>`;
+            html += `<div class="chat-message-content">`;
+
+            if (msg.parts && Array.isArray(msg.parts)) {
+                msg.parts.forEach(part => {
+                    if (part.text) {
+                        html += `<div class="chat-message-text">${wrapTextWithTruncation(part.text)}</div>`;
+                    }
+                    if (part.functionCall) {
+                        html += renderFunctionCall(part.functionCall);
+                    }
+                    if (part.functionResponse) {
+                        html += renderFunctionResponse(part.functionResponse);
+                    }
+                });
+            }
+
+            html += `</div>`; // Close chat-message-content
+            html += `</div>`; // Close chat-message
+            return html;
+        }
+
+        // Render model response
+        function renderChatResponse(response) {
+            let html = '';
+
+            if (response.response_text && Array.isArray(response.response_text)) {
+                response.response_text.forEach(resp => {
+                    if (resp.candidates && Array.isArray(resp.candidates)) {
+                        resp.candidates.forEach(candidate => {
+                            if (candidate.content && candidate.content.parts) {
+                                html += `<div class="chat-message chat-model">`;
+                                html += `<div class="chat-message-role">model</div>`;
+                                html += `<div class="chat-message-content">`;
+
+                                candidate.content.parts.forEach(part => {
+                                    if (part.text) {
+                                        html += `<div class="chat-message-text">${wrapTextWithTruncation(part.text)}</div>`;
+                                    }
+                                });
+
+                                html += `</div>`; // Close chat-message-content
+                                html += `</div>`; // Close chat-message
+                            }
+                        });
+                    }
+                });
+            }
+
+            return html;
         }
 
         // Extract title from request text (2nd part if exists, else 1st part)
@@ -915,9 +1138,25 @@
             return 'Untitled Request';
         }
 
+        // Extract prompt_id from nested attributes
+        function extractPromptId(entry) {
+            // Try to get prompt_id from request, response, or error
+            if (entry.request && entry.request.prompt_id) {
+                return entry.request.prompt_id;
+            }
+            if (entry.response && entry.response.prompt_id) {
+                return entry.response.prompt_id;
+            }
+            if (entry.error && entry.error.prompt_id) {
+                return entry.error.prompt_id;
+            }
+            return 'unknown';
+        }
+
         // Render single entry
         function renderEntry(entry) {
-            const cardId = `card-${entry.prompt_id}`;
+            const promptId = extractPromptId(entry);
+            const cardId = `card-${promptId}`;
             const requestId = `${cardId}-request`;
             const responseId = `${cardId}-response`;
 
@@ -931,7 +1170,7 @@
             html += `</div>`;
             html += `<div class="entry-header-center">`;
             // Extract session ID from request["session.id"], fallback to prompt_id
-            const sessionId = entry.request && entry.request["session.id"] ? entry.request["session.id"] : entry.prompt_id;
+            const sessionId = entry.request && entry.request["session.id"] ? entry.request["session.id"] : promptId;
             html += `<span class="entry-session-id-badge">${sessionId}</span>`;
             // Add token info if available
             if (entry.response) {
