@@ -1123,6 +1123,12 @@
         // Render a chat message (user or model)
         function renderChatMessage(msg, type = 'user') {
             const role = msg.role || type;
+
+            // Skip model messages - they should only be rendered from response_text, not from request history
+            if (role === 'model') {
+                return '';
+            }
+
             // Always use model styling if role is 'model', regardless of type
             const styleType = (role === 'model') ? 'model' : type;
             const messageId = `msg-${messageIdCounter++}`;
