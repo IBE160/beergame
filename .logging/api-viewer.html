@@ -251,6 +251,40 @@
             padding: 16px;
             border-radius: 12px;
             border-left: 4px solid;
+            position: relative;
+        }
+
+        .chat-copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            opacity: 0.3;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .chat-copy-btn:hover {
+            opacity: 0.7;
+            background: rgba(0, 0, 0, 0.15);
+            transform: scale(1.05);
+        }
+
+        .chat-copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        .chat-copy-btn.copied {
+            opacity: 1;
+            background: rgba(76, 175, 80, 0.2);
         }
 
         .chat-message.chat-user {
@@ -841,11 +875,50 @@
     <script>
         let files = [];
         let currentFile = null;
+        let messageIdCounter = 0;
 
         // Toggle sidebar visibility
         function toggleMenu() {
             const sidebar = document.querySelector('.sidebar');
             sidebar.classList.toggle('collapsed');
+        }
+
+        // Copy message text to clipboard
+        function copyMessageText(messageId) {
+            const messageElement = document.getElementById(messageId);
+            if (!messageElement) return;
+
+            // Get all text content from the message
+            const textElements = messageElement.querySelectorAll('.chat-message-text');
+            let textToCopy = '';
+            textElements.forEach(el => {
+                // Get the actual text content, handling truncated text
+                const truncatable = el.querySelector('.truncatable-text');
+                if (truncatable) {
+                    const expanded = truncatable.querySelector('.text-expanded');
+                    const truncated = truncatable.querySelector('.text-truncated');
+                    textToCopy += (expanded && expanded.textContent) || (truncated && truncated.textContent) || '';
+                } else {
+                    textToCopy += el.textContent;
+                }
+                textToCopy += '\n\n';
+            });
+
+            // Copy to clipboard
+            navigator.clipboard.writeText(textToCopy.trim()).then(() => {
+                // Show feedback
+                const button = document.querySelector(`[onclick="copyMessageText('${messageId}')"]`);
+                if (button) {
+                    button.classList.add('copied');
+                    button.textContent = '✓';
+                    setTimeout(() => {
+                        button.classList.remove('copied');
+                        button.textContent = '📋';
+                    }, 2000);
+                }
+            }).catch(err => {
+                console.error('Failed to copy text:', err);
+            });
         }
 
         // Toggle card collapse
@@ -993,6 +1066,8 @@
 
         // Render data as continuous chat
         function renderData(data) {
+            // Reset message ID counter for each file
+            messageIdCounter = 0;
             const contentBody = document.getElementById('contentBody');
             contentBody.innerHTML = renderContinuousChat(data);
         }
@@ -1050,7 +1125,10 @@
             const role = msg.role || type;
             // Always use model styling if role is 'model', regardless of type
             const styleType = (role === 'model') ? 'model' : type;
-            let html = `<div class="chat-message chat-${styleType}">`;
+            const messageId = `msg-${messageIdCounter++}`;
+
+            let html = `<div class="chat-message chat-${styleType}" id="${messageId}">`;
+            html += `<button class="chat-copy-btn" onclick="copyMessageText('${messageId}')" title="Copy message">📋</button>`;
             html += `<div class="chat-message-role">${role}</div>`;
             html += `<div class="chat-message-content">`;
 
@@ -1082,7 +1160,10 @@
                     if (resp.candidates && Array.isArray(resp.candidates)) {
                         resp.candidates.forEach(candidate => {
                             if (candidate.content && candidate.content.parts) {
-                                html += `<div class="chat-message chat-model">`;
+                                const messageId = `msg-${messageIdCounter++}`;
+
+                                html += `<div class="chat-message chat-model" id="${messageId}">`;
+                                html += `<button class="chat-copy-btn" onclick="copyMessageText('${messageId}')" title="Copy message">📋</button>`;
                                 html += `<div class="chat-message-role">model</div>`;
                                 html += `<div class="chat-message-content">`;
 
