@@ -258,7 +258,7 @@ Make sure telemetry is enabled in `.gemini/settings.json`:
 
 ## API Request Viewer
 
-An interactive HTML viewer is available to browse and analyze processed API request logs.
+An interactive HTML viewer is available to browse and analyze processed API request logs. The viewer provides a continuous chat experience that intelligently displays conversation history without duplication.
 
 ### Opening the Viewer
 
@@ -272,7 +272,7 @@ The server will:
 - ✅ Start a local HTTP server on port 8000
 - ✅ Automatically open the viewer in your default browser
 - ✅ Serve files with proper CORS headers
-- ✅ Handle all file loading without size limits
+- ✅ Dynamically list all available request files via API endpoint
 
 Press `Ctrl+C` to stop the server when you're done.
 
@@ -281,62 +281,149 @@ Press `Ctrl+C` to stop the server when you're done.
 python .logging/server.py 9000  # Use port 9000 instead
 ```
 
-**Manual Server:**
-If you prefer to manage the server manually:
-```bash
-cd .logging
-python -m http.server 8000
-# Then open http://localhost:8000/api-viewer.html in your browser
-```
+### Key Features
 
-### Features
+#### 💬 Continuous Chat Display
+- **Smart Differential Rendering**: Automatically handles cumulative conversation history from the Gemini API
+- **No Duplication**: Uses intelligent algorithms to show only new messages, avoiding repetition of historical context
+- **Session-Based Files**: Organizes logs by session ID format: `YYYY-MM-DD_HH-MM-SS-{session-id}.json`
+- **Merged Messages**: Consecutive messages from the same role are automatically merged into single cards for better readability
+- **Concatenated Text**: Multi-part text responses are seamlessly concatenated as continuous strings
 
-- **📁 File Browser**: Left sidebar lists all `api-requests-*.json` files sorted by date
-- **💬 Conversation View**: Shows complete request/response flow with:
-  - User messages and prompts
-  - Model responses and function calls
-  - Function execution results
-  - Thought processes (when available)
-- **📊 Token Usage**: Displays input/output/cached token counts
-- **⏱️ Performance Metrics**: Shows request duration and status codes
-- **🎨 Color-Coded Roles**: Easy visual distinction between user, model, and function messages
-- **📱 Responsive Design**: Works on desktop, tablet, and mobile
+#### 🎨 Visual Design
+- **Color-Coded Messages**:
+  - 🟦 Blue cards for user messages
+  - 🟩 Green cards for model responses
+  - Clear visual distinction for easy conversation flow
+- **Collapsible Sidebar**: Burger menu (☰) to hide/show file browser
+  - Collapses to icon-only view for maximum content space
+  - Smooth transitions and animations
+  - Aligned headers regardless of sidebar state
+- **Responsive Layout**: Optimized for all screen sizes
+
+#### 📋 Message Management
+- **Copy Buttons**: Every message card has a subtle copy button (📋) in the top-right corner
+  - Copies full message text including truncated content
+  - Visual feedback with checkmark (✓) on success
+  - Handles function calls and responses correctly
+- **Text Truncation**: Long messages are automatically truncated with "Double-click to expand/collapse" functionality
+
+#### 📁 File Browser
+- Left sidebar lists all session files sorted by timestamp (newest first)
+- One-click file switching
+- Session ID display at the top of each conversation
+- Clear visual indication of selected file
+
+#### 📊 Rich Content Display
+- **Function Calls**: Formatted JSON with syntax highlighting
+- **Function Responses**: Expandable/collapsible output display
+- **Token Metrics**: Real-time display of:
+  - Input tokens
+  - Output tokens (including thoughts tokens)
+  - Cached content tokens
+  - Total token count
+- **Performance Data**: Request duration in milliseconds
+- **Model Information**: Model name badges and version info
 
 ### What's Displayed
 
-For each API request/response pair:
+For each conversation session:
 
-**Request Section:**
-- Model name badge
-- Complete conversation history
-- Function calls with arguments
-- Function responses with outputs
-- Text content with preserved formatting
+**Session Header:**
+- Session ID for tracking
+- Timestamp information
 
-**Response Section:**
-- HTTP status code
-- Response duration (ms)
-- Model-generated text
-- Token usage breakdown:
-  - Input tokens
-  - Output tokens
-  - Cached tokens
-  - Total tokens
+**User Messages:**
+- Blue cards with "user" role label
+- Text content with proper formatting
+- Function call requests (when applicable)
 
-**Error Section (if applicable):**
-- Error message
-- Error type
-- Status code
+**Model Responses:**
+- Green cards with "model" role label
+- Generated text responses
+- Function execution results
+- Thought processes (when included by model)
 
-### Tips
+**Metadata:**
+- HTTP status codes
+- Request/response duration
+- Token usage breakdown
+- Error information (when applicable)
 
-- The most recent log file is automatically loaded on page load
-- Click any date in the sidebar to switch between different log files
-- Function call arguments are displayed in JSON format with syntax highlighting
-- Long text content is automatically formatted for readability
-- The viewer uses a lightweight HTTP server (no complex setup needed!)
-- All request files are stored in the `.logging/requests/` folder
-- Server auto-opens your browser when started
+### File Format
+
+The viewer expects JSON files with this session-based structure:
+
+```json
+[
+  {
+    "request": {
+      "session.id": "uuid-here",
+      "model": "gemini-2.5-flash",
+      "request_text": [
+        {
+          "role": "user",
+          "parts": [{"text": "Hello"}]
+        }
+      ],
+      "prompt_id": "session-id########1"
+    },
+    "response": {
+      "session.id": "uuid-here",
+      "model": "gemini-2.5-flash",
+      "status_code": 200,
+      "duration_ms": 1234,
+      "input_token_count": 10,
+      "output_token_count": 5,
+      "total_token_count": 15,
+      "response_text": [
+        {
+          "candidates": [
+            {
+              "content": {
+                "role": "model",
+                "parts": [{"text": "Hello! How can I help you?"}]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "error": null
+  }
+]
+```
+
+### Tips & Usage
+
+- **Auto-Load**: The most recent session file loads automatically on page open
+- **File Selection**: Click any file in the sidebar to view that session
+- **Copy Content**: Click the copy button (📋) on any message to copy its full text
+- **Expand Text**: Double-click on truncated messages to expand/collapse
+- **Hide Sidebar**: Click the burger menu (☰) to maximize reading space
+- **Keyboard-Friendly**: All interactive elements are keyboard-accessible
+- **No Size Limits**: Handles large conversation histories efficiently
+- **Offline Support**: Works completely offline once files are loaded
+
+### Technical Details
+
+**Differential Rendering Algorithm:**
+The viewer uses a smart differential algorithm that:
+1. Tracks how many message parts have been rendered
+2. Only renders NEW parts from each API request (avoiding cumulative duplication)
+3. Skips model messages in request history (they're rendered from response_text)
+4. Groups consecutive same-role messages into single cards
+5. Concatenates text parts for continuous reading
+
+**Session ID Extraction:**
+- Primary: Uses `session.id` field when available
+- Fallback: Extracts from `prompt_id` pattern (uuid########N)
+
+**Performance:**
+- Lazy loading of file content
+- Efficient DOM updates
+- Minimal memory footprint
+- Fast switching between sessions
 
 ## License
 
