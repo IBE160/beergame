@@ -25,6 +25,14 @@ NEXT_ACTION: Produce Project Brief
 NEXT_COMMAND: "product-brief"
 NEXT_AGENT: analyst
 
+## Story Backlog
+
+(No stories created yet)
+
+## Completed Stories
+
+(No stories completed yet)
+
 ---
 
 _Last Updated: 2025-10-27_
