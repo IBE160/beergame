@@ -262,8 +262,13 @@ An interactive HTML viewer is available to browse and analyze processed API requ
 
 ### Opening the Viewer
 
-Simply run the included server script:
+Both scripts (`process-api-requests.py` and `server.py`) are standalone uv scripts and can be run directly:
 
+```bash
+uv run .logging/server.py
+```
+
+Or using standard Python:
 ```bash
 python .logging/server.py
 ```
@@ -278,8 +283,11 @@ Press `Ctrl+C` to stop the server when you're done.
 
 **Custom Port:**
 ```bash
-python .logging/server.py 9000  # Use port 9000 instead
+uv run .logging/server.py 9000  # Use port 9000 instead
+python .logging/server.py 9000  # Or with standard Python
 ```
+
+**Note:** `server.py` has no external dependencies (uses only Python standard library), so both methods work identically.
 
 ### Key Features
 

@@ -1,4 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env -S uv run --script
+# /// script
+# requires-python = ">=3.10"
+# dependencies = []
+# ///
 """
 Simple HTTP server for API Request Viewer
 
@@ -6,6 +10,7 @@ Serves the .logging directory with CORS headers enabled and automatically
 opens the viewer in your default browser.
 
 Usage:
+    uv run .logging/server.py [port]
     python .logging/server.py [port]
 
 Default port: 8000
