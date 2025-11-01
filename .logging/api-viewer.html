@@ -836,6 +836,33 @@
                 display: none;
             }
         }
+
+        /* Edit title button */
+        .edit-title-btn {
+            margin-left: 8px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            opacity: 0.5;
+            transition: opacity 0.2s;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .edit-title-btn:hover {
+            opacity: 1;
+            background: var(--bg-hover);
+        }
+
+        #sessionTitleInput {
+            font-size: 16px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border: 2px solid var(--primary-color);
+            border-radius: 4px;
+            min-width: 300px;
+        }
     </style>
 </head>
 <body>
@@ -968,7 +995,9 @@
                         date: date,
                         displayDate: formatDisplayDate(date),
                         displayTime: formatDisplayTime(date),
-                        size: item.size
+                        size: item.size,
+                        sessionId: item.sessionId,
+                        title: item.title
                     };
                 });
 
@@ -1012,15 +1041,18 @@
                 return;
             }
 
-            fileListEl.innerHTML = files.map(file => `
+            fileListEl.innerHTML = files.map(file => {
+                const displayTitle = file.title || file.sessionId || 'Untitled Session';
+                return `
                 <div class="file-item" onclick="loadFile('${file.filename}')" data-filename="${file.filename}">
                     <span class="file-icon">📄</span>
                     <div class="file-info">
-                        <div class="file-date">${file.displayDate}</div>
-                        <div class="file-time">${file.displayTime}</div>
+                        <div class="file-date">${displayTitle}</div>
+                        <div class="file-time">${file.displayDate} • ${file.displayTime}</div>
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Load and display file
@@ -1044,8 +1076,14 @@
 
                 // Update header
                 const fileInfo = files.find(f => f.filename === filename);
-                document.getElementById('selectedFileName').textContent =
-                    fileInfo ? `${fileInfo.displayDate} at ${fileInfo.displayTime}` : filename;
+                const sessionTitle = fileInfo ? (fileInfo.title || fileInfo.sessionId || 'Untitled Session') : 'Session';
+                const sessionId = fileInfo ? fileInfo.sessionId : '';
+                document.getElementById('selectedFileName').innerHTML = `
+                    <span id="sessionTitleDisplay">${sessionTitle}</span>
+                    <button class="edit-title-btn" onclick="editSessionTitle()" title="Edit title">✏️</button>
+                `;
+                document.getElementById('selectedFileName').dataset.filename = fileInfo ? fileInfo.filename.replace('requests/', '') : '';
+                document.getElementById('selectedFileName').dataset.sessionId = sessionId;
                 document.getElementById('entryCount').textContent = `${data.length} ${data.length === 1 ? 'entry' : 'entries'}`;
                 document.getElementById('fileSize').textContent = `${Math.round(JSON.stringify(data).length / 1024)} KB`;
                 document.getElementById('contentHeader').style.display = 'block';
@@ -1083,11 +1121,22 @@
                 const sessionId = firstEntry.request && firstEntry.request["session.id"]
                     ? firstEntry.request["session.id"]
                     : extractPromptId(firstEntry);
+                
+                // Get title from current file info
+                const currentFileInfo = files.find(f => f.filename === currentFile);
+                const sessionTitle = currentFileInfo ? (currentFileInfo.title || sessionId) : sessionId;
 
                 html += `<div class="chat-header">`;
                 html += `<div class="chat-session-info">`;
-                html += `<span class="chat-session-label">Session ID:</span> `;
-                html += `<span class="chat-session-id">${sessionId}</span>`;
+                if (currentFileInfo && currentFileInfo.title) {
+                    html += `<span class="chat-session-label">Session:</span> `;
+                    html += `<span class="chat-session-id">${sessionTitle}</span>`;
+                    html += `<br><span class="chat-session-label" style="font-size: 10px; margin-top: 4px;">ID:</span> `;
+                    html += `<span class="chat-session-id" style="font-size: 10px;">${sessionId}</span>`;
+                } else {
+                    html += `<span class="chat-session-label">Session ID:</span> `;
+                    html += `<span class="chat-session-id">${sessionId}</span>`;
+                }
                 html += `</div>`;
                 html += `</div>`;
             }
@@ -1583,7 +1632,84 @@
             }
         }
 
-        // Start the app
+
+        // Session title editing
+        async function editSessionTitle() {
+            const displaySpan = document.getElementById('sessionTitleDisplay');
+            const headerEl = document.getElementById('selectedFileName');
+            const currentTitle = displaySpan.textContent;
+            const filename = headerEl.dataset.filename;
+            const sessionId = headerEl.dataset.sessionId;
+
+            // Replace with input
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.id = 'sessionTitleInput';
+            input.value = currentTitle === sessionId ? '' : currentTitle;
+            input.placeholder = 'Enter session title...';
+
+            // Save on Enter, cancel on Escape
+            input.addEventListener('keydown', async (e) => {
+                if (e.key === 'Enter') {
+                    const newTitle = input.value.trim();
+                    if (newTitle) {
+                        await renameSession(filename, newTitle);
+                    }
+                } else if (e.key === 'Escape') {
+                    displaySpan.textContent = currentTitle;
+                    headerEl.replaceChild(displaySpan, input);
+                }
+            });
+
+            // Save on blur
+            input.addEventListener('blur', async () => {
+                const newTitle = input.value.trim();
+                if (newTitle && newTitle !== currentTitle) {
+                    await renameSession(filename, newTitle);
+                } else {
+                    displaySpan.textContent = currentTitle;
+                    headerEl.replaceChild(displaySpan, input);
+                }
+            });
+
+            headerEl.replaceChild(input, displaySpan);
+            input.focus();
+            input.select();
+        }
+
+        async function renameSession(currentFilename, newTitle) {
+            try {
+                const response = await fetch('/api/sessions/rename', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        currentFilename: currentFilename,
+                        newTitle: newTitle
+                    })
+                });
+
+                if (!response.ok) {
+                    const error = await response.text();
+                    alert(`Failed to rename session: ${error}`);
+                    return;
+                }
+
+                const result = await response.json();
+                // Reload file list to show new name
+                await loadFileList();
+                
+                // Reload current file with new filename
+                await loadFile(`requests/${result.newFilename}`);
+                
+            } catch (error) {
+                console.error('Error renaming session:', error);
+                alert('Failed to rename session. Please try again.');
+            }
+        }
+
+                // Start the app
         init();
     </script>
 </body>
