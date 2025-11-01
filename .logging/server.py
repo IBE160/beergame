@@ -128,7 +128,7 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
     def end_headers(self):
         """Add CORS headers to all responses."""
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, PUT, OPTIONS')
+        self.send_header('Access-Control-Allow-Methods', 'GET, PUT, DELETE, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         self.send_header('Cache-Control', 'no-store, no-cache, must-revalidate')
         super().end_headers()
@@ -247,6 +247,66 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
                     'success': True,
                     'newFilename': new_filename,
                     'title': new_title
+                }
+                self.wfile.write(json.dumps(response).encode())
+
+            except json.JSONDecodeError:
+                self.send_error(400, 'Invalid JSON')
+            except Exception as e:
+                self.send_error(500, str(e))
+            return
+
+        # Unknown endpoint
+        self.send_error(404, 'Not found')
+
+
+    def do_DELETE(self):
+        """Handle DELETE requests for API endpoints."""
+        # API endpoint to delete session file
+        if self.path == '/api/sessions/delete':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+
+            try:
+                data = json.loads(post_data.decode('utf-8'))
+                filename = data.get('filename')
+
+                if not filename:
+                    self.send_error(400, 'Missing filename')
+                    return
+
+                # Strip 'requests/' prefix if present (frontend sends full path)
+                if filename.startswith('requests/'):
+                    filename = filename[9:]  # Remove 'requests/'
+
+                # Validate filename
+                requests_dir = Path('requests')
+                file_path = requests_dir / filename
+
+                # Security check: ensure file is within requests directory
+                try:
+                    file_path = file_path.resolve()
+                    if not str(file_path).startswith(str(requests_dir.resolve())):
+                        self.send_error(400, 'Invalid file path')
+                        return
+                except Exception:
+                    self.send_error(400, 'Invalid file path')
+                    return
+
+                if not file_path.exists():
+                    self.send_error(404, 'File not found')
+                    return
+
+                # Delete the file
+                file_path.unlink()
+
+                # Return success
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.end_headers()
+                response = {
+                    'success': True,
+                    'message': 'Session deleted successfully'
                 }
                 self.wfile.write(json.dumps(response).encode())
 
