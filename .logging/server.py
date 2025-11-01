@@ -25,48 +25,101 @@ from pathlib import Path
 from urllib.parse import unquote, quote
 
 
+def to_kebab_case(text):
+    """Convert text to kebab-case format.
+    
+    Examples:
+        'Fase 1 started' -> 'fase-1-started'
+        'Test Session #3' -> 'test-session-3'
+        'My_Test-Title' -> 'my-test-title'
+    """
+    if not text or not text.strip():
+        return None
+    
+    # Lowercase
+    text = text.lower().strip()
+    
+    # Replace any sequence of non-alphanumeric chars with a single hyphen
+    import re
+    text = re.sub(r'[^a-z0-9]+', '-', text)
+    
+    # Remove leading/trailing hyphens
+    text = text.strip('-')
+    
+    return text if text else None
+
+
 def sanitize_title(title):
+    """Sanitize title to kebab-case format with length limit."""
     if not title or not title.strip():
         return None
+    
+    # Limit length before conversion
     title = title.strip()
     if len(title) > 100:
         title = title[:100]
-    safe_chars = set("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_")
-    result = ""
-    for char in title:
-        if char in safe_chars:
-            result += char
-        elif char == " ":
-            result += "-"
-        else:
-            result += "_"
-    result = re.sub(r"[-_]+", "-", result)
-    result = result.strip("-_")
-    return result if result else None
+    
+    # Convert to kebab-case
+    return to_kebab_case(title)
 
 
 def parse_session_filename(filename):
+    """Parse session filename to extract timestamp and title.
+    
+    Handles both new and old formats:
+    - New: {timestamp}-{kebab-title}.json
+    - Old: {timestamp}-{session_id}--{title}.json (backwards compatibility)
+    
+    Returns:
+        dict with 'timestamp' and 'title', or None if invalid
+        Note: session_id is NOT in new filenames, must be loaded from JSON
+    """
     name = filename.replace(".json", "")
+    
+    # Check for old format with '--' separator
     if "--" in name:
         base_part, title_part = name.split("--", 1)
+        # Convert title back from kebab-case (replace - with spaces)
         title = title_part.replace("-", " ")
     else:
+        # New format: timestamp-title (no -- separator)
         base_part = name
         title = None
+    
+    # Extract timestamp (always first part: YYYY-MM-DD_HH-MM-SS)
     match = re.match(r"(\d{4}-\d{2}-\d{2}_\d{2}-\d{2}-\d{2})-(.+)$", base_part)
     if match:
-        timestamp_str, session_id = match.groups()
-        return {"timestamp": timestamp_str, "session_id": session_id, "title": title}
+        timestamp_str, title_or_id = match.groups()
+        
+        # If no title was found from '--' separator, use the part after timestamp
+        if title is None:
+            # This is the kebab-case title (or session ID for untitled sessions)
+            title = title_or_id
+        
+        return {"timestamp": timestamp_str, "title": title}
+    
     return None
 
 
 def build_session_filename(timestamp, session_id, title=None):
-    base = f"{timestamp}-{session_id}"
+    """Build session filename in format: {timestamp}-{kebab-title}.json
+    
+    Args:
+        timestamp: Timestamp string in YYYY-MM-DD_HH-MM-SS format
+        session_id: Session UUID (used as default title if no custom title)
+        title: Optional custom title (will be kebab-cased)
+    
+    Returns:
+        Filename like '2025-10-30_01-13-48-fase-1-started.json' (with title)
+        or '2025-10-30_01-13-48-afd0b49e-1f92-456d-a6ff-afba8ef9a39f.json' (untitled)
+    """
     if title:
         sanitized = sanitize_title(title)
         if sanitized:
-            return f"{base}--{sanitized}.json"
-    return f"{base}.json"
+            return f"{timestamp}-{sanitized}.json"
+    
+    # Use session_id as default title (already in kebab-case format)
+    return f"{timestamp}-{session_id}.json"
 
 
 class CORSRequestHandler(SimpleHTTPRequestHandler):
@@ -95,7 +148,7 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
                 for json_file in sorted(requests_dir.glob('*.json'), reverse=True):
                     stat = json_file.stat()
 
-                    # Parse filename to extract session info
+                    # Parse filename to extract timestamp and title
                     parsed = parse_session_filename(json_file.name)
                     if parsed:
                         timestamp_str = parsed['timestamp']
@@ -103,27 +156,28 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
                         time_part = timestamp_str.split('_')[1]
                         hour, minute, second = time_part.split('-')
                         timestamp = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
+                        
+                        # Extract session ID from JSON content
+                        session_id = None
+                        try:
+                            with json_file.open('r', encoding='utf-8') as f:
+                                data = json.load(f)
+                                # Get session.id from first request
+                                if data and len(data) > 0:
+                                    first_item = data[0]
+                                    if 'request' in first_item and first_item['request']:
+                                        session_id = first_item['request'].get('session.id')
+                        except Exception:
+                            # If we can't read the file, use title as fallback
+                            session_id = parsed['title']
 
                         files.append({
                             'filename': json_file.name,
                             'timestamp': timestamp,
-                            'sessionId': parsed['session_id'],
+                            'sessionId': session_id,
                             'title': parsed['title'],
                             'size': stat.st_size
                         })
-                    else:
-                        # Fallback for old format
-                        match = re.match(r'(\d{4})-(\d{2})-(\d{2})_(\d{2})-(\d{2})-(\d{2})-(.+)\.json', json_file.name)
-                        if match:
-                            year, month, day, hour, minute, second, session_id = match.groups()
-                            timestamp = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
-                            files.append({
-                                'filename': json_file.name,
-                                'timestamp': timestamp,
-                                'sessionId': session_id,
-                                'title': None,
-                                'size': stat.st_size
-                            })
 
                 self.wfile.write(json.dumps(files).encode())
             else:
@@ -153,16 +207,20 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
                     self.send_error(400, 'Missing or empty newTitle')
                     return
 
+                # Strip 'requests/' prefix if present (frontend sends full path)
+                if current_filename.startswith('requests/'):
+                    current_filename = current_filename[9:]  # Remove 'requests/'
+
                 # Parse current filename
                 parsed = parse_session_filename(current_filename)
                 if not parsed:
                     self.send_error(400, 'Invalid filename format')
                     return
 
-                # Build new filename
+                # Build new filename (session_id=None since we have a title)
                 new_filename = build_session_filename(
                     parsed['timestamp'],
-                    parsed['session_id'],
+                    None,  # Session ID not needed when we have a custom title
                     new_title
                 )
 

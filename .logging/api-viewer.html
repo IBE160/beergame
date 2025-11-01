@@ -151,12 +151,55 @@
             padding: 16px 24px;
             display: none;
             box-sizing: border-box;
+            position: relative;
+        }
+
+        .content-header-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .content-header h2 {
             font-size: 16px;
             font-weight: 600;
             color: var(--text-primary);
+            flex: 1;
+        }
+
+        /* Mobile menu button in content header (hidden by default) */
+        .content-menu-toggle {
+            display: none;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            padding: 0;
+            flex-shrink: 0;
+        }
+
+        .content-menu-toggle:hover {
+            background: #1557b0;
+            box-shadow: var(--shadow-hover);
+            transform: scale(1.05);
+        }
+
+        .content-menu-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .content-menu-toggle span {
+            display: block;
+            width: 18px;
+            height: 2px;
+            background: white;
+            margin: 4px auto;
+            border-radius: 2px;
         }
 
         .content-meta {
@@ -165,6 +208,17 @@
             margin-top: 8px;
             font-size: 12px;
             color: var(--text-secondary);
+            align-items: center;
+        }
+
+        .session-id-badge {
+            font-family: monospace;
+            font-size: 10px;
+            color: var(--text-secondary);
+            background: var(--bg-secondary);
+            padding: 4px 12px;
+            border-radius: 4px;
+            margin-left: auto;
         }
 
         .content-body {
@@ -663,18 +717,7 @@
             border-radius: 2px;
         }
 
-        /* Animate burger icon when sidebar is collapsed */
-        .sidebar.collapsed .menu-toggle span:nth-child(1) {
-            transform: translateY(6px) rotate(45deg);
-        }
-
-        .sidebar.collapsed .menu-toggle span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .sidebar.collapsed .menu-toggle span:nth-child(3) {
-            transform: translateY(-6px) rotate(-45deg);
-        }
+        /* Keep burger icon consistent - no animation */
 
         .menu-backdrop {
             display: none;
@@ -811,7 +854,8 @@
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            /* Tablet and mobile: start with collapsed sidebar */
             .sidebar {
                 position: fixed;
                 top: 0;
@@ -821,9 +865,59 @@
             }
 
             .sidebar.collapsed {
-                transform: translateX(-60px);
+                transform: translateX(-280px);
             }
 
+            /* Show sidebar menu button only when sidebar is open on mobile/tablet */
+            .sidebar:not(.collapsed) .menu-toggle {
+                display: block;
+            }
+
+            .sidebar.collapsed .menu-toggle {
+                display: none;
+            }
+
+            /* Show content header menu button on mobile/tablet */
+            .content-menu-toggle {
+                display: block;
+            }
+
+            /* Hide content header menu button when sidebar is open */
+            .sidebar:not(.collapsed) ~ .main-content .content-menu-toggle {
+                display: none;
+            }
+
+            /* Restructure content header for mobile - single row layout */
+            .content-header {
+                display: flex !important;
+                align-items: center;
+                gap: 12px;
+                padding: 16px;
+            }
+
+            .content-header-top {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .content-header h2 {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .content-meta {
+                margin-top: 0;
+                gap: 12px;
+                flex-shrink: 0;
+            }
+
+            .content-meta span {
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 768px) {
             .content-body {
                 padding: 16px;
             }
@@ -833,6 +927,10 @@
             }
 
             .entry-header-center {
+                display: none;
+            }
+
+            .session-id-badge {
                 display: none;
             }
         }
@@ -886,10 +984,18 @@
 
     <div class="main-content">
         <div class="content-header" id="contentHeader" style="display: none;">
-            <h2 id="selectedFileName">Select a file</h2>
+            <div class="content-header-top">
+                <button class="content-menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <h2 id="selectedFileName">Select a file</h2>
+            </div>
             <div class="content-meta">
                 <span id="entryCount">0 entries</span>
                 <span id="fileSize">0 KB</span>
+                <span id="sessionIdDisplay" class="session-id-badge"></span>
             </div>
         </div>
         <div class="content-body" id="contentBody">
@@ -974,6 +1080,12 @@
 
         // Initialize
         async function init() {
+            // Auto-collapse sidebar on mobile/tablet
+            if (window.innerWidth <= 1024) {
+                const sidebar = document.querySelector('.sidebar');
+                sidebar.classList.add('collapsed');
+            }
+
             await loadFileList();
             if (files.length > 0) {
                 await loadFile(files[0].filename);
@@ -1086,6 +1198,7 @@
                 document.getElementById('selectedFileName').dataset.sessionId = sessionId;
                 document.getElementById('entryCount').textContent = `${data.length} ${data.length === 1 ? 'entry' : 'entries'}`;
                 document.getElementById('fileSize').textContent = `${Math.round(JSON.stringify(data).length / 1024)} KB`;
+                document.getElementById('sessionIdDisplay').textContent = sessionId ? `ID: ${sessionId}` : '';
                 document.getElementById('contentHeader').style.display = 'block';
 
                 // Render data
@@ -1114,32 +1227,6 @@
         function renderContinuousChat(entries) {
             let html = '';
             let renderedPartsCount = 0;
-
-            // Add session info header
-            if (entries.length > 0) {
-                const firstEntry = entries[0];
-                const sessionId = firstEntry.request && firstEntry.request["session.id"]
-                    ? firstEntry.request["session.id"]
-                    : extractPromptId(firstEntry);
-                
-                // Get title from current file info
-                const currentFileInfo = files.find(f => f.filename === currentFile);
-                const sessionTitle = currentFileInfo ? (currentFileInfo.title || sessionId) : sessionId;
-
-                html += `<div class="chat-header">`;
-                html += `<div class="chat-session-info">`;
-                if (currentFileInfo && currentFileInfo.title) {
-                    html += `<span class="chat-session-label">Session:</span> `;
-                    html += `<span class="chat-session-id">${sessionTitle}</span>`;
-                    html += `<br><span class="chat-session-label" style="font-size: 10px; margin-top: 4px;">ID:</span> `;
-                    html += `<span class="chat-session-id" style="font-size: 10px;">${sessionId}</span>`;
-                } else {
-                    html += `<span class="chat-session-label">Session ID:</span> `;
-                    html += `<span class="chat-session-id">${sessionId}</span>`;
-                }
-                html += `</div>`;
-                html += `</div>`;
-            }
 
             // Create continuous chat container
             html += `<div class="chat-container">`;
@@ -1648,23 +1735,35 @@
             input.value = currentTitle === sessionId ? '' : currentTitle;
             input.placeholder = 'Enter session title...';
 
+            // Track if rename has been processed to prevent double submission
+            let isProcessing = false;
+
             // Save on Enter, cancel on Escape
             input.addEventListener('keydown', async (e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && !isProcessing) {
+                    e.preventDefault();
+                    isProcessing = true;
                     const newTitle = input.value.trim();
                     if (newTitle) {
                         await renameSession(filename, newTitle);
+                    } else {
+                        displaySpan.textContent = currentTitle;
+                        headerEl.replaceChild(displaySpan, input);
                     }
                 } else if (e.key === 'Escape') {
+                    isProcessing = true; // Prevent blur from firing
                     displaySpan.textContent = currentTitle;
                     headerEl.replaceChild(displaySpan, input);
                 }
             });
 
-            // Save on blur
+            // Save on blur (only if not already processing)
             input.addEventListener('blur', async () => {
+                if (isProcessing) return; // Already handled by Enter or Escape
+
                 const newTitle = input.value.trim();
                 if (newTitle && newTitle !== currentTitle) {
+                    isProcessing = true;
                     await renameSession(filename, newTitle);
                 } else {
                     displaySpan.textContent = currentTitle;
