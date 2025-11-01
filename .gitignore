@@ -42,8 +42,5 @@ next-env.d.ts
 
 .playwright-mcp
 
-#IDE
-
-#gemini
 
 #logging
