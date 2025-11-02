@@ -136,28 +136,6 @@
             margin-top: 2px;
         }
 
-
-        .file-delete {
-            opacity: 1;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 18px;
-            line-height: 1;
-            cursor: pointer;
-            padding: 4px 8px;
-            margin-left: 8px;
-            transition: opacity 0.2s, color 0.2s;
-            flex-shrink: 0;
-        }
-
-        .file-item:hover .file-delete {
-            opacity: 1;
-        }
-
-        .file-delete:hover {
-            color: #d93025;
-        }
         /* Main Content */
         .main-content {
             flex: 1;
@@ -537,6 +515,19 @@
         /* Function message gradient (light orange) */
         .message.function .text-line-11::after {
             background: linear-gradient(to bottom, transparent 0%, rgba(255, 243, 224, 0.95) 70%, #fff3e0 100%);
+            content: 'Double-click to open/close';
+            display: block;
+            color: #999;
+            font-size: 11px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Tool output truncation gradient (white background) - must be more specific to override chat message gradients */
+        .chat-message.chat-user .function-args .text-line-11::after,
+        .chat-message.chat-model .function-args .text-line-11::after,
+        .function-args .text-line-11::after {
+            background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.95) 70%, #ffffff 100%);
             content: 'Double-click to open/close';
             display: block;
             color: #999;
@@ -1184,7 +1175,6 @@
                         <div class="file-date">${displayTitle}</div>
                         <div class="file-time">${file.displayDate} • ${file.displayTime}</div>
                     </div>
-                    <button class="file-delete" onclick="event.stopPropagation(); deleteSession('${file.filename}', '${displayTitle.replace(/'/g, "\'")}');" title="Delete session">×</button>
                 </div>
                 `;
             }).join('');
@@ -1631,14 +1621,55 @@
         }
 
         // Render function response
+        // Format text by unescaping JSON string content
+        function formatOutputText(text) {
+            if (typeof text !== 'string') return text;
+            
+            // Unescape common escape sequences
+            return text
+                .replace(/\\n/g, '\n')
+                .replace(/\\t/g, '\t')
+                .replace(/\\r/g, '\r')
+                .replace(/\\"/g, '"')
+                .replace(/\\\\/g, '\\');
+        }
+
+        // Render function response
         function renderFunctionResponse(funcResponse) {
-            let html = `<div class="function-call">`;
-            html += `<div class="function-name">✅ ${funcResponse.name}</div>`;
+            let html = '<div class="function-call">';
+            html += '<div class="function-name">✅ ' + funcResponse.name + '</div>';
+            
             if (funcResponse.response) {
-                const responseJson = JSON.stringify(funcResponse.response, null, 2);
-                html += `<div class="function-args">${wrapTextWithTruncation(responseJson)}</div>`;
+                const response = funcResponse.response;
+                
+                // List of fields to try formatting as text
+                const formattableFields = ['output', 'error', 'message', 'result', 'content', 'data'];
+                let hasFormattedField = false;
+                
+                // Check if response has any formattable fields
+                for (const field of formattableFields) {
+                    if (response[field] && typeof response[field] === 'string') {
+                        hasFormattedField = true;
+                        break;
+                    }
+                }
+                
+                if (hasFormattedField) {
+                    // Format and display known fields
+                    for (const field of formattableFields) {
+                        if (response[field] && typeof response[field] === 'string') {
+                            const formattedText = formatOutputText(response[field]);
+                            html += '<div class="function-args">' + wrapTextWithTruncation(formattedText) + '</div>';
+                        }
+                    }
+                } else {
+                    // Fall back to JSON display
+                    const responseJson = JSON.stringify(response, null, 2);
+                    html += '<div class="function-args">' + wrapTextWithTruncation(responseJson) + '</div>';
+                }
             }
-            html += `</div>`;
+            
+            html += '</div>';
             return html;
         }
 
@@ -1828,48 +1859,6 @@
             } catch (error) {
                 console.error('Error renaming session:', error);
                 alert('Failed to rename session. Please try again.');
-            }
-        }
-
-        async function deleteSession(filename, displayTitle) {
-            // Show confirmation dialog
-            const confirmMessage = `Delete session '${displayTitle}'?\n\nThis cannot be undone.`;
-            if (!confirm(confirmMessage)) {
-                return;
-            }
-
-            try {
-                const response = await fetch('/api/sessions/delete', {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        filename: filename
-                    })
-                });
-
-                if (!response.ok) {
-                    const error = await response.text();
-                    alert(`Failed to delete session: ${error}`);
-                    return;
-                }
-
-                // Reload file list
-                await loadFileList();
-                
-                // If there are files remaining, select the top one
-                if (files.length > 0) {
-                    await loadFile(files[0].filename);
-                } else {
-                    // Clear content if no files remain
-                    document.getElementById('contentHeader').style.display = 'none';
-                    document.getElementById('outputContent').innerHTML = '<div class="empty-state"><p>No session selected</p></div>';
-                }
-                
-            } catch (error) {
-                console.error('Error deleting session:', error);
-                alert('Failed to delete session. Please try again.');
             }
         }
 
