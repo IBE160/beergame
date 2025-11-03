@@ -12,18 +12,27 @@ WORKFLOW_PATH: greenfield-level-3.yaml
 ## Current State
 
 CURRENT_PHASE: Planning
-CURRENT_WORKFLOW: prd - In Progress
-CURRENT_AGENT: pm
+CURRENT_WORKFLOW: tech-spec - Not Started
+CURRENT_AGENT: architect
 PHASE_1_COMPLETE: true
 PHASE_2_COMPLETE: false
 PHASE_3_COMPLETE: false
 PHASE_4_COMPLETE: false
 
+## WORKFLOW_STATUS
+
+- product-brief: D:\IBE160\student-groups\beergame\docs\product-brief.md
+- prd: D:\IBE160\student-groups\beergame\docs\PRD.md
+- tech-spec: todo
+- create-tests: todo
+- create-code: todo
+- create-review: todo
+
 ## Next Action
 
-NEXT_ACTION: Produce PRD
-NEXT_COMMAND: "prd"
-NEXT_AGENT: pm
+NEXT_ACTION: Produce Technical Specification
+NEXT_COMMAND: "tech-spec"
+NEXT_AGENT: architect
 
 ## Story Backlog
 
