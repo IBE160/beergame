@@ -33,6 +33,14 @@ NEXT_AGENT: pm
 
 (No stories completed yet)
 
+
+## Project Management
+
+### To-do list
+
+- FR005 and FR007 need a better analysis - are they the same or different?
+- FR005: More concise description of ALL the components?
+- FR004: More concise description of ALL the components?
 ---
 
 _Last Updated: 2025-11-03_
