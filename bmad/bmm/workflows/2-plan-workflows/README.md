@@ -75,6 +75,7 @@ The workflow adapts automatically based on project assessment, but key configura
 ├── README.md                      # Overview and usage details
 ├── checklist.md                   # Shared validation criteria
 ├── prd/
+│   ├── checklist.md               # Validation checklist
 │   ├── epics-template.md          # Epic breakdown template
 │   ├── instructions.md            # Level 2-4 PRD instructions
 │   ├── prd-template.md            # Product Requirements Document template
