@@ -3,21 +3,18 @@
 ## Fase 0
 
 - [x] Brainstorming
-  - [x] /analyst *brainstorm {prompt / user-input-file}
-  - [x] /analyst *brainstorm {prompt / user-input-file}
-  - [x] /analyst *brainstorm {prompt / user-input-file}
-- [ ] Research
-  - [x] /analyst *research {prompt / user-input-file}
-  - [x] /analyst *research {prompt / user-input-file}
-  - [x] /analyst *research {prompt / user-input-file}
+  - [x] /analyst *brainstorm "Root Cause Analysis and Solution Design for Player Inactivity"
+  - [x] /analyst *brainstorm "User Flow Deviations & Edge Cases"
+- [x] Research
+  - [x] /analyst *research "Which AI library should we use for orchestrating LLM interactions?"
 - [x] Product Brief
-  - [x] /analyst *product-brief {prompt / user-input-file}
+  - [x] /analyst *product-brief "Read the two brainstorming sessions the research session and the @proposal.md file, and create a product brief for the project."
 
 ## Fase 1
 
 - [ ] Planning
-  - [x] /run-agent-task pm *prd {prompt / user-input-file}
-  - [ ] /run-agent-task pm *validate-prd {prompt / user-input-file}
+  - [x] /run-agent-task pm *prd
+  - [ ] /run-agent-task pm *validate-prd
   - [ ] /run-agent-task ux-designer *create-ux-design {prompt / user-input-file}
   - [ ] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
   - [ ] /run-agent-task tea *framework {prompt / user-input-file}
