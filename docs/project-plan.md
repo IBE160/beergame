@@ -2,21 +2,21 @@
 
 ## Fase 0
 
-- [ ] Brainstorming
-  - [ ] /analyst *brainstorm {prompt / user-input-file}
-  - [ ] /analyst *brainstorm {prompt / user-input-file}
-  - [ ] /analyst *brainstorm {prompt / user-input-file}
+- [x] Brainstorming
+  - [x] /analyst *brainstorm {prompt / user-input-file}
+  - [x] /analyst *brainstorm {prompt / user-input-file}
+  - [x] /analyst *brainstorm {prompt / user-input-file}
 - [ ] Research
-  - [ ] /analyst *research {prompt / user-input-file}
-  - [ ] /analyst *research {prompt / user-input-file}
-  - [ ] /analyst *research {prompt / user-input-file}
-- [ ] Product Brief
-  - [ ] /analyst *product-brief {prompt / user-input-file}
+  - [x] /analyst *research {prompt / user-input-file}
+  - [x] /analyst *research {prompt / user-input-file}
+  - [x] /analyst *research {prompt / user-input-file}
+- [x] Product Brief
+  - [x] /analyst *product-brief {prompt / user-input-file}
 
 ## Fase 1
 
 - [ ] Planning
-  - [ ] /run-agent-task pm *prd {prompt / user-input-file}
+  - [x] /run-agent-task pm *prd {prompt / user-input-file}
   - [ ] /run-agent-task pm *validate-prd {prompt / user-input-file}
   - [ ] /run-agent-task ux-designer *create-ux-design {prompt / user-input-file}
   - [ ] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
