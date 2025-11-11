@@ -1,4 +1,4 @@
-# ibe160 Product Requirements Document (PRD)
+shoul# ibe160 Product Requirements Document (PRD)
 
 **Author:** BIP
 **Date:** 2025-11-03
@@ -49,636 +49,722 @@ The Beer Game, a simulation from MIT, is a powerful tool for teaching supply cha
 
 ### Non-Functional Requirements
 
-*   **NFR001: Performance & Scalability:** The application must load within 3 seconds, with game state updates processing in under 500ms. It must support at least 100 concurrent game sessions without performance degradation, and 95% of database queries must complete within 200ms.
-*   **NFR002: Security:** The system must use secure authentication (JWT), enforce data access control with Row Level Security (RLS), encrypt sensitive data, and implement Role-Based Access Control (RBAC). Payment processing must be PCI DSS compliant via Stripe.
-*   **NFR003: Reliability & Availability:** The platform must maintain 99% uptime. Game state must be persisted to prevent data loss, and the system must support database backups and disaster recovery.
-*   **NFR004: Accessibility:** The user interface must be designed to be accessible to users with disabilities, including those with impaired vision, adhering to WCAG 2.1 AA guidelines.
-*   **NFR005: Usability:** The platform must be responsive and fully functional on desktops, laptops, and tablets (minimum 768px width) and compatible with the latest versions of modern browsers (Chrome, Firefox, Safari, Edge).
-*   **NFR006: Maintainability:** The codebase must be well-documented, with automated tests covering **100%** of the core game logic to facilitate future development and maintenance.
+#### Performance
+*   **NFR001: Page Load Time:** Initial page load shall complete within 3 seconds on standard broadband connections.
+*   **NFR002: Game State Updates:** Real-time game state updates shall be delivered to all players within 500 milliseconds.
+*   **NFR003: API Response Time:** Backend API responses shall complete within 500 milliseconds for 95th percentile requests.
+*   **NFR004: Database Query Performance:** Database queries shall execute within 200 milliseconds at 95th percentile under normal load.
+*   **NFR005: Concurrent Sessions:** The system shall support at least 100 concurrent game sessions without performance degradation.
+
+#### Security
+*   **NFR006: Authentication:** The system shall use Supabase Auth with JWT tokens and Row Level Security (RLS) for data access control.
+*   **NFR007: Data Encryption:** All sensitive data shall be encrypted at rest and in transit using industry-standard encryption protocols.
+*   **NFR008: Role-Based Access Control:** The system shall implement RBAC to enforce proper access permissions for students, teachers, and administrators.
+*   **NFR009: Payment Security:** Payment processing shall comply with PCI DSS standards through Stripe integration.
+*   **NFR010: Email Verification:** User accounts shall require email verification before full platform access is granted.
+
+#### Reliability & Availability
+*   **NFR011: System Uptime:** The system shall maintain 99% uptime during business hours (7am-11pm EST).
+*   **NFR012: Data Persistence:** Game state shall be persisted after every round to prevent data loss.
+*   **NFR013: Backup & Recovery:** Database backups shall be performed daily with point-in-time recovery capability.
+*   **NFR014: AI API Fallback:** The system shall implement fallback logic for AI API failures to maintain game continuity.
+
+#### Scalability
+*   **NFR015: User Growth:** The system architecture shall support scaling to 1,000+ registered users within first year.
+*   **NFR016: Horizontal Scaling:** Backend services shall support horizontal scaling through stateless API design.
+*   **NFR017: Database Scaling:** Database schema shall support pagination and archiving strategies for long-term data growth.
+
+#### Usability & Accessibility
+*   **NFR018: Responsive Design:** The platform shall be fully responsive and functional on devices with minimum width of 768px (tablet and desktop).
+*   **NFR019: Browser Compatibility:** The platform shall support latest two versions of Chrome, Firefox, Safari, and Edge.
+*   **NFR020: Educational Clarity:** Game dashboard shall clearly display all critical information (inventory, costs, orders) without requiring scrolling.
+*   **NFR021: Educator Efficiency:** Teacher dashboard operations (student allocation, monitoring, messaging) shall require no more than 3 clicks to complete.
+
+#### Integration
+*   **NFR022: Supabase Integration:** The system shall use Supabase for database, authentication, and real-time subscriptions.
+*   **NFR023: AI API Integration:** The system shall integrate with Gemini 2.5 Pro/Flash API for AI-powered opponents and assessment generation.
+*   **NFR024: Payment Integration:** The system shall integrate with Stripe for subscription management and payment processing.
+*   **NFR025: Email Integration:** The system shall integrate with SendGrid for transactional email delivery (notifications, assessments, invoices).
+
+#### Maintainability
+*   **NFR026: Test Coverage:** The system shall maintain minimum 80% code coverage through automated testing.
+*   **NFR027: API Documentation:** All backend APIs shall be documented with request/response schemas and examples.
+*   **NFR028: Type Safety:** Frontend and backend shall use TypeScript/Python type hints for type safety and developer productivity.
 
 ---
 
 ## User Journeys
 
-### Flow 1: Student Playing Single-Player Game
+### Journey 1: Student Playing Single-Player Game
 
-**Entry Point**: Student lands on homepage
+**Actor:** Student / Individual Learner
+**Goal:** Complete a Beer Game simulation to learn supply chain principles
 
-1.  **Landing Page**
-    *   Student views hero section explaining the Beer Game concept
-    *   Reads "How to Play" section with game rules and supply chain structure
-    *   Clicks "Start Playing" CTA button
+**Steps:**
+1. User registers for an account with email and password
+2. User verifies email address
+3. User logs in and lands on dashboard
+4. User selects "Play Single-Player Game"
+5. User configures game settings:
+   - Selects role (Retailer, Wholesaler, Distributor, or Factory)
+   - Sets duration (default 36 weeks)
+   - Adjusts costs and lead times (or uses defaults)
+   - Sets AI difficulty level
+6. Game initializes with AI-controlled partners for other roles
+7. User views interactive game dashboard showing:
+   - Current week indicator
+   - Inventory levels and backorders
+   - Incoming orders and shipments
+   - Cumulative costs
+   - Order placement interface
+8. User places order each week and observes supply chain dynamics
+9. Real-time visualizations update showing inventory trends, orders, and cost accumulation
+10. Game progresses through all weeks with AI partners making realistic decisions
+11. Upon completion, user receives AI-generated summary including:
+    - Performance metrics (total cost, service level)
+    - Personalized insights on decision patterns
+    - Educational content about bullwhip effect
+    - Visualization of bullwhip phenomenon across supply chain
+12. User reviews results and can start a new game or explore analytics
 
-2.  **Authentication**
-    *   If not logged in: Redirects to registration/login page
-    *   Student registers with email and password
-    *   Receives verification email and clicks verification link
-    *   Redirected back to platform and automatically logged in
-
-3.  **Game Mode Selection**
-    *   Student sees two options:
-        *   "Single-Player" (AI opponents)
-        *   "Multiplayer" (play with other humans)
-    *   Student selects "Single-Player"
-    *   Clicks "Continue" button
-
-4.  **Game Configuration**
-    *   Student selects their role (Retailer, Wholesaler, Distributor, or Factory)
-    *   **Basic Configuration:**
-        *   Adjusts game duration using slider (20-52 weeks)
-        *   Reviews default cost parameters
-    *   **Advanced Configuration (Optional):**
-        *   Clicks "Advanced Settings" to expand options
-        *   Adjusts cost parameters:
-            *   Inventory holding cost per unit per week
-            *   Backorder cost per unit per week
-            *   Additional costs (transport, lost sales)
-        *   Sets lead times (order delay, shipping delay)
-        *   Selects difficulty level (easy, medium, hard)
-        *   Configures communication/visibility level:
-            *   No visibility (default): Can't see other players' inventory
-            *   One level: Can see direct upstream/downstream partner's inventory
-            *   Two levels: Can see two partners away
-            *   Three levels: Full supply chain visibility
-    *   Reviews game objectives summary
-    *   Clicks "Start Game" button
-
-5.  **Game Dashboard (Week 1-N)**
-    *   **View State**:
-        *   Current inventory (12 units starting)
-        *   Backorders (if any)
-        *   Incoming orders from downstream customer
-        *   Incoming shipments in transit (2-week delay visualization)
-        *   Week indicator (e.g., "Week 1 of 20")
-        *   Real-time cost accumulation display (inventory + backorder + other costs)
-    *   **View Visibility (based on configuration)**:
-        *   If visibility enabled: Shows inventory/backorder levels of other supply chain positions
-        *   If no visibility: Only shows own position
-    *   **Make Decision**: Student enters order quantity in input field
-    *   **Validate**: System validates order (positive integer, reasonable bounds)
-    *   **Submit**: Student clicks "Place Order" button
-    *   **Processing**: System advances to next week:
-        *   AI players make their decisions via LLM API calls
-        *   System calculates inventory changes, backorders, and costs
-        *   Updates all supply chain positions
-        *   Updates charts and visualizations
-    *   **Repeat**: Student continues for configured number of weeks
-
-6.  **Real-Time Monitoring (During Game)**
-    *   Student views live charts updating each week:
-        *   Own inventory levels over time
-        *   Orders placed and received timeline
-        *   Cumulative cost trends (broken down by cost type if advanced costs enabled)
-    *   If visibility enabled: Can see other players' inventory trends
-    *   Student observes cost accumulation in real-time
-
-7.  **Game Completion**
-    *   After final week, AI generates comprehensive summary dashboard:
-        *   **Performance Metrics:**
-            *   Total costs breakdown by category (inventory, backorder, transport, lost sales)
-            *   Final inventory levels
-            *   Total backorders experienced
-            *   Peak inventory/backorder weeks
-        *   **Comparison with Benchmarks:**
-            *   Comparison with optimal performance (best possible cost)
-            *   Comparison with typical player performance
-        *   **AI-Generated Insights:**
-            *   Key insights about decisions (e.g., "You over-ordered in weeks 5-8, causing excess inventory of 45 units and $225 in holding costs")
-            *   Identification of decision patterns (reactive vs. proactive ordering)
-            *   Analysis of how player contributed to/mitigated bullwhip effect
-        *   **Educational Content:**
-            *   Explanation of supply chain phenomena observed in this game
-            *   Bullwhip effect visualization showing demand amplification across supply chain
-            *   Recommended strategies for improvement
-    *   Student has options:
-        *   "Play Again" - returns to game configuration
-        *   "Try Different Role" - returns to configuration with new role
-        *   "View Detailed Analytics" - expands full game history
-        *   "Exit to Dashboard" - returns to user dashboard
-
-**Exit Point**: Student returns to main dashboard or logs out
+**Success Criteria:** User completes full game, understands their performance, and grasps bullwhip effect concept
 
 ---
 
-### Flow 2: Teacher Setting Up Class Game
+### Journey 2: Teacher Setting Up and Managing Class Game
 
-**Entry Point**: Teacher lands on homepage
+**Actor:** Educator
+**Goal:** Set up a Beer Game simulation for students, monitor progress, assess learning
 
-1.  **Landing Page**
-    *   Teacher clicks "For Educators" button in navigation
-    *   Views educator features and pricing information
+**Steps:**
+1. Teacher registers with institutional email
+2. Teacher selects subscription plan (with free trial option)
+3. Teacher completes payment setup via Stripe
+4. Teacher creates a new class:
+   - Enters class name and details
+   - Sets academic term
+5. Teacher adds students:
+   - Option A: Bulk upload via CSV (name, email)
+   - Option B: Manual entry one by one
+   - System sends invitation emails to students
+6. Teacher configures common game settings for entire class:
+   - Sets standard duration, costs, lead times
+   - Ensures all students have comparable conditions
+7. Teacher allocates students to games:
+   - Option A: Automatic allocation (system groups students into teams of 4)
+   - Option B: Manual allocation (teacher creates custom groups)
+8. Students receive email notifications with game access
+9. Teacher monitors real-time progress dashboard showing:
+   - Active sessions and completion status
+   - Individual student progress (current week)
+   - Summary metrics per student
+10. Teacher uses control panel to:
+    - Pause or reset games if needed
+    - Remove a student and replace with AI
+    - Send broadcast messages to class
+    - Send individual messages to specific students
+11. As students complete games, teacher views analytics dashboard:
+    - Class-wide performance metrics
+    - Individual performance reports
+    - Bullwhip effect analysis across all games
+    - Comparative visualizations
+12. System automatically generates AI-powered assessments:
+    - Multiple choice questions
+    - Short answer questions
+    - Long text questions
+    - Numeric problem-solving questions
+13. Students complete assessments and receive AI-generated feedback
+14. Teacher reviews assessment results with weighted scoring
+15. Teacher exports class reports to CSV/PDF format
+16. Teacher manages completion statuses and certificates
 
-2.  **Teacher Registration & Subscription**
-    *   Clicks "Get Started" button
-    *   Registers with institutional email address
-    *   Redirected to subscription selection page
-    *   Selects plan (Basic $19/month, Professional $39/month, or Institution $99/month)
-    *   Clicks "Start Free Trial" (14 days)
-    *   Redirected to Stripe Checkout page
-    *   Enters payment information
-    *   Returns to platform after payment setup
-
-3.  **Teacher Dashboard Access**
-    *   Lands on teacher dashboard showing:
-        *   List of classes (empty for new teacher)
-        *   "Create New Class" button prominently displayed
-        *   Navigation to Monitoring, Analytics, Settings
-
-4.  **Create Class**
-    *   Clicks "Create New Class" button
-    *   Enters class information:
-        *   Class name (e.g., "Supply Chain Management 101 - Fall 2024")
-        *   Academic year/semester
-    *   Clicks "Create Class"
-    *   Redirected to class detail page
-
-5.  **Add Students**
-    *   Teacher has two options:
-        *   **Option A - Bulk Import**: Clicks "Import Students" button
-            *   Downloads CSV template
-            *   Fills in student names and emails
-            *   Uploads CSV file
-            *   System validates and imports students
-            *   Sends registration emails to all students
-        *   **Option B - Manual Entry**: Clicks "Add Student" button
-            *   Enters student name and email
-            *   Repeats for each student
-            *   System sends registration invitation
-
-6.  **Configure Game Session (Common Settings for All Students)**
-    *   Clicks "Create Game Assignment" button
-    *   **Common Configuration Applied to All Games in Class:**
-        *   Game duration (20-52 weeks) - same for all students
-        *   **Cost parameters** (same for all):
-            *   Inventory holding cost per unit per week
-            *   Backorder cost per unit per week
-            *   Additional costs (transport, lost sales)
-        *   **Lead times** (same for all):
-            *   Order processing delay
-            *   Shipping delay
-        *   Difficulty level (easy, medium, hard) - affects demand variability
-        *   **External demand pattern** - same customer demand across all games
-        *   **Communication/visibility level:**
-            *   No visibility, one level, two levels, or three levels
-    *   **Rationale displayed:** "All games will use identical settings to enable fair performance comparison across students"
-    *   Sets allocation preferences:
-        *   Students per game (1-4)
-        *   Random allocation or manual assignment option
-    *   Clicks "Auto-Allocate Students"
-    *   System automatically distributes students to game sessions
-    *   **Manual override option:** Teacher can drag-and-drop students to different games if needed
-
-7.  **Review Allocation**
-    *   Views allocation summary showing:
-        *   Number of game sessions created
-        *   Students assigned to each session with their roles
-        *   AI-controlled positions highlighted
-        *   Common game configuration summary displayed at top
-    *   Can manually adjust assignments if needed
-    *   Clicks "Activate Games" button
-    *   Students receive notification emails with game instructions
-
-8.  **Monitor Progress (Enhanced Controls)**
-    *   Teacher navigates to "Monitoring" dashboard
-    *   Views table of all active game sessions with columns:
-        *   Game ID / Session name
-        *   Game status (not started, in progress, paused, completed)
-        *   Current week for each game
-        *   Student names and roles
-        *   Real-time cost data for each student
-        *   Completion status toggle
-    *   **Class-wide controls:**
-        *   "Pause All Games" button - freezes all games simultaneously
-        *   "Resume All Games" button - restarts all paused games
-        *   "Reset All Games" button - resets all games to week 1 (with confirmation)
-    *   **Individual game actions:**
-        *   Clicks on specific game to see detailed real-time view:
-            *   Week-by-week progress
-            *   Individual student decisions and order history
-            *   Supply chain visualizations
-        *   "Remove Student" button - removes a student from a game
-            *   System automatically replaces student with AI player
-            *   Original student's data archived for reference
-    *   Toggle completion status for each student (approved/not approved)
-
-9.  **Send Messages to Students**
-    *   From monitoring dashboard, teacher clicks "Messages" button
-    *   Two options:
-        *   **Broadcast to All Students:**
-            *   Clicks "Message All Students" button
-            *   Composes message in text editor
-            *   Optional: Attach files (PDFs, instructions)
-            *   Clicks "Send to All" button
-            *   All students in class receive email + in-app notification
-        *   **Message Individual Student:**
-            *   Clicks message icon next to specific student
-            *   Composes personalized message
-            *   Clicks "Send" button
-            *   Student receives email + in-app notification
-
-10. **Generate Assessments (Multiple Question Types)**
-    *   After students complete games, teacher clicks "Generate Assessments"
-    *   System uses AI to create custom assessment for each student:
-        *   Questions based on specific events in that student's game session
-        *   Covers concepts like bullwhip effect, inventory management, ordering strategies
-    *   **Question types generated:**
-        *   **Multiple choice:** 4 options, AI-generated, auto-graded
-        *   **Short text answer:** Brief explanation required, AI-assessed
-        *   **Long text answer:** Detailed analysis required, AI-assessed
-        *   **Numeric answer:** Calculation-based, auto-graded
-    *   **AI assigns weights** to each question based on difficulty
-    *   **Teacher sets passing threshold:**
-        *   Enters minimum score percentage (e.g., 70%)
-        *   Students must meet threshold to be marked as "approved"
-    *   Teacher reviews and can edit generated questions
-    *   Teacher clicks "Approve and Send Assessments"
-    *   Students receive assessment notification
-
-11. **View Analytics**
-    *   Teacher navigates to "Analytics" dashboard
-    *   Views class-wide metrics:
-        *   Average total costs by game session (comparable since all use same settings)
-        *   Bullwhip effect analysis across all games
-        *   Common decision patterns and mistakes
-        *   Individual student performance rankings
-        *   Distribution of costs by type (inventory, backorder, transport, lost sales)
-    *   **Comparative analysis enabled by common configuration:**
-        *   Fair comparison of student performance
-        *   Identification of best-performing students
-        *   Analysis of role-specific challenges
-    *   Applies filters (by game session, by role, by time period)
-    *   Clicks "Export Report" button
-    *   Selects format (PDF for presentation, CSV for further analysis)
-    *   Downloads comprehensive class report
-
-**Exit Point**: Teacher logs out or navigates to other classes
+**Success Criteria:** Teacher successfully orchestrates class-wide simulation, monitors all students, and assesses learning outcomes efficiently
 
 ---
 
-### Flow 3: Student Completing Assessment (Multiple Question Types)
+### Journey 3: Student Completing AI-Generated Assessment
 
-**Entry Point**: Student receives email notification about assessment
+**Actor:** Student
+**Goal:** Complete post-game assessment to demonstrate understanding
 
-1.  **Email Notification**
-    *   Student receives email: "Your Beer Game assessment is ready"
-    *   Clicks link in email
-    *   Redirected to login page (if not logged in)
+**Steps:**
+1. Student completes Beer Game simulation
+2. Student receives email notification about available assessment
+3. Student logs in and navigates to assessment dashboard
+4. Student sees assessment overview:
+   - Number of questions
+   - Estimated time
+   - Passing threshold
+5. Student answers questions of various types:
+   - Multiple choice (auto-graded)
+   - Short answer (AI-assessed)
+   - Long text/essay (AI-assessed with rubric)
+   - Numeric calculations (auto-graded with tolerance)
+6. For each question, student submits answer
+7. System provides immediate AI-generated feedback:
+   - Correctness indication
+   - Explanation of correct answer
+   - Personalized learning insights
+8. Student receives overall score with weighted calculation
+9. If passing threshold met:
+   - Student sees completion status approved
+   - Student can download certificate
+10. If below threshold:
+    - Student reviews feedback
+    - Student can request teacher review or retake (based on teacher settings)
 
-2.  **Assessment Dashboard**
-    *   Student lands on assessment page showing:
-        *   Game summary (their role, total cost, final week)
-        *   Number of questions (typically 8-12 questions of mixed types)
-        *   Weighted scoring explanation: "Questions are weighted by difficulty"
-        *   Passing threshold displayed (e.g., "You need 70% to pass")
-        *   Time estimate (20-30 minutes)
-    *   Clicks "Start Assessment" button
-
-3.  **Answer Questions (Multiple Types)**
-    *   **For Multiple Choice Questions:**
-        *   Student reads question (e.g., "In week 8, you placed an order for 20 units despite having 15 units in inventory. What likely caused your backlog in week 12?")
-        *   Views 4 multiple-choice options (A, B, C, D)
-        *   Selects one answer by clicking radio button
-        *   Question weight displayed (e.g., "Weight: 1.5x")
-        *   Clicks "Next Question"
-
-    *   **For Short Text Answer Questions:**
-        *   Student reads question (e.g., "Briefly explain why your inventory peaked in week 12.")
-        *   Text input field with character limit (100-200 characters)
-        *   Placeholder: "Enter your answer in 2-3 sentences"
-        *   Question weight displayed (e.g., "Weight: 2x")
-        *   Clicks "Next Question"
-
-    *   **For Long Text Answer Questions:**
-        *   Student reads question (e.g., "Analyze your ordering strategy throughout the game. How did your decisions contribute to or mitigate the bullwhip effect?")
-        *   Large text area with character limit (300-500 characters)
-        *   Placeholder: "Provide a detailed analysis with specific examples from your game"
-        *   Question weight displayed (e.g., "Weight: 3x")
-        *   Clicks "Next Question"
-
-    *   **For Numeric Answer Questions:**
-        *   Student reads question (e.g., "Calculate the total inventory holding cost you incurred in weeks 5-10.")
-        *   Number input field
-        *   Units displayed (e.g., "dollars")
-        *   Question weight displayed (e.g., "Weight: 1x")
-        *   Clicks "Next Question"
-
-    *   Progress indicator shows questions completed (e.g., "Question 5 of 10")
-    *   Can navigate back to previous questions before final submission
-
-4.  **Submit Assessment**
-    *   After final question, student clicks "Submit Assessment"
-    *   Confirmation modal: "Are you sure you want to submit? You cannot change answers after submission."
-    *   Student confirms submission
-    *   System processes:
-        *   Auto-grades multiple choice and numeric questions
-        *   Sends text answers to AI for assessment
-        *   Calculates weighted score
-
-5.  **Immediate Feedback (AI-Generated)**
-    *   System shows results page:
-        *   **Overall weighted score** (e.g., "78.5% - PASSED" in green or "65.0% - NOT PASSED" in red)
-        *   Passing threshold reminder (e.g., "Passing threshold: 70%")
-        *   **Question-by-question breakdown:**
-            *   Question number and type
-            *   Question weight
-            *   Points earned / points possible
-            *   Student's answer displayed
-            *   For multiple choice/numeric: Correct answer shown if wrong
-            *   **AI-generated explanation for each question:**
-                *   Example for wrong MC: "Your answer was incorrect. The backlog was caused by underestimating the 2-week shipping delay in weeks 6-8. When you finally increased orders in week 8, it was too late to prevent stockouts."
-                *   Example for text answer: "Your analysis correctly identified the reactive ordering pattern. However, you could have discussed how this contributed to the bullwhip effect in more detail. Score: 7/10"
-                *   Example for numeric: "Correct! The total inventory holding cost was $450 (90 units × $0.50/unit/week × 10 weeks)."
-    *   Student can review game data alongside feedback
-    *   Link to detailed game replay for context
-
-6.  **Approval Status Update**
-    *   If student passed (score ≥ threshold):
-        *   Status automatically updated to "Approved"
-        *   Congratulatory message displayed
-        *   Option to download certificate
-    *   If student failed (score < threshold):
-        *   Status remains "Not Approved"
-        *   Message: "Please review the feedback and discuss with your teacher"
-        *   Teacher notified of student's score
-
-7.  **Download Certificate (If Passed)**
-    *   Student clicks "Download Certificate" button
-    *   Receives PDF certificate showing:
-        *   Game completion
-        *   Assessment score
-        *   Date completed
-        *   Teacher's signature (digital)
-
-**Exit Point**: Student returns to dashboard or logs out
+**Success Criteria:** Student completes assessment, receives meaningful feedback, and demonstrates understanding of supply chain concepts
 
 ---
 
-### Flow 4: Individual Learner (Non-Student) Quick Play
+### Journey 4: Teacher Managing Subscription
 
-**Entry Point**: Professional/learner finds site via search or recommendation
+**Actor:** Educator
+**Goal:** Manage subscription plan and payment details
 
-1.  **Landing Page**
-    *   Visitor views hero section with game demo video
-    *   Reads about learning objectives (bullwhip effect, systems thinking)
-    *   Clicks "Play Free Demo" button (no registration required)
+**Steps:**
+1. Teacher navigates to account settings
+2. Teacher views subscription dashboard showing:
+   - Current plan details
+   - Billing cycle and renewal date
+   - Number of active classes and students
+   - Payment method on file
+3. Teacher actions available:
+   - **Upgrade/Downgrade Plan:**
+     - Views plan comparison
+     - Selects new plan
+     - Confirms prorated billing adjustment
+   - **Update Payment Method:**
+     - Enters new card details via Stripe secure form
+     - Confirms update
+   - **View Invoice History:**
+     - Downloads past invoices as PDF
+     - Reviews payment history
+   - **Cancel Subscription:**
+     - Reviews cancellation policy
+     - Confirms cancellation
+     - Receives confirmation email
+     - Access continues until end of billing period
+4. Teacher receives email confirmations for all subscription changes
 
-2.  **Quick Game Setup**
-    *   Guest selects role from 4 supply chain positions
-    *   System auto-configures 20-week game with standard parameters
-    *   No customization options (keeps it simple)
-    *   Clicks "Start Demo Game"
-
-3.  **Demo Gameplay**
-    *   Plays abbreviated Beer Game (same dashboard as registered students)
-    *   Full functionality including:
-        *   Real-time charts
-        *   AI opponents
-        *   Cost tracking
-    *   Game state not saved (session-only)
-
-4.  **Game End - Conversion Prompt**
-    *   Views performance summary
-    *   System shows upsell prompt:
-        *   "Create free account to save games and track progress"
-        *   "Compare your performance with other players"
-    *   Options:
-        *   "Create Free Account" - goes to registration
-        *   "Play Again as Guest" - returns to quick setup
-        *   "Maybe Later" - returns to landing page
-
-5.  **Optional Registration**
-    *   If user clicks "Create Free Account":
-        *   Quick registration form (email + password)
-        *   Email verification
-        *   Game history retroactively saved
-        *   Access to full features (multiple games, strategy comparison)
-
-**Exit Point**: User closes browser or creates account and enters main platform
+**Success Criteria:** Teacher successfully manages subscription without friction, with clear visibility into billing
 
 ---
 
-### Flow 5: Teacher Managing Subscription
+### Journey 5: Multiplayer Game Session
 
-**Entry Point**: Teacher logged into dashboard
+**Actor:** Multiple Students
+**Goal:** Collaborate/compete in a multiplayer Beer Game
 
-1.  **Access Subscription Settings**
-    *   Teacher clicks profile icon in top-right
-    *   Selects "Subscription & Billing" from dropdown menu
-    *   Lands on subscription management page
+**Steps:**
+1. Students log in to platform
+2. Lead student selects "Host Multiplayer Game"
+3. Lead student configures game settings and creates lobby
+4. System generates shareable game code
+5. Other students select "Join Game" and enter code
+6. Lobby displays all joined players
+7. Players select their preferred roles (or host assigns roles)
+8. Host starts game when all 4 roles filled (AI can fill vacant roles)
+9. Turn-based gameplay begins:
+   - Each week, all players place orders simultaneously or in sequence
+   - Real-time updates show supply chain state
+   - Players see their own metrics plus limited visibility into partners
+10. Game progresses through all weeks with coordination/communication
+11. Upon completion, all players receive:
+    - Individual performance metrics
+    - Comparative analysis across team
+    - AI-generated insights on team dynamics
+    - Bullwhip effect visualization for entire supply chain
+12. Players can review results and start new games
 
-2.  **View Current Status**
-    *   Page displays:
-        *   Current plan (e.g., "Professional - $39/month")
-        *   Student usage (e.g., "42 of 150 students")
-        *   Next billing date
-        *   Payment method (last 4 digits of card)
-
-3.  **Upgrade/Downgrade Plan**
-    *   Teacher clicks "Change Plan" button
-    *   Views comparison table of all three plans
-    *   Selects new plan (e.g., upgrade from Basic to Professional)
-    *   System shows prorated cost adjustment
-    *   Clicks "Confirm Change"
-    *   Stripe processes change immediately
-    *   New limits applied to account
-
-4.  **Update Payment Method**
-    *   Teacher clicks "Update Payment Method"
-    *   Redirected to Stripe Customer Portal
-    *   Updates card information
-    *   Returns to platform
-    *   Confirmation message displayed
-
-5.  **View Invoices**
-    *   Teacher clicks "Invoice History" tab
-    *   Views list of all past payments
-    *   Can download any invoice as PDF
-    *   Useful for expense reports and reimbursement
-
-6.  **Cancel Subscription (Edge Case)**
-    *   Teacher clicks "Cancel Subscription" link (bottom of page)
-    *   System shows warning:
-        *   "Your students will lose access at end of billing period"
-        *   "All class data will be archived but not deleted"
-    *   Teacher confirms cancellation
-    *   Account remains active until billing period ends
-    *   Receives confirmation email with final access date
-
-**Exit Point**: Teacher returns to main dashboard
-
----
-
-### Flow 6: Student Playing Multiplayer Game
-
-**Entry Point**: Student wants to play with other human players
-
-1.  **Landing Page / Dashboard**
-    *   Student clicks "Start Playing" button
-    *   Proceeds through authentication (if needed)
-
-2.  **Game Mode Selection**
-    *   Student sees two options:
-        *   "Single-Player" (AI opponents)
-        *   "Multiplayer" (play with other humans)
-    *   Student selects "Multiplayer"
-    *   Clicks "Continue" button
-
-3.  **Multiplayer Lobby Options**
-    *   Student sees two paths:
-        *   **Create New Game**: "Host a new game session"
-        *   **Join Existing Game**: "Join a game waiting for players"
-    *   Student chooses one path
-
-4a. **Path A: Create New Game (Host)**
-    *   Student clicks "Create New Game"
-    *   Configures game parameters:
-        *   Game duration (20-52 weeks)
-        *   Basic or advanced cost parameters
-        *   Lead times
-        *   Difficulty level
-        *   Communication/visibility level
-    *   Selects their preferred role (Retailer, Wholesaler, Distributor, or Factory)
-    *   Sets game visibility:
-        *   Public: Anyone can join
-        *   Private: Share invite code with specific players
-    *   Clicks "Create Game Room"
-    *   System generates unique game room code (e.g., "BEER-A3K9")
-    *   Student enters waiting lobby
-
-5a. **Waiting Lobby (Host Perspective)**
-    *   Displays game room code prominently
-    *   "Share" button to copy invite link
-    *   Shows 4 supply chain positions with status:
-        *   Retailer: [Host's name] ✓
-        *   Wholesaler: Waiting for player...
-        *   Distributor: Waiting for player...
-        *   Factory: Waiting for player...
-    *   Real-time updates as players join
-    *   Host gets a notification when a player joins
-    *   Host controls:
-        *   "Start Game with AI" button - fills empty positions with AI and starts
-        *   "Cancel Game" button - disbands the room
-    *   Chat window for players to communicate before game starts
-
-4b. **Path B: Join Existing Game (Joiner)**
-    *   Student clicks "Join Existing Game"
-    *   Two options:
-        *   Enter game room code manually
-        *   Browse list of public games waiting for players
-    *   If browsing:
-        *   Sees list of available games with:
-            *   Host name
-            *   Game duration
-            *   Available positions
-            *   Number of human players already joined (e.g., "2/4 players")
-        *   Filters: Duration, difficulty level
-    *   Student selects a game or enters code
-    *   Clicks "Join Game"
-
-5b. **Waiting Lobby (Joiner Perspective)**
-    *   Sees game configuration (read-only)
-    *   Selects available role from remaining positions
-    *   Sees other players who have joined
-    *   Chat window to communicate with other players
-    *   "Leave Game" button if they change their mind
-    *   Waits for host to start game or for all 4 positions to fill
-
-6.  **Game Start Trigger**
-    *   **Option 1:** Host clicks "Start Game with AI" - fills empty slots with AI
-    *   **Option 2:** All 4 positions filled by humans - game auto-starts after 10-second countdown
-    *   All players receive notification: "Game starting in 10... 9... 8..."
-
-7.  **Multiplayer Game Dashboard (Week 1-N)**
-    *   **Turn-based gameplay:**
-        *   All players see "Week X - Waiting for all players to submit orders"
-        *   Each player's own order input is active
-        *   Other players' order inputs show "Waiting..." status
-        *   Real-time indicator shows who has submitted (e.g., "3/4 players submitted")
-    *   **View State** (same as single-player):
-        *   Current inventory
-        *   Backorders
-        *   Incoming orders
-        *   Incoming shipments
-        *   Cost accumulation
-    *   **Visibility based on configuration:**
-        *   If visibility enabled: Can see other players' inventory levels in real-time
-        *   If not: Only see own position
-    *   **Player presence indicators:**
-        *   Green dot next to active players
-        *   Gray dot if player disconnected (host can choose to let AI take over temporarily)
-    *   **Make Decision:**
-        *   Player enters order quantity
-        *   Clicks "Submit Order"
-        *   Status changes to "Waiting for other players..."
-    *   **Week Advancement:**
-        *   Once all 4 players submit orders, week auto-advances
-        *   If player inactive for 5 minutes, the host can decide to let AI make decision for them (warning shown)
-    *   **Optional in-game features:**
-        *   Quick chat messages (if enabled): Predefined messages like "Order spike incoming!"
-        *   Player can see other players' names and roles
-
-8.  **Game Completion (Multiplayer)**
-    *   After final week, all players see summary dashboard simultaneously
-    *   **Performance Comparison:**
-        *   Side-by-side costs for all 4 players
-        *   Individual rankings based on deviation from expected performance with given role (1st, 2nd, 3rd, 4th place)
-        *   Total supply chain cost (sum of all 4 players)
-    *   **AI-Generated Insights** (personalized for each player):
-        *   Individual analysis of decisions
-        *   How player's decisions impacted other players
-        *   Contribution to bullwhip effect
-    *   **Supply Chain Performance:**
-        *   Bullwhip effect visualization showing all 4 positions
-        *   Analysis of team coordination (or lack thereof)
-    *   **Social Features:**
-        *   Option to send congratulations to other players
-        *   "Play Again" button - starts new game with same players
-    *   Each player can download their own game report
-
-**Exit Point**: Player returns to dashboard or starts new multiplayer game
+**Success Criteria:** Multiple human players successfully complete collaborative simulation with clear understanding of interdependencies
 
 ---
 
 ## UX Design Principles
 
-*   **Clarity and Intuitiveness:** The interface should be clean and easy to understand, allowing players to focus on the simulation rather than navigating a complex UI. Key data (inventory, orders, costs) must be instantly recognizable.
-*   **Informative Feedback:** The system must provide immediate and clear feedback on player actions, game state changes, and performance, helping users understand the consequences of their decisions in real-time.
-*   **Educational Focus:** Every design element should support the primary goal of learning. Visualizations and AI-generated insights must be presented in a way that is easy to digest and directly relates to supply chain concepts.
-*   **Efficiency for Educators:** The teacher dashboard must be designed for efficiency, enabling educators to manage classes, monitor progress, and generate assessments with minimal clicks and a clear, logical workflow.
+### Core Design Philosophy
+
+The Beer Game platform is an **educational simulation tool** that must balance **engagement**, **clarity**, and **professional credibility**. The UX should feel modern and approachable while maintaining the academic rigor expected by educators and students.
+
+### Key Principles
+
+#### 1. **Clarity Over Complexity**
+*"Make the invisible visible"*
+- Supply chain dynamics are inherently complex - the UI must simplify without oversimplifying
+- Critical information (inventory, costs, orders) should be immediately scannable
+- Visual hierarchy should guide attention to the most important data in each game phase
+- Avoid information overload: progressive disclosure where appropriate
+
+#### 2. **Real-Time Feedback**
+*"Show, don't tell"*
+- Users should see immediate visual response to their actions (order placement, state changes)
+- Real-time charts and graphs make abstract concepts concrete
+- Animations should reinforce cause-and-effect relationships in the supply chain
+- Status indicators should be always visible (current week, costs accumulating, pending shipments)
+
+#### 3. **Educational Clarity**
+*"Learning through interaction"*
+- The game dashboard itself is a teaching tool - design should support learning objectives
+- Visual representations of the bullwhip effect should be intuitive and impactful
+- AI-generated insights should be seamlessly integrated, not bolted on
+- Error states should be educational, not just functional (e.g., "Backorders increased - consider the impact on costs")
+
+#### 4. **Contextual Guidance**
+*"Support without handholding"*
+- First-time users need clear onboarding, experienced users need efficiency
+- Tooltips and help hints should be contextual and non-intrusive
+- Teachers need confidence that students can navigate independently
+- Progressive complexity: simple defaults, advanced options available but hidden
+
+#### 5. **Role-Appropriate Experiences**
+*"Different users, different needs"*
+- **Students:** Focus on gameplay, learning, and performance feedback
+- **Teachers:** Focus on control, monitoring, and assessment efficiency
+- **Individual Learners:** Focus on quick start, exploration, and self-paced learning
+- Each role should have a tailored dashboard and navigation
+
+#### 6. **Trust Through Transparency**
+*"Show the mechanics"*
+- Game rules and calculations should be visible and understandable
+- Teachers need full visibility into AI assessment criteria
+- Payment and subscription flows should be crystal clear with no surprises
+- Data persistence and save states should be explicit and reliable
+
+#### 7. **Responsive Elegance**
+*"Desktop and tablet, equally powerful"*
+- Not a mobile-first design, but tablet-optimized is critical for classroom flexibility
+- Data visualizations must remain legible and interactive on smaller screens
+- Teachers may monitor from tablets while circulating in classroom
+- No loss of functionality when moving between desktop and tablet
+
+### Interaction Patterns
+
+#### Navigation
+- **Dashboard-Centric:** Primary actions always accessible from role-specific dashboard
+- **Minimal Depth:** Critical actions should be no more than 2-3 clicks away
+- **Persistent Context:** Users should always know where they are (breadcrumbs, active state indicators)
+
+#### Data Visualization
+- **Live Updates:** Charts and graphs update in real-time during gameplay
+- **Comparative Views:** Easy to switch between individual metrics and team/class comparisons
+- **Export-Friendly:** All visualizations should be clear enough for screenshots/reports
+
+#### Forms and Inputs
+- **Smart Defaults:** Pre-fill common values, but allow customization
+- **Inline Validation:** Real-time feedback on form inputs
+- **Bulk Operations:** Teachers need efficient bulk actions (student import, game allocation)
+
+#### Notifications
+- **Non-Intrusive:** Important info should be visible without disrupting gameplay
+- **Actionable:** Notifications should link directly to relevant actions
+- **Prioritized:** Critical alerts (game started, assessment available) vs. informational
+
+### Emotional Design Goals
+
+- **For Students:** Curiosity, engagement, "aha!" moments when bullwhip effect clicks
+- **For Teachers:** Confidence, control, efficiency, pride in student outcomes
+- **For Individual Learners:** Accessibility, experimentation, self-directed discovery
+
+### Accessibility Considerations
+
+- Sufficient color contrast for key information
+- Text should be legible at default browser sizes
+- Interactive elements should have clear hover/focus states
+- Forms should follow WCAG 2.1 AA guidelines for input labels and error messaging
 
 ---
 
 ## User Interface Design Goals
 
-*   **Platform & Screens:** The primary platform is a responsive web application for desktops, laptops, and tablets. Key screens include: the main game dashboard, the teacher's class management and monitoring views, the assessment interface, and the analytics/summary pages.
-*   **Visual Style:** The design should be modern, professional, and data-driven. It will use a clean layout with a clear visual hierarchy. Data visualizations (charts, graphs) are central and must be interactive and easy to read.
-*   **Key Interactions:** Core interactions involve placing orders via a simple input, navigating weekly rounds, and exploring interactive charts. For educators, key interactions include bulk student import, drag-and-drop for manual allocation, and one-click game controls (pause/reset).
-*   **Design Constraints:** The design must adhere to accessibility (WCAG 2.1 AA) guidelines. It should be implemented using a component-based architecture (e.g., with Shadcn UI and Tailwind CSS) to ensure consistency and maintainability.
+### Visual Identity
+
+#### Brand Personality
+- **Professional yet Approachable:** Balance academic credibility with modern web aesthetics
+- **Data-Driven:** Visualizations and metrics are central, not decorative
+- **Trustworthy:** Clean, consistent, predictable interface that builds confidence
+- **Energizing:** Subtle use of color and motion to maintain engagement during long gameplay sessions
+
+#### Color Strategy
+- **Primary Palette:** Professional blues and greens suggesting analysis, growth, and trust
+- **Accent Colors:** Strategic use of warm colors (oranges, yellows) for alerts, costs, and attention-grabbing elements
+- **Semantic Colors:** Consistent color coding across the platform
+  - **Green:** Positive metrics, inventory in stock, success states
+  - **Red:** Costs, backorders, critical alerts, failure states
+  - **Blue:** Information, neutral states, primary actions
+  - **Yellow/Orange:** Warnings, pending actions, important notices
+- **Supply Chain Visualization:** Distinct colors for each role (Retailer, Wholesaler, Distributor, Factory) that are color-blind friendly
+
+#### Typography
+- **Headings:** Bold, clear sans-serif for confidence and scannability
+- **Body Text:** Legible sans-serif optimized for reading metrics and data
+- **Data/Numbers:** Monospace for tabular data and numerical displays to aid comparison
+- **Hierarchy:** Clear size and weight differentiation between heading levels
+
+### Layout Principles
+
+#### Game Dashboard
+- **Information Architecture:**
+  - Top bar: Week indicator, total cost, role indicator (always visible)
+  - Left panel: Current state (inventory, backorders, incoming orders/shipments)
+  - Center: Primary action area (order placement interface)
+  - Right panel: Real-time visualizations (inventory trends, order history, costs)
+- **Grid System:** Consistent spacing and alignment across all dashboard components
+- **Responsive Behavior:** Panels stack vertically on tablet, maintaining full functionality
+
+#### Teacher Dashboard
+- **Overview First:** Class-level metrics prominently displayed on landing
+- **Drill-Down:** Easy navigation from class overview → student details → individual game data
+- **Action Panel:** Always-accessible controls for common operations (allocate, monitor, message)
+- **Multi-Tab Organization:** Classes, Students, Games, Assessments, Analytics as primary tabs
+
+#### Forms and Configuration
+- **Progressive Disclosure:** Show essential settings first, advanced options collapsed
+- **Smart Defaults:** Pre-selected values for common use cases
+- **Inline Help:** Contextual tooltips and helper text, never requiring external documentation
+
+### Component Design
+
+#### Cards
+- Use cards for grouping related information (game sessions, student profiles, metrics)
+- Consistent card structure: header with title/icon, body with content, footer with actions
+- Hover states for interactive cards
+
+#### Buttons
+- **Primary Actions:** High contrast, prominent (Start Game, Place Order, Save)
+- **Secondary Actions:** Lower contrast, less prominent (Cancel, Go Back)
+- **Destructive Actions:** Red accent with confirmation step (Delete, Reset Game)
+- Clear loading states for async operations
+
+#### Data Visualizations
+- **Line Charts:** Inventory levels over time, cost accumulation
+- **Bar Charts:** Comparative performance across students/roles
+- **Area Charts:** Stacked view of supply chain state across all roles
+- **Sparklines:** Inline mini-charts for at-a-glance trends
+- All charts responsive, interactive (hover tooltips), and exportable
+
+#### Tables
+- Sortable columns for class rosters, game history, performance metrics
+- Alternating row colors for readability
+- Sticky headers on scroll
+- Row actions (view, edit, delete) consistently positioned
+
+#### Status Indicators
+- **Badges:** Compact labels for status (Active, Completed, Pending, Failed)
+- **Progress Bars:** Game completion percentage, assessment progress
+- **Live Indicators:** Pulsing dot or icon for real-time active sessions
+
+### Iconography
+- Consistent icon set (e.g., Lucide, Heroicons) used throughout
+- Icons paired with labels for clarity (never icons alone for primary actions)
+- Supply chain role icons easily distinguishable
+
+### Motion and Animation
+- **Micro-interactions:** Subtle hover states, button presses, form validation feedback
+- **Transitions:** Smooth page transitions, panel expansions, modal appearances
+- **Real-time Updates:** Gentle animations when data updates (charts redrawing, numbers incrementing)
+- **Performance:** All animations performant, never blocking gameplay or interactions
+- **Reduced Motion:** Respect user's preference for reduced motion
+
+### Responsive Design Targets
+- **Desktop (1920x1080):** Full dashboard with all panels visible, optimal data density
+- **Laptop (1366x768):** Slightly condensed, all functionality preserved
+- **Tablet Landscape (1024x768):** Panels reorganized but functional, suitable for teacher monitoring
+- **Tablet Portrait (768x1024):** Vertical stack, prioritize game controls over secondary info
+
+### Dark Mode (Optional / Future)
+- Not required for MVP, but design system should anticipate future dark mode support
+- Ensure sufficient contrast in primary design for easy adaptation
+
+### Loading and Empty States
+- **Loading:** Skeleton screens for dashboards, spinners for actions, progress bars for file uploads
+- **Empty States:** Friendly messaging with clear call-to-action (e.g., "No games yet - create your first class game!")
+- **Error States:** Clear error messages with suggested remediation, never just "Error"
+
+### Consistency Guidelines
+- **Component Library:** Use Shadcn UI as foundation for consistent, accessible components
+- **Design Tokens:** Centralized color, spacing, typography values
+- **Pattern Library:** Document and reuse common patterns (filter panels, action menus, confirmation dialogs)
 
 ---
 
 ## Epic List
 
-*   **Epic 1: Project Foundation & Core Game Engine:** Establishes the technical foundation (repo, CI/CD, DB schema), implements user authentication, and builds the core single-player game logic with AI opponents and state persistence.
-*   **Epic 2: Interactive Game Dashboard & Visualizations:** Develops the complete player-facing UI, including the real-time dashboard, interactive charts for inventory and costs, and the AI-generated game summary screen.
-*   **Epic 3: Educator Platform & Class Management:** Implements teacher registration, subscription management (via Stripe), and the core class management dashboard, including creating classes and managing student enrollment (bulk and manual).
-*   **Epic 4: Advanced Classroom & Game Administration:** Builds the real-time monitoring dashboard for teachers, including controls to pause/reset games, replace students with AI, and the class-wide messaging system.
-*   **Epic 5: AI-Powered Assessment & Analytics:** Develops the AI-driven assessment generation system (all question types), the automated grading/feedback flow, and the comprehensive analytics dashboard for educators with export functionality.
-*   **Epic 6: Multiplayer Game Mode:** Implements the multiplayer functionality, including creating and joining public/private game rooms, the waiting lobby, and the turn-based gameplay synchronization.
+The 19 functional requirements are organized into the following high-level epics for implementation:
 
-> **Note:** Detailed epic breakdown with full story specifications is available in [epics.md](./epics.md)
+### Epic 1: User Authentication & Account Management
+**Scope:** FR001, FR010
+**Description:** Implement user registration, authentication, and account management for both students and teachers, including email verification and role-based access.
+
+**Key Capabilities:**
+- User registration with email/password
+- Email verification
+- Login/logout functionality
+- Teacher registration with institutional email validation
+- Role-based access control (student, teacher, admin)
+
+---
+
+### Epic 2: Core Game Engine & Logic
+**Scope:** FR004, FR009
+**Description:** Develop the foundational Beer Game simulation engine including game configuration, state management, turn processing, and persistence.
+
+**Key Capabilities:**
+- Game configuration (duration, costs, lead times, difficulty)
+- Turn-based supply chain logic
+- Inventory, backorder, and cost calculations
+- Game state persistence and resume capability
+- Supply chain role interactions (Retailer, Wholesaler, Distributor, Factory)
+
+---
+
+### Epic 3: Single-Player Game Mode
+**Scope:** FR002, FR006
+**Description:** Implement single-player game mode where users play against AI-controlled supply chain partners.
+
+**Key Capabilities:**
+- Role selection for player
+- AI opponent initialization for other roles
+- AI decision-making via LLM API integration
+- Difficulty levels for AI behavior
+- Single-player game flow orchestration
+
+---
+
+### Epic 4: Multiplayer Game Mode
+**Scope:** FR003
+**Description:** Enable multiplayer functionality where multiple human players can participate in the same supply chain simulation.
+
+**Key Capabilities:**
+- Host and join game sessions
+- Lobby and player readiness management
+- Turn synchronization across multiple players
+- AI fill for vacant roles
+- Shareable game codes
+
+---
+
+### Epic 5: Interactive Game Dashboard
+**Scope:** FR005, FR007
+**Description:** Build the real-time game interface showing all critical supply chain metrics, visualizations, and order placement controls.
+
+**Key Capabilities:**
+- Real-time dashboard displaying inventory, backorders, orders, shipments
+- Week indicator and cost accumulation
+- Order placement interface
+- Live data visualizations (charts for inventory trends, orders, costs)
+- Responsive design for desktop and tablet
+
+---
+
+### Epic 6: AI-Generated Game Summary & Insights
+**Scope:** FR008
+**Description:** Implement AI-powered post-game analysis providing performance feedback, educational insights, and bullwhip effect visualization.
+
+**Key Capabilities:**
+- Performance metrics calculation (total cost, service level, efficiency)
+- AI-generated insights on decision patterns
+- Educational content generation about supply chain concepts
+- Bullwhip effect visualization across supply chain
+- Personalized recommendations for improvement
+
+---
+
+### Epic 7: Subscription & Payment System
+**Scope:** FR011
+**Description:** Integrate Stripe for teacher subscription management, payment processing, and billing.
+
+**Key Capabilities:**
+- Subscription plan selection (tiered pricing)
+- Free trial support
+- Stripe payment integration
+- Subscription upgrade/downgrade
+- Invoice generation and history
+- Payment method management
+- Cancellation handling
+
+---
+
+### Epic 8: Class Management System
+**Scope:** FR012, FR013
+**Description:** Provide teachers with tools to create and manage classes, add students, and configure class-wide game settings.
+
+**Key Capabilities:**
+- Class creation and configuration
+- Bulk student import via CSV
+- Manual student entry
+- Student invitation emails
+- Common game settings enforcement across class
+- Student roster management
+
+---
+
+### Epic 9: Game Allocation & Session Management
+**Scope:** FR012 (partial)
+**Description:** Enable teachers to allocate students to games either automatically or manually and manage game sessions.
+
+**Key Capabilities:**
+- Automated student allocation to games (groups of 4)
+- Manual game group creation
+- Role assignment within games
+- Game session initialization for entire class
+- Session tracking and management
+
+---
+
+### Epic 10: Real-Time Class Monitoring Dashboard
+**Scope:** FR014
+**Description:** Build teacher dashboard for real-time monitoring of all active class game sessions with control capabilities.
+
+**Key Capabilities:**
+- Overview of all active sessions
+- Individual student progress tracking (current week, metrics)
+- Real-time session status updates
+- Controls to pause, reset, or terminate games
+- Replace student with AI functionality
+- Session history and logs
+
+---
+
+### Epic 11: AI-Generated Assessment System
+**Scope:** FR015
+**Description:** Implement automated assessment generation, delivery, and AI-powered grading for student learning evaluation.
+
+**Key Capabilities:**
+- AI question generation (MCQ, short answer, long text, numeric)
+- Tailored assessments based on game performance
+- Assessment delivery interface for students
+- Automated grading for MCQ and numeric questions
+- AI-powered grading for text responses
+- Weighted scoring and passing thresholds
+- Immediate feedback generation
+- Certificate generation upon passing
+
+---
+
+### Epic 12: Messaging System
+**Scope:** FR016
+**Description:** Enable teachers to communicate with students via broadcast messages and individual messaging.
+
+**Key Capabilities:**
+- Broadcast messaging to entire class
+- Individual student messaging
+- Message history and threads
+- Email notifications for messages
+- Read/unread status tracking
+
+---
+
+### Epic 13: Analytics & Reporting Dashboard
+**Scope:** FR017
+**Description:** Provide comprehensive analytics for teachers including class-wide metrics, individual reports, and bullwhip analysis.
+
+**Key Capabilities:**
+- Class-wide performance aggregation
+- Individual student performance reports
+- Bullwhip effect analysis and visualization
+- Comparative metrics across students
+- Trend analysis over time
+- Report export (CSV, PDF)
+- Custom date range filtering
+
+---
+
+### Epic 14: Completion Status Management
+**Scope:** FR018
+**Description:** Allow teachers to manage student completion statuses including manual overrides and certificate access.
+
+**Key Capabilities:**
+- View student completion statuses
+- Toggle completion status manually
+- Completion criteria configuration
+- Certificate availability management
+- Completion history audit log
+
+---
+
+> **Note:** Detailed epic breakdown with full story specifications will be created through the epics-stories workflow and documented in [epics.md](./epics.md)
 
 ---
 
 ## Out of Scope
 
-*   **In-game chat:** While desirable for multiplayer, real-time in-game chat will be deferred to a future phase to focus on core gameplay and educational features.
-*   **Advanced customization options:** Features like variable demand patterns, custom cost parameters beyond the initial set, different product types, and custom supply chain configurations will be considered for future enhancements.
-*   **Gamification features:** Leaderboards, achievement badges, and performance levels are planned for later iterations to enhance engagement after the core platform is stable.
-*   **Advanced analytics:** Predictive performance indicators, decision pattern analysis, and comparative benchmarking against historical data will be explored in future phases.
-*   **Mobile app:** A dedicated iOS/Android mobile application for game participation is a future consideration; the MVP will focus on a responsive web-based experience.
-*   **LMS integration:** Direct integration with Learning Management Systems (e.g., Canvas, Moodle) will be considered post-MVP based on user demand.
-*   **Social sharing features:** Sharing game results or achievements on social media platforms is out of scope for the initial release.
-*   **Replay and strategy analysis tools:** Advanced tools for replaying game sessions and in-depth strategy analysis will be developed in subsequent phases.
-*   **Collaborative team mode:** The ability for multiple students to manage one supply chain position is a future enhancement.
-*   **Multilingual support:** The initial release will support English only; multilingual support will be added based on market demand.
+The following features and capabilities are explicitly **not included** in the MVP release but may be considered for future iterations:
+
+### Communication & Collaboration
+- **In-Game Chat:** Real-time text chat between players during multiplayer games
+- **Video/Voice Communication:** Integrated audio or video conferencing during gameplay
+- **Collaborative Team Mode:** Special mode where multiple players control a single role cooperatively
+- **Social Sharing:** Integration with social media platforms to share results or achievements
+
+### Advanced Game Features
+- **Variable Demand Patterns:** Dynamic or custom demand scenarios beyond standard Beer Game model
+- **Custom Product Types:** Multiple product SKUs or product portfolios instead of single generic product
+- **Multi-Echelon Extensions:** Supply chain configurations beyond the standard 4-tier structure
+- **Custom Supply Chain Configurations:** User-defined supply chain topologies with varying numbers of nodes
+- **Game Templates Library:** Pre-built scenario templates for different learning objectives
+
+### Gamification & Engagement
+- **Leaderboards:** Global or class-specific competitive rankings
+- **Achievements & Badges:** Unlockable rewards for specific accomplishments
+- **Experience Points & Levels:** Progression system for individual learners
+- **Tournaments:** Organized competitive events with brackets and prizes
+
+### Advanced Analytics
+- **Predictive Indicators:** AI-powered forecasting of student performance or game outcomes
+- **Decision Pattern Analysis:** Deep learning analysis of decision-making strategies
+- **Behavioral Clustering:** Grouping students by decision-making style
+- **Scenario Simulation:** "What-if" analysis tools for exploring alternative decisions
+
+### Platform Extensions
+- **Native Mobile Applications:** iOS and Android native apps (only web responsive in MVP)
+- **Offline Mode:** Ability to play games without internet connectivity
+- **LMS Integration:** Deep integration with Canvas, Moodle, Blackboard, or other LMS platforms
+- **SSO Integration:** Single Sign-On with institutional identity providers (Google Workspace, Microsoft, Okta)
+
+### Advanced Educational Features
+- **Adaptive Learning Paths:** Personalized curriculum based on performance
+- **Video Tutorials:** Embedded instructional videos or guided walkthroughs
+- **Discussion Forums:** Built-in forum for students to discuss strategies
+- **Peer Review System:** Students reviewing and providing feedback on each other's performance
+
+### Replay & Analysis Tools
+- **Game Replay:** Ability to watch a playback of completed games turn-by-turn
+- **Strategy Comparison:** Side-by-side comparison of different decision strategies
+- **Annotated Replays:** Teachers adding commentary to game replays for educational purposes
+- **Decision Tree Visualization:** Graphical representation of decision paths and outcomes
+
+### Additional Customization
+- **White-Label Options:** Custom branding for institutions
+- **Custom Domains:** Institution-specific URLs
+- **API Access:** Public API for third-party integrations or custom analytics
+- **Custom Cost Functions:** Advanced users defining custom cost formulas
+
+### Multilingual & Accessibility
+- **Multilingual Support:** Interface and content in languages beyond English
+- **Advanced Accessibility Features:** Screen reader optimization, keyboard-only navigation, WCAG AAA compliance
+- **Right-to-Left Language Support:** UI adaptations for RTL languages
+
+### Administrative Features
+- **Multi-Institution Management:** Platform for managing multiple schools/organizations
+- **Teacher Training Modules:** Built-in professional development content for educators
+- **Usage Analytics Dashboard:** Platform-wide analytics for administrators
+- **Content Management System:** Teachers creating custom educational content within platform
+
+### Research & Development Features
+- **Data Export for Research:** Anonymized data export for academic research
+- **Experiment Framework:** A/B testing different game parameters for research
+- **Advanced Simulation Modes:** Integration with external simulation engines or R/Python notebooks
+
+---
+
+**Rationale for Scope Decisions:**
+
+The MVP focuses on delivering **core educational value** for both individual learners and classroom environments with **AI-enhanced features** that differentiate this platform. Advanced features listed above, while valuable, are deferred to ensure:
+
+1. **Timely Delivery:** MVP can be developed and launched within 5-week timeline
+2. **Validated Learning:** Core features can be tested with real users before investing in extensions
+3. **Technical Foundation:** Solid architecture and codebase established before adding complexity
+4. **Market Validation:** Prove product-market fit and willingness to pay before expanding scope
+
+Post-MVP roadmap will be informed by user feedback, usage analytics, and business priorities.
