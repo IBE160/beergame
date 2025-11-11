@@ -734,6 +734,306 @@ This application aims to create a comprehensive, AI-enhanced web-based Beer Game
 
 ---
 
+## Pages description
+
+
+### Game dashboard
+
+The game dashboard is the most important page of the website. It comprises everything a player sees when playing the game.
+
+- The game dashboard depends:
+  - on the role of the player (Retailer, Wholesaler, Distributor, Factory).
+  - on the configuration of the game.
+  - The following description assumes the DEFAULT configuration.
+  - There must be adaptions for the other configurations.
+
+#### Needed components in the dashboard
+
+- A game board component
+  - The inventory facility
+  - The production facility (only for the factory)
+  - All the main operating values:
+    - Current inventory (both positive and negative, where positive is green and negative is red, negative means backorders)
+    - Incoming orders (week 1 and week 2)
+    - Outgoing order (the only decision point)
+    - Production order week 1 and week 2 (only for the factory)
+    - Incoming delivery (week 1 and week 2)
+    - Outgoing delivery (week 1 and week 2)
+- A chat component
+  - A chat window with a number of selectable channels where a player can send messages to other players or groups of players.
+- Charting components
+  - During the game: charts showing the development of the key metrics over time for the current role. Consider this to be part of the game board component, depending on the screen size.
+  - After the game: charts showing the development of the key metrics over time for all roles. This must be part of the debriefing component.
+- Statistics component
+  - Statistics showing the development of the key metrics over time.
+  - Typical descriptive statistics (mean, median, standard deviation, etc.)
+- Data table component
+  - All the game data saved in a table.
+- Game state component
+  - Metadata about the game state, for instance, the current week, the number of human and AI players, the total number of weeks, waiting for players to submit orders, paused game etc. A player can also choose to leave the game, on which the AI takes over the role of the player.
+- Metrics component
+  - A number of Key Performance Indicators (KPIs) for the current role.
+- Results component
+  - A results component visible only after the final week, where the player can see the game report and reflect over the game. 
+- Exercises component
+  - An exercises component visible only after the final week, where the player can see the exercises and reflect over the game. 
+
+
+
+
+
+#### Game board component
+- The main component of the dashboard shows a layout similar to the original physical beer game board.
+
+##### Inventory facility common for all roles
+  - A large rectangular slot in the center of the screen representing the physical inventory facility. Like a warehouse or a factory etc. seen from above.
+  - All titles and values are centered, where title is at the top and value is below it. The titles are always shown, while the values are updated in real-time. The exact timing of when the values are updated is explained in the Animation component.
+  - Inside each facility, there are four smaller slots in each corner:
+    - North east corner: title="Incoming delivery", value="number", 
+    - North west corner: title="Outgoing order", value="number", 
+    - South west corner: title="Incoming order", value="number", 
+    - South east corner: title="Outgoing delivery", value="number" 
+  - Notice the idea is the the flow of goods goes top down while the flow of orders goes bottom up. Likewise, shipments flow east while orders flow west. The reason for this layout is to be able to nicely adapt to mobile screens.
+  - In the middle of the slot there is a rectangle that shows the current inventory level. The text "Inventory" is always visible aligned to the top and centered; the inventory level is a number under the title, centered, and updated in real-time. The timing of when the values are updated is explained in the Animation component. The inventory can be both positive and negative. If the inventory is negative, it is shown in red and represents backorders, i.e. earlier orders that have not been fulfilled yet. If the inventory is positive, it is shown in green and represents available inventory.
+  - Notice that the OUTGOING ORDER is the ONLY value that can be changed by the player. The other values are updated automatically based on the game rules and the timing of when the values are updated is explained in the Animation component.
+
+##### Specifics for the factory (Factory): 
+  - Above the inventory facility there is another rectangular slot, representing the production facility. 
+  - Inside the production facility, there are TWO slots connected by a thick arrow. The first slot has title "Week 1" with value underneath, the second slot has title "Week 2" with the value underneath. These weeks represent the production lead time.
+  - The rectangular has the same width as the inventory facility, and the week slots are placed to the west and east with same width as the smaller slots inside the inventory facility. The week slots fill the vertical space of the production facility.
+  - There is a thick arrow that points from the outgoing order slot into week 1 slot in the factory. There is another thick arrow that points from the week 2 into the incoming delivery slot in the inventory facility. 
+  - There are two similar slots vertically aligned underneath the outgoing delivery slot with Week 1 and Week 2 titles, representing the transportation lead time.There are thick arrow from the outgoing delivery slot into week 1 slot in the factory and from the week 2 into the incoming delivery slot in the inventory facility.
+  - There is a thick arrow pointing into the incoming order slot in the inventory facility.This arrow has the same height as the total of the two Week slots plus the two outgoing arrows.
+
+  <img style="display: block; margin: 0 auto" src="docs/references/images/factory.png" alt="Factory Facility" height="300"/>
+  <center>Factory Facility in tablet and mobile view</center>
+
+
+##### Specifics for wholesaler and the distributor:
+  - The wholesaler and the distributor have the exact same layout.
+  - There are two similar slots vertically aligned above the incoming delivery slot with Week 1 and Week 2 titles, representing the transportation lead time.There are thick arrow from week 1 to week 2 and from week 2 into the incoming delivery slot.
+  - There is a thick arrow pointing out from the outgoing order slot in the inventory facility.This arrow has the same height as the total of the two Week slots plus the two outgoing arrows described above.
+  - There are two similar slots vertically aligned underneath the outgoing delivery slot with Week 1 and Week 2 titles, representing the transportation lead time.There are thick arrow from the outgoing delivery slot into week 1 slot in the factory and from the week 2 into the incoming delivery slot in the inventory facility.
+  - There is a thick arrow pointing into the incoming order slot in the inventory facility.This arrow has the same height as the total of the two Week slots plus the two outgoing arrows.
+
+
+  <img style="display: block; margin: 0 auto" src="docs/references/images/whole-and-dist.png" alt="Factory Facility" height="300"/>
+  <center>Layout for wholesaler and distributor  in tablet and mobile view</center>
+
+
+##### Specifics for the retailer: 
+   - There are two similar slots vertically aligned above the incoming delivery slot with Week 1 and Week 2 titles, representing the transportation lead time.There are thick arrow from week 1 to week 2 and from week 2 into the incoming delivery slot.
+   - There is a thick arrow pointing out from the outgoing order slot in the inventory facility.This arrow has the same height as the total of the two Week slots plus the two outgoing arrows described above.
+  - There is a thick arrow pointing into the incoming order slot in the inventory facility.This arrow has the same height as the corresponding arrows in the wholesaler and distributor.
+
+  <img style="display: block; margin: 0 auto" src="docs/references/images/retailer.png" alt="Factory Facility" height="300"/>
+  <center>Layout for retailer in tablet and mobile view</center>
+
+
+#### Chat component
+  - The chat window is both visible to human and AI players and the instructor role.
+  - The chat window should be collapsible and expandable with indicators for unread messages.
+  - The chat has a number of channels (depending on the configuration):
+    - The game channel: Common channel for all players within the same game (if possible by configuration)
+    - The role channel: Common channel for all players within the same role (if possible by configuration)
+    - The collaboration role channels: Common channel for all players within another role in the same game (if possible by configuration - minimum one, maximum all roles)
+    - Instructor channel: Channel to talk to the instructor role
+    - Individual player channels: Channel to talk to a specific player (following the scope of the configuration)
+    - This could be controlled by a scope variable in the configuration
+    - Default scope for players: 
+      - The role channel, instructor channel and individual player channels
+    - Scope for instructor: 
+      - All channels 
+  - The chat window should consists of:
+    - a list of channels
+    - a channel selection field
+    - a search field to search for some specific text message across all channels
+    - a search button
+    - a search result list
+  - A channel should consists of:
+    - a list of messages
+    - a text input field
+    - a send button
+    - a search feature to search for specific messages within the channel
+    - a search button
+    - a search result list
+  - If instructor is an AI, the corresponding channel should have a n icon to indicate that it is an AI channel. 
+  - If a collaboration channel is selected, and the player is AI controlled, the AI should be able to send messages to the channel, and there should be an icon to indicate that the AI is sending messages.  
+
+#### Charting component
+  - Common for all charts:
+    - The chart should be updated in real-time as the player makes decisions
+    - The player should be able to hover over the chart to see the values
+    - The player should be able to hide/show the data series in the chart if there are more than one data series
+  - Main charts during game
+    - Consider to put the following two charts inside the game board component, when in desktop and laptop view. 
+    - Multi-line week-by-week chart for:
+      - Inventory level (zero if negative)
+      - Backorders (zero if positive)
+      - Outgoing orders (decision of the player, preferably as a bar series instead of a line series)
+      - Must be able to toggle between the week-by-week quantities and the accumulated quantities
+    - Stacked area chart for:
+      - Inventory holding cost
+      - Backorder cost
+      - The total cost should be visible when hovering over the chart
+      - Must be able to toggle between the week-by-week cost and the accumulated cost
+  - Main charts after game (must be inside the results component)
+    - Multi-line week-by-week chart for with a series for each role:
+      - Outgoing orders (decision of the role), including the customer demand as a line series (in total 5 series, each can be toggled)
+      - Inventory level (can be both positive and negative, in total 4 series, each can be toggled)
+      - Accumulated cost for each role (in total 4 series, each can be toggled)
+    - Stacked area chart for: Total accumulated cost for the whole supply chain (4 series stacked on top of each other)
+    - One chart for each role showing the Multi-line week-by-week chart and the Stacked area chart (this means there are four multi-line week-by-week charts and four stacked area charts - in total 8 charts)
+
+#### Statistics component
+  - The statistics component should be updated in real-time as the player makes decisions
+  - Consider to put the statistics component inside together with the data table component, when in desktop and laptop view.
+  - The statistics component should show descriptive data for:
+    - Inventory level
+    - Backorders
+    - Incoming orders
+    - Outgoing orders (decision of the player)
+    - Inventory holding cost
+    - Backorder cost
+    - Total cost
+  - The following descriptive data should be calculated for each of the key figures listed above:
+    - Minimum
+    - Maximum
+    - Average
+    - Standard deviation
+    - Coefficient of variation
+    - Mode
+    - Median
+    - Range
+    - Interquartile range
+    - Skewness
+    - Kurtosis
+    - Coefficient of variation
+    - Standard error of the mean
+    - Margin of error
+    - Confidence intervals (95%) using central limit theorem
+    - p-value using central limit theorem
+
+
+#### Data table component
+  - The data table should be updated in real-time as the player makes decisions
+  - The data table should be able to toggle between week-by-week and accumulated data
+  - The data table has the following columns:
+    - Week
+    - Cost (per week)
+    - Outgoing delivery per week (calculated)
+    - Inventory level per week (calculated - can be negative)
+    - Inventory arriving in (this is a title spanning two columns):
+      - Week 1 (this is a column)
+      - Week 2 (this is a column)
+    - Inventory in transit (this is a title spanning two columns):
+      - Week 1 (this is a column)
+      - Week 2 (this is a column)
+    - Outgoing order (can be set by the player)
+  - The bottom row in the data table should show the accumulated values for the week-by-week data  
+    
+#### Game state component
+
+#### Metrics component
+
+The following metrics should be calculated for each role:
+- Total Cost
+- Service level (as a percentage) - defined as the ratio of number of fully delivered orders to the total number of orders
+- Fill rate (as a percentage) - defined as the the ratio of the ordered quantity to the delivered quantity
+
+#### Results component
+
+The results component will show the following information:
+- The game report showing for each role:
+  - The game metrics
+  - The game charts
+  - The game statistics
+  - The game data tables
+- If in classroom mode, the final standings compared to the other games.
+  - Supply chain wise - which supply chain performed best, filtering on a given metric, cost selected by default
+  - Role wise - which role performed best, filtering on a given metric, cost selected by default
+
+
+
+#### Exercises component
+ - Only in classroom mode
+ - Students need to pass
+ - If several students are in the same classroom, they need to pass together. All the students see the same exercises and the same answers.
+ - Each answer can be improved and resubmitted and then reevaluated.
+ - AI generated exercises, taken from a pool of exercises
+ - Each exercise can be one of:
+  - Multiple choice
+    - with one correct answer
+    - with multiple correct answers
+  - True/False
+  - Number answer
+  - Short text answer
+  - Long text answer
+  - File upload
+- The submitted answers will be evaluated by the AI, with a premade scoring system.
+- Each exercise shows the maximum score and the score of the student after evaluation.
+- The AI also shows the feedback for each exercise and the reason for the score.
+- If the instructor has configured the exercises to be pass/fail, the student will be shown a pass/fail message.
+- If the instructor has configured the exercises to be graded, the student will be shown a grade.
+- The instructor can set a certain number of updates per question for the students to pass the exercises. The number of updates per question and total updates are shown to the student.
+
+#### Animations
+
+There must be an animation that triggers when all the players have made their decisions for a given week.
+This animation happens in X steps:
+
+1. Incoming orders:
+  - Move week 2 to incoming delivery slot
+  - Move week 1 to week 2 slot
+  - Move new incoming delivery to week 1 slot
+  - All the three move animations are animated in parallel
+2. Update the inventory level with the incoming orders, move the incoming delivery to the inventory level slot (in the middle)
+3. Move the new incoming order to the incoming order slot
+4. Move the incoming order to the inventory, and create a new outgoing delivery, fill the outgoing delivery with:
+  - The incoming order quantity, if enough inventory is available
+  - The inventory level, if not enough inventory is available
+5. Reduce the inventory level by the incoming order quantity
+6. Move the outgoing delivery to the outgoing delivery slot
+7. Outgoing delivery:
+  - Move the week 2 inventory slot out of the board (delivering the order upstream to the next role or factory if distributor)
+  - Move the week 1 inventory slot to week 2 slot
+  - Move the new outgoing delivery to week 1 slot
+  - All the three move animations are animated in parallel
+8. Move the outgoing order out of the board (delivering the order downstream to the next role or customer if retailer)
+
+While animations are running, the player should not be able to make any decisions.
+While animations are running, the charts, statistics, data tables and game state should be updated in real-time.
+
+#### Layout considerations
+
+##### Desktop and laptop devices
+
+- Consider having a collapsible sidebar on the left side of the screen, with some of the components as buttons with icons, to make it easier to navigate between the different components. This is important for mobile and ipad devices. Possible components are:
+  - Game board
+  - Data table
+  - Results
+  - Exercises
+- In collapsed mode, only the icons of the buttons should be visible. Clicking on one of the icons should expand the sidebar showing the selected component.
+
+- Consider letting the chat also be a collapsible sidebar, but on the right side of the screen. In collapsed mode, only the icons of the following game channels should be visible:
+  - Game channel (for classroom mode, if possible from configuration)
+  - Role channel (for classroom mode, for all the players within the same role)
+  - Instructor channel
+  - Collaboration channel (chat between all the players in a collaboration role, if possible from configuration)
+
+ Clicking on one of the icons should expand the sidebar showing the selected channel.
+
+
+##### Mobile and ipad devices
+
+Be creative on how to make the interface work on mobile and ipad devices.
+
+
+
+
+
+
+
 ## Technical Constraints
 
 **Platform Requirements:**
