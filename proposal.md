@@ -805,8 +805,8 @@ The game dashboard is the most important page of the website. It comprises every
   - There are two similar slots vertically aligned underneath the outgoing delivery slot with Week 1 and Week 2 titles, representing the transportation lead time.There are thick arrow from the outgoing delivery slot into week 1 slot in the factory and from the week 2 into the incoming delivery slot in the inventory facility.
   - There is a thick arrow pointing into the incoming order slot in the inventory facility.This arrow has the same height as the total of the two Week slots plus the two outgoing arrows.
 
-  <img style="display: block; margin: 0 auto" src="docs/references/images/factory.png" alt="Factory Facility" height="300"/>
-  <center>Factory Facility in tablet and mobile view</center>
+  <img style="display: block; margin: 0 auto" src="docs/references/images/factory-large.png" alt="Factory Facility" height="300"/>
+  <center>Factory Facility in desktop and laptop view</center>
 
 
 ##### Specifics for wholesaler and the distributor:
@@ -817,8 +817,8 @@ The game dashboard is the most important page of the website. It comprises every
   - There is a thick arrow pointing into the incoming order slot in the inventory facility.This arrow has the same height as the total of the two Week slots plus the two outgoing arrows.
 
 
-  <img style="display: block; margin: 0 auto" src="docs/references/images/whole-and-dist.png" alt="Factory Facility" height="300"/>
-  <center>Layout for wholesaler and distributor  in tablet and mobile view</center>
+  <img style="display: block; margin: 0 auto" src="docs/references/images/whole-and-dist-large.png" alt="Factory Facility" height="300"/>
+  <center>Layout for wholesaler and distributor  in desktop and laptop view</center>
 
 
 ##### Specifics for the retailer: 
@@ -826,8 +826,8 @@ The game dashboard is the most important page of the website. It comprises every
    - There is a thick arrow pointing out from the outgoing order slot in the inventory facility.This arrow has the same height as the total of the two Week slots plus the two outgoing arrows described above.
   - There is a thick arrow pointing into the incoming order slot in the inventory facility.This arrow has the same height as the corresponding arrows in the wholesaler and distributor.
 
-  <img style="display: block; margin: 0 auto" src="docs/references/images/retailer.png" alt="Factory Facility" height="300"/>
-  <center>Layout for retailer in tablet and mobile view</center>
+  <img style="display: block; margin: 0 auto" src="docs/references/images/retailer-large.png" alt="Factory Facility" height="300"/>
+  <center>Layout for retailer in desktop and laptop view</center>
 
 
 #### Chat component
