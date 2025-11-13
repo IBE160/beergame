@@ -976,89 +976,65 @@ The platform provides tier-based functionality, with each tier building upon the
 
 ---
 
-### Flow 6: Student Playing Multiplayer Game
+### Flow 6: Class Student Playing Assigned Multiplayer Game
 
-**Entry Point**: Student wants to play with other human players
+**Entry Point**: Class Student (Tier 3) receives notification about instructor-assigned game
 
-1. **Landing Page / Dashboard**
-   - Student clicks "Start Playing" button
-   - Proceeds through authentication (if needed)
+1. **Game Assignment Notification**
+   - Student receives email: "Your Beer Game assignment is ready!"
+   - In-app notification badge appears on dashboard
+   - Email includes:
+     - Class name
+     - Instructor name
+     - Game configuration summary (duration, difficulty, parameters)
+     - Assigned role (Retailer, Wholesaler, Distributor, or Factory)
+     - Assigned teammates' names (if visible per instructor settings)
 
-2. **Game Mode Selection**
-   - Student sees two options:
-     - "Single-Player" (AI opponents)
-     - "Multiplayer" (play with other humans)
-   - Student selects "Multiplayer"
-   - Clicks "Continue" button
+2. **Dashboard Access**
+   - Student logs into platform
+   - Sees "Class Games" section in dashboard (separate from personal games)
+   - Assigned game displays with status badge:
+     - "Ready to Start" - waiting for all assigned students to join
+     - "In Progress" - game has started
+     - "Waiting for You" - other students are waiting
+   - Clicks "Enter Game" button
 
-3. **Multiplayer Lobby Options**
-   - Student sees two paths:
-     - **Create New Game**: "Host a new game session"
-     - **Join Existing Game**: "Join a game waiting for players"
-   - Student chooses one path
+3. **Game Overview (Pre-Start)**
+   - Student sees instructor-configured game details (all read-only):
+     - Game duration (e.g., "35 weeks")
+     - Cost parameters, lead times, difficulty level
+     - Communication/visibility settings
+     - **Assigned role** (cannot be changed)
+     - **Assigned teammates** with their roles
+   - Banner shows: "Game configured by [Instructor Name] for [Class Name]"
+   - Notice: "You cannot modify game settings. All students play with identical parameters."
+   - Clicks "Ready to Play" button
 
-4a. **Path A: Create New Game (Host)**
-   - Student clicks "Create New Game"
-   - Configures game parameters:
-     - Game duration (20-52 weeks)
-     - Basic or advanced cost parameters
-     - Lead times
-     - Difficulty level
-     - Communication/visibility level
-   - Selects their preferred role (Retailer, Wholesaler, Distributor, or Factory)
-   - Sets game visibility:
-     - Public: Anyone can join
-     - Private: Share invite code with specific players
-   - Clicks "Create Game Room"
-   - System generates unique game room code (e.g., "BEER-A3K9")
-   - Student enters waiting lobby
+4. **Waiting for Classmates**
+   - Shows supply chain diagram with all 4 positions:
+     - Retailer: [Student Name] ✓ Ready
+     - Wholesaler: [Student Name] - Waiting...
+     - Distributor: [Student Name] ✓ Ready
+     - Factory: AI Player (if position not filled)
+   - Real-time updates as assigned classmates click "Ready to Play"
+   - Chat window (if enabled by instructor):
+     - Pre-game chat with assigned teammates
+     - Can discuss strategy before game starts
+   - "Not Ready" / "Ready" toggle button
+   - Cannot leave game (penalty: AI takes over, instructor notified)
 
-5a. **Waiting Lobby (Host Perspective)**
-   - Displays game room code prominently
-   - "Share" button to copy invite link
-   - Shows 4 supply chain positions with status:
-     - Retailer: [Host's name] ✓
-     - Wholesaler: Waiting for player...
-     - Distributor: Waiting for player...
-     - Factory: Waiting for player...
-   - Real-time updates as players join
-   - Host controls:
-     - "Start Game with AI" button - fills empty positions with AI and starts
-     - "Cancel Game" button - disbands the room
-   - Chat window for players to communicate before game starts
+5. **Game Start Trigger**
+   - **Automatic start when:**
+     - All assigned students mark themselves "Ready"
+     - OR instructor manually starts the game from monitoring dashboard
+     - OR 5-minute timeout (AI fills positions of absent students)
+   - Countdown notification: "Game starting in 10... 9... 8..."
+   - All students receive simultaneous start
 
-4b. **Path B: Join Existing Game (Joiner)**
-   - Student clicks "Join Existing Game"
-   - Two options:
-     - Enter game room code manually
-     - Browse list of public games waiting for players
-   - If browsing:
-     - Sees list of available games with:
-       - Host name
-       - Game duration
-       - Available positions
-       - Number of human players already joined (e.g., "2/4 players")
-     - Filters: Duration, difficulty level
-   - Student selects a game or enters code
-   - Clicks "Join Game"
-
-5b. **Waiting Lobby (Joiner Perspective)**
-   - Sees game configuration (read-only)
-   - Selects available role from remaining positions
-   - Sees other players who have joined
-   - Chat window to communicate with other players
-   - "Leave Game" button if they change their mind
-   - Waits for host to start game or for all 4 positions to fill
-
-6. **Game Start Trigger**
-   - **Option 1:** Host clicks "Start Game with AI" - fills empty slots with AI
-   - **Option 2:** All 4 positions filled by humans - game auto-starts after 10-second countdown
-   - All players receive notification: "Game starting in 10... 9... 8..."
-
-7. **Multiplayer Game Dashboard (Week 1-N)**
+6. **Multiplayer Game Dashboard (Week 1-N)**
    - **Turn-based gameplay:**
-     - All players see "Week X - Waiting for all players to submit orders"
-     - Each player's own order input is active
+     - All players see "Week X of [N] - Waiting for all players to submit orders"
+     - Each student's own order input is active
      - Other players' order inputs show "Waiting..." status
      - Real-time indicator shows who has submitted (e.g., "3/4 players submitted")
    - **View State** (same as single-player):
@@ -1067,42 +1043,62 @@ The platform provides tier-based functionality, with each tier building upon the
      - Incoming orders
      - Incoming shipments
      - Cost accumulation
-   - **Visibility based on configuration:**
+   - **Visibility based on instructor's configuration:**
      - If visibility enabled: Can see other players' inventory levels in real-time
      - If not: Only see own position
    - **Player presence indicators:**
      - Green dot next to active players
      - Gray dot if player disconnected (AI takes over temporarily)
+     - Instructor can see all players' status in monitoring dashboard
    - **Make Decision:**
-     - Player enters order quantity
+     - Student enters order quantity
      - Clicks "Submit Order"
      - Status changes to "Waiting for other players..."
    - **Week Advancement:**
      - Once all 4 players submit orders, week auto-advances
      - If player inactive for 2 minutes, AI makes decision for them (warning shown)
-   - **Optional in-game features:**
-     - Quick chat messages (if enabled): Predefined messages like "Order spike incoming!"
-     - Player can see other players' names and roles
+     - Instructor receives notification if AI takes over
+   - **In-game features (if enabled by instructor):**
+     - Chat window with assigned teammates
+     - Quick chat messages: Predefined messages like "Order spike incoming!"
+     - Can see teammates' names and roles
+   - **Instructor controls (from monitoring dashboard):**
+     - Can pause game for all students
+     - Can remove inactive student (AI takes over permanently)
+     - Can view real-time game progress
 
-8. **Game Completion (Multiplayer)**
-   - After final week, all players see summary dashboard simultaneously
-   - **Performance Comparison:**
-     - Side-by-side costs for all 4 players
-     - Individual rankings (1st, 2nd, 3rd, 4th place)
-     - Total supply chain cost (sum of all 4 players)
-   - **AI-Generated Insights** (personalized for each player):
+7. **Game Completion (Multiplayer)**
+   - After final week, all students see summary dashboard simultaneously
+   - **Performance Comparison (Class Context):**
+     - Side-by-side costs for all 4 students in this game
+     - Individual rankings within this game (1st, 2nd, 3rd, 4th place)
+     - Total supply chain cost (sum of all 4 students)
+     - Class-wide ranking (if instructor configured multiple games)
+   - **AI-Generated Insights** (personalized for each student):
      - Individual analysis of decisions
-     - How player's decisions impacted other players
-     - Contribution to bullwhip effect
+     - How student's decisions impacted teammates
+     - Contribution to or mitigation of bullwhip effect
+     - Comparison to class average performance
    - **Supply Chain Performance:**
      - Bullwhip effect visualization showing all 4 positions
      - Analysis of team coordination (or lack thereof)
-   - **Social Features:**
-     - Option to send congratulations to other players
-     - "Play Again" button - starts new game with same players
-   - Each player can download their own game report
+     - Educational content explaining supply chain dynamics observed
+   - **Download Options:**
+     - Download individual game report (PDF)
+     - Download game data (CSV) for further analysis
 
-**Exit Point**: Player returns to dashboard or starts new multiplayer game
+8. **Transition to Assessment**
+   - After viewing game summary, student sees notification:
+     - "Your instructor has prepared an assessment based on this game"
+     - "You must complete the assessment to receive credit"
+   - Clicks "Start Assessment" button
+   - Proceeds to Flow 3 (Student Completing Assessment)
+   - Assessment questions are tailored to this specific multiplayer game session
+   - Student's approval status depends on passing the assessment
+
+**Exit Point**: Student completes assessment (Flow 3) and returns to class dashboard
+
+**Note**: This flow is ONLY available to Tier 3 (Class Students) whose instructors have purchased seats. Tier 0 (Free) and Tier 1 (Paid Student) users play single-player games with AI opponents only.
 
 ---
 

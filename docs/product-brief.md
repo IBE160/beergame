@@ -76,7 +76,7 @@ The goal is to make supply chain education more accessible, interactive, and mea
 3.  **Student Completing Assessment:** Email notification, assessment dashboard, answering various question types, AI-generated immediate feedback, approval status, certificate download.
 4.  **Individual Learner (Non-Student) Quick Play:** Guest access, simplified game setup, demo gameplay, conversion prompt for registration.
 5.  **Teacher Managing Subscription:** Accessing settings, viewing status, upgrading/downgrading, updating payment, viewing invoices, cancellation.
-6.  **Student Playing Multiplayer Game:** Game mode selection, host/join game, waiting lobby, turn-based gameplay, real-time state, performance comparison, AI-generated insights.
+6.  **Class Student Playing Assigned Multiplayer Game:** Instructor-assigned game notification, viewing instructor-configured settings, waiting for assigned classmates, turn-based gameplay with teammates, real-time status, performance comparison with classmates, AI-generated insights, transition to assessment.
 
 ## Technical Constraints (Summarized)
 - **Platform:** Web-based, responsive (desktop, laptop, tablet), minimum 768px width.
