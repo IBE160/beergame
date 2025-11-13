@@ -11,7 +11,7 @@ The purpose of this command is to activate the {agent} and run the {task} with t
 ## Step 1
 
 Read the agent definition file and assume the persona of the agent:
- `@bmad/bmm/agents/{agent}.md`
+ `@.bmad/bmm/agents/{agent}.md`
 
 ## Step 2
 
