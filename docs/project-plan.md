@@ -3,10 +3,11 @@
 ## Fase 0
 
 - [x] Brainstorming
-  - [x] /analyst *brainstorm "Root Cause Analysis and Solution Design for Player Inactivity"
-  - [x] /analyst *brainstorm "User Flow Deviations & Edge Cases"
+  - [x] /run-agent-task analyst *brainstorm "Root Cause Analysis and Solution Design for Player Inactivity"
+  - [x] /run-agent-task analyst *brainstorm "User Flow Deviations & Edge Cases"
+  - [x] /run-agent-task analyst *brainstorm "How paid users are different from free users, including the complete monetization strategy"
 - [x] Research
-  - [x] /analyst *research "Which AI library should we use for orchestrating LLM interactions?"
+  - [x] /run-agent-task analyst *research "Which AI library should we use for orchestrating LLM interactions?"
 - [x] Product Brief
   - [x] /run-agent-task analyst *product-brief "Read the two brainstorming sessions the research session and the @proposal.md file, and create a product brief for the project."
 
