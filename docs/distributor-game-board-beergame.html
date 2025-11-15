@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beer Game - Distributor Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        'mono-bg': '#1A1A1A',
+                        'mono-surface': '#2C2C2C',
+                        'mono-text': '#E0E0E0',
+                        'mono-light': '#808080',
+                        'accent': '#8B5CF6', // Purple for Distributor
+                    },
+                    fontFamily: {
+                        sans: ["Roboto Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem",
+                        'sm': "0.125rem",
+                        'md': "0.375rem",
+                        'lg': "0.5rem",
+                        'xl': "0.75rem",
+                        'full': "9999px",
+                    },
+                    borderWidth: {
+                        '1': '1px',
+                    }
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">body {
+            @apply font-sans bg-mono-bg text-mono-text antialiased;
+        }.flow-pipe {
+            @apply absolute bg-mono-light opacity-50 transition-all duration-300 ease-out;
+        }
+        .flow-pipe.active {
+            @apply bg-accent opacity-100;
+        }
+        .flow-pipe.vertical {
+            @apply w-[2px] h-1/2;
+        }
+        .flow-pipe.horizontal {
+            @apply h-[2px] w-1/2;
+        }
+        .flow-pipe.arrow-end::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            @apply opacity-0 transition-opacity duration-300 ease-out;
+        }
+        .flow-pipe.arrow-end.active::after {
+             @apply opacity-100;
+        }
+        .flow-pipe.arrow-down::after {
+            border-width: 6px 4px 0 4px;border-color: var(--tw-bg-accent) transparent transparent transparent;
+            left: 50%;
+            bottom: -6px;transform: translateX(-50%);
+        }
+        .flow-pipe.arrow-up::after {
+            border-width: 0 4px 6px 4px;border-color: transparent transparent var(--tw-bg-accent) transparent;
+            left: 50%;
+            top: -6px;transform: translateX(-50%);
+        }
+        .flow-pipe.arrow-right::after {
+            border-width: 4px 0 4px 6px;border-color: transparent transparent transparent var(--tw-bg-accent);
+            top: 50%;
+            right: -6px;transform: translateY(-50%);
+        }
+        .flow-pipe.arrow-left::after {
+            border-width: 4px 6px 4px 0;border-color: transparent var(--tw-bg-accent) transparent transparent;
+            top: 50%;
+            left: -6px;transform: translateY(-50%);
+        }.chart-abstract {background: linear-gradient(90deg, #8B5CF61A 0%, #8B5CF600 100%);border: 1px solid #8B5CF640;position: relative;
+            overflow: hidden;
+        }
+        .chart-abstract img {
+            opacity: 0.1;}
+        .chart-abstract::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #8B5CF6 0%, #8B5CF600 70%);transform: translateX(-100%);
+            animation: flow 10s infinite linear;}
+        @keyframes flow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body class="font-sans bg-mono-bg text-mono-text antialiased">
+<div class="flex h-screen">
+<aside class="w-64 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20">
+<div class="h-16 flex items-center justify-center border-b border-mono-light/20 px-4">
+<h1 class="text-xl font-bold text-accent">BEER GAME</h1>
+</div>
+<nav class="flex-1 p-4 space-y-2">
+<a class="flex items-center p-3 rounded-DEFAULT bg-accent/20 text-accent font-semibold" href="#">
+<span class="material-symbols-outlined mr-3">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">bar_chart</span>
+                Analytics
+            </a>
+<a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">groups</span>
+                Team
+            </a>
+<a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">history</span>
+                Game History
+            </a>
+</nav>
+<div class="p-4 border-t border-mono-light/20">
+<a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">settings</span>
+                Settings
+            </a>
+<a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+<span class="material-symbols-outlined mr-3">logout</span>
+                Logout
+            </a>
+</div>
+</aside>
+<main class="flex-1 flex flex-col">
+<header class="h-16 bg-mono-surface flex-shrink-0 flex items-center justify-between px-6 border-b border-mono-light/20">
+<div class="flex items-center">
+<h2 class="text-lg font-semibold text-mono-text">Distributor Dashboard</h2>
+</div>
+<div class="flex items-center space-x-6 text-sm">
+<div class="text-center">
+<span class="text-mono-light">Current Week</span>
+<p class="font-bold text-lg text-accent">5</p>
+</div>
+<div class="w-px h-8 bg-mono-light/20"></div>
+<div class="text-center">
+<span class="text-mono-light">Total Cost</span>
+<p class="font-bold text-lg text-red-500">$1,050</p>
+</div>
+<div class="w-px h-8 bg-mono-light/20"></div>
+<div class="flex items-center space-x-3">
+<img alt="User avatar" class="w-10 h-10 rounded-full object-cover border border-mono-light/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYd4hLaRCslw5RWRvCgiDkpSydnw5I9_H91aRrx_M_LLW9jIeFtT2eOFvxrOmNjxdaVUdMLO8fiKdzHpxI3FeEC_WJtY0Ku-m43sPzZZdVL1iXILCsMOcGRP621H9_AhurH2afPKyLcOdzchgq0jZe-otVoU--jueEvFX1CVwJ8S9vE7tHcDpqu0pFnObzFF9cb_YCUtPJHds9FINV_0yMOgsdCgxxj3ewQm5Uyv_NUgv2QwKIGrCg2_1Mq0eIdX4Z6idKI1zGaow"/>
+<div>
+<p class="font-semibold text-mono-text">Lisa Martinez</p>
+<p class="text-xs text-mono-light">Distributor</p>
+</div>
+</div>
+</div>
+</header>
+<div class="flex-1 p-6 overflow-auto">
+<div class="max-w-7xl mx-auto h-full flex flex-col">
+<!-- Top Pipeline Section -->
+<div class="relative flex justify-center w-full mb-4 pb-4">
+<div class="absolute inset-x-0 top-1/2 h-[2px] bg-mono-light/30 -translate-y-1/2"></div>
+<div class="flex items-center justify-between w-full max-w-4xl px-8 z-10">
+<div class="flex flex-col items-center mr-8">
+<p class="text-xs text-mono-light mb-1">Incoming delivery</p>
+<div class="flex space-x-2">
+<div class="w-16 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
+<span class="text-xs text-mono-light">Week 2</span>
+<span class="font-bold text-lg text-mono-text">15</span>
+</div>
+<div class="w-16 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
+<span class="text-xs text-mono-light">Week 1</span>
+<span class="font-bold text-lg text-mono-text">20</span>
+</div>
+</div>
+<div class="flow-pipe vertical active arrow-down h-8 mt-2"></div>
+</div>
+<div class="flex flex-col items-center ml-8">
+<p class="text-xs text-mono-light mb-1">Outgoing order factory</p>
+<div class="w-24 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
+<span class="font-bold text-lg text-mono-text">20</span>
+</div>
+<div class="flow-pipe vertical active arrow-up h-8 mt-2"></div>
+</div>
+</div>
+</div>
+
+<!-- Main Inventory Section -->
+<div class="relative flex items-center justify-between pb-8 pt-4 w-full">
+<div class="absolute inset-x-0 top-1/2 h-[2px] bg-mono-light/30 -translate-y-1/2"></div>
+<div class="flex-1 flex justify-start pl-8 pr-12">
+<div class="relative bg-mono-surface border-1 border-mono-light/20 rounded-DEFAULT p-3 text-center w-40 flex flex-col justify-center items-center z-10">
+<p class="font-semibold text-accent text-sm">Outgoing delivery wholesaler</p>
+<p class="text-3xl font-bold text-mono-text">25</p>
+<div class="flow-pipe horizontal w-20 active arrow-right absolute top-1/2 -right-20 transform -translate-y-1/2"></div>
+</div>
+</div>
+<div class="flex flex-col items-center flex-shrink-0 z-20">
+<div class="relative w-56 h-40 flex flex-col items-center justify-center bg-mono-surface border-2 border-accent rounded-md shadow-xl">
+<span class="text-lg text-mono-light">Inventory</span>
+<p class="text-7xl font-bold text-accent">55</p>
+</div>
+</div>
+<div class="flex-1 flex justify-end pr-8 pl-12">
+<div class="relative bg-mono-surface border-1 border-mono-light/20 rounded-DEFAULT p-3 text-center w-40 flex flex-col justify-center items-center z-10">
+<p class="font-semibold text-accent text-sm">Incoming order wholesaler</p>
+<p class="text-3xl font-bold text-mono-text">25</p>
+<div class="flow-pipe horizontal w-20 active arrow-left absolute top-1/2 -left-20 transform -translate-y-1/2"></div>
+</div>
+</div>
+</div>
+
+<!-- Bottom Pipeline Section -->
+<div class="relative flex justify-center w-full mt-4 pb-8">
+<div class="absolute inset-x-0 top-1/2 h-[2px] bg-mono-light/30 -translate-y-1/2"></div>
+<div class="flex items-center justify-between w-full max-w-4xl px-8 z-10">
+<div class="flex flex-col items-center mr-8">
+<div class="flow-pipe vertical active arrow-up h-8 mb-2"></div>
+<p class="text-xs text-mono-light mb-1">Outgoing delivery</p>
+<div class="flex space-x-2">
+<div class="w-16 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
+<span class="text-xs text-mono-light">Week 1</span>
+<span class="font-bold text-lg text-mono-text">25</span>
+</div>
+<div class="w-16 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
+<span class="text-xs text-mono-light">Week 2</span>
+<span class="font-bold text-lg text-mono-text">20</span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-center ml-8">
+<div class="flow-pipe vertical active arrow-down h-8 mb-2"></div>
+<p class="text-xs text-mono-light mb-1">Incoming order</p>
+<div class="w-24 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
+<span class="font-bold text-lg text-mono-text">25</span>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Order Input -->
+<div class="w-full flex justify-center mt-4 z-30">
+<form class="flex items-center space-x-2">
+<label class="text-sm font-medium text-mono-text" for="order-input">Place Order:</label>
+<input class="w-20 bg-mono-surface border-mono-light/20 rounded-DEFAULT text-center focus:ring-accent focus:border-accent" id="order-input" type="number" value="20"/>
+<button class="bg-accent text-mono-bg px-4 py-2 rounded-DEFAULT font-semibold hover:bg-purple-700 transition-colors flex items-center" type="submit">
+                                Submit
+                                <span class="material-symbols-outlined text-base ml-1">send</span>
+</button>
+</form>
+</div>
+
+<!-- Charts -->
+<div class="grid grid-cols-2 gap-6 mt-8 w-full flex-1">
+<div class="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col">
+<h3 class="font-semibold mb-4 text-mono-text">Orders vs. Inventory</h3>
+<div class="flex-1 flex items-center justify-center chart-abstract">
+<img alt="A line chart showing orders versus inventory levels over several weeks." class="w-full h-auto max-h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJZqBXGyfg2PiDQEaW4O8zHPPlwpl4HOwdDnPTObSdz3zDnOJN4oDS9Ohugdi2lt6amKQOEjKNtDiGtjk0OYA2O6hPnrA-eKd89WduV4FTIZ9Gu_2Kyng6KsyIzHBVtSwWqqUgGuz5Y1Q-yP3E3EvgDGTtK3_-ewHXBZrWNW1Zd0hm97hjPH154uHw8WE_2ofrCV1a9VHMsop9l0pJwxDe1yz-pieO-OUS3hweAKLUdbSIgMZJ60lfVtQMgAz9BaNHyDM_r8Kmov8"/>
+</div>
+</div>
+<div class="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col">
+<h3 class="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
+<div class="flex-1 flex items-center justify-center chart-abstract">
+<img alt="A bar chart displaying cost accumulation broken down by inventory holding and backorder costs." class="w-full h-auto max-h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMlLJTM-isw2sCYmRqcHdmkZTzPXTE-0GOkTzOeQKj67VIGyxJ1LlvS2QUI85iyhQzktqrzbLo_z9DfAyP_dQuAZbNBS45aiV63aWSLO83rWr8ob8Ah5hEo14atEF3ZuPwuCJM2vPLpEDJuXTOLGh8kNmSe4F1LAuFgA0ONh3muleeZkqskskAG6PWBpH8SvbSArGJM99NNgVIvw8JbY7UO4FoJHCJA0BcgvY2w1g3RsgsdDET6nLQyUbPCLTS3O7-IoRvFWIn7fc"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<aside class="w-80 bg-mono-surface flex-shrink-0 flex flex-col border-l border-mono-light/20">
+<div class="h-16 flex items-center px-4 border-b border-mono-light/20">
+<h3 class="font-semibold text-mono-text">Team Chat</h3>
+</div>
+<div class="flex-1 p-4 space-y-4 overflow-y-auto">
+<div class="flex items-start space-x-3">
+<img alt="Factory avatar" class="w-10 h-10 rounded-full border border-mono-light/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyJl9nZuQZlbPkyx1D8pF_hstNZNrPwFZomBSI_Xm60FTOtvG0a7XXLm7qJOxCWCuWaL9ZO-BDovat78CHEMieAzR9fqRYLX7bXZm3yy4Iw7zwDKHyaOEmgkVXum6RMTPFLZZ_a3oqLhH2h1vp9vRAHjauSOwTN-XK602ejgpgPuxipyvYONi046PmiRNXoyLZv2D4wRw1w4PBoXwBDEc4-y86Olz8TtQkEcSkuA8xcYKn5pjphJ02tgx_IMdflryQjFmvtvZsWqg"/>
+<div>
+<div class="flex items-baseline space-x-2">
+<p class="font-semibold text-orange-400 text-sm">Factory</p>
+<p class="text-xs text-mono-light">10:32 AM</p>
+</div>
+<div class="bg-mono-bg p-3 rounded-lg mt-1 border border-mono-light/10">
+<p class="text-sm text-mono-text">Your order of 20 units is in production queue.</p>
+</div>
+</div>
+</div>
+<div class="flex items-start space-x-3 flex-row-reverse space-x-reverse">
+<img alt="Distributor avatar" class="w-10 h-10 rounded-full border border-mono-light/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA64dMAp6iKg8DcYVSYjxioINRiGaqFM_xD3g60lA6ZUFAyORHrXTUDCiREnURkSDXUbh6Gi7hzrAhtLOz0r7mE3mdoMlleVIFPPE6WaUD6kZCrqUidKVaExk1LM7LjSjLCiWqs22MA_RDxWHgRABCKBqIfUGsjatmsuay_bUFeYEw4tskszVQtrrCrO4XnshgplXIHw0BOVxLn3LQZ62Npmx68-fZceN6RrOAYT3TfzXBUBTEdcBTYWrpTKAQQ-btm7QtRen2HQmY"/>
+<div>
+<div class="flex items-baseline space-x-2 justify-end">
+<p class="font-semibold text-accent text-sm">You</p>
+<p class="text-xs text-mono-light">10:35 AM</p>
+</div>
+<div class="bg-accent/20 p-3 rounded-lg mt-1 border border-accent/40 text-mono-text">
+<p class="text-sm">Thanks! Wholesaler needs 25 units urgently.</p>
+</div>
+</div>
+</div>
+<div class="flex items-start space-x-3">
+<img alt="Wholesaler avatar" class="w-10 h-10 rounded-full border border-mono-light/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNHlCJUf5D4iN8_isGJcr-ItgkMiygY9iGM6G8LCD7Kut7987vm_JscmJ5BouV61F53y1xyM7QEn-dp4WZ6_7sg0mPWHeZh0YJNRcyr2X0U8_u1Oeo-tvjtjseJ3-DG8xjQTU5FP89obCBMyEPNYYXSm-KEA3VQEBlYVWlUCQBtd8bNgIXCJ91axthc9IHvkkgz5Zdz_ILfUbQP3FJpkOR7P9aWHG9JVM4iwNwkT0yrAjl5yT-fcZ--tx4DguqBrjXU2oAy4hePBw"/>
+<div>
+<div class="flex items-baseline space-x-2">
+<p class="font-semibold text-green-400 text-sm">Wholesaler</p>
+<p class="text-xs text-mono-light">10:38 AM</p>
+</div>
+<div class="bg-mono-bg p-3 rounded-lg mt-1 border border-mono-light/10">
+<p class="text-sm text-mono-text">Yes, please expedite if possible!</p>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-mono-light/20">
+<div class="relative">
+<input class="w-full pr-10 bg-mono-bg border-mono-light/20 rounded-full py-2 px-4 focus:ring-accent focus:border-accent text-mono-text" placeholder="Type a message..." type="text"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 text-mono-light hover:text-accent">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</body></html>
