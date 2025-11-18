@@ -49,7 +49,7 @@ _Generated using BMad Method - Create UX Design Workflow v1.0_
 - **State Management:** Works seamlessly with Zustand (our choice)
 
 **Custom Components Needed:**
-- Game Board (unique inventory visualization with corner slots)
+- Game Board (main inventory visualization)
 - Role Selector
 - Week Progress Indicator
 - Bullwhip Effect Chart (specialized visualization)
@@ -57,6 +57,8 @@ _Generated using BMad Method - Create UX Design Workflow v1.0_
 - AI Assessment Question Renderer
 - Real-time Player Presence Indicators
 - Chat Message Bubble (with AI badge variant)
+- Flow Pipes (animated connectors for orders/deliveries)
+- Abstract Charts (modern, animated data visualizations)
 
 **Theme Configuration:**
 All colors, typography, and spacing tokens defined in Section 3 will be configured in `tailwind.config.js` and Shadcn's theme system for consistent application across all components.
@@ -79,50 +81,36 @@ All colors, typography, and spacing tokens defined in Section 3 will be configur
 
 ### 3.1 Color System
 
-**Palette Structure: 60/30/10 Rule**
-- 60% Neutrals (backgrounds, text, borders)
-- 30% Primary Blue (navigation, charts, active states)
-- 10% Teal Accent (CTAs, important highlights)
+**Theme:** Dark Mode ("Mono")
+
+**Palette Structure:**
+- **Base:** A dark, monochromatic base for the main UI.
+- **Accents:** A unique, vibrant accent color for each of the four roles.
 
 **Complete Palette:**
 
-**Neutrals:**
-- `neutral-0`: #FFFFFF - Page background
-- `neutral-50`: #F8FAFC - Card backgrounds
-- `neutral-100`: #F1F5F9 - Hover states
-- `neutral-200`: #E2E8F0 - Borders, dividers
-- `neutral-500`: #64748B - Body text (7.1:1 contrast ratio)
-- `neutral-700`: #334155 - Headings (10.4:1 contrast ratio)
-- `neutral-900`: #0F172A - High-emphasis text
+**Neutrals (Mono Theme):**
+- `mono-bg`: #1A1A1A - Main background color
+- `mono-surface`: #2C2C2C - Card and surface backgrounds
+- `mono-text`: #E0E0E0 - Primary text color
+- `mono-light`: #808080 - Secondary text and border color
 
-**Primary - Calm Blue:**
-- `primary-50`: #EFF6FF - Subtle backgrounds, KPI cards
-- `primary-500`: #3B82F6 - Main brand color, nav, active tabs, primary chart lines
-- `primary-600`: #2563EB - Hover state
-- `primary-700`: #1D4ED8 - Pressed/active state
-
-**Accent - Teal:**
-- `accent-500`: #14B8A6 - Primary CTAs, important highlights
-- `accent-600`: #0D9488 - CTA hover
-- `accent-700`: #0F766E - CTA pressed
+**Role-Based Accent Colors:**
+- `accent-retailer`: #FFD700 (Gold/Amber) - Retailer role
+- `accent-wholesaler`: #10B981 (Green) - Wholesaler role
+- `accent-distributor`: #8B5CF6 (Purple) - Distributor role
+- `accent-factory`: #F97316 (Orange) - Factory role
 
 **Semantic Colors:**
-- `success-500`: #10B981 - Positive inventory, good scores, success states
-- `error-500`: #EF4444 - Backorders, errors, validation failures
-- `warning-500`: #F59E0B - Warnings, alerts, cautions
-- `info-500`: #3B82F6 - Informational messages
-
-**Role Colors (Charts):**
-- `role-retailer`: #3B82F6 (Blue) - Retailer role in charts
-- `role-wholesaler`: #10B981 (Green) - Wholesaler role
-- `role-distributor`: #8B5CF6 (Purple) - Distributor role
-- `role-factory`: #F97316 (Orange) - Factory role
+- `success`: #10B981 (Green) - Success states, positive feedback
+- `error`: #EF4444 (Red) - Errors, backorders, negative feedback
+- `warning`: #F59E0B (Amber) - Warnings and alerts
+- `info`: #3B82F6 (Blue) - Informational messages
 
 ### 3.2 Typography System
 
 **Font Families:**
-- **Primary UI:** `system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`
-- **Numeric/Data:** `"JetBrains Mono", "Roboto Mono", monospace` (tabular numbers)
+- **Primary UI & Numeric/Data:** `"Roboto Mono", monospace` (tabular numbers)
 
 **Type Scale (Desktop/Laptop):**
 - Base: 16px (1rem), line-height 1.5
@@ -154,9 +142,9 @@ All colors, typography, and spacing tokens defined in Section 3 will be configur
 - Tablet (768-1023px): 8-column grid, 16px gutter
 
 **Game Dashboard Layout:**
-- Left sidebar (Board/Data/Results/Exercises navigation): 2-3 columns
-- Main game board: 6-7 columns
-- Right chat sidebar: 3-4 columns (collapsible)
+- Left sidebar (Dashboard, Analytics, Team, History navigation)
+- Main game board (inventory and pipeline visualization)
+- Right chat sidebar (team communication)
 
 ### 3.5 Accessibility Standards
 

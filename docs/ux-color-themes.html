@@ -3,805 +3,151 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beer Game Color Theme - Interactive Visualizer</title>
+    <title>Beer Game Color Theme - Mono Dark</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        'mono-bg': '#1A1A1A',
+                        'mono-surface': '#2C2C2C',
+                        'mono-text': '#E0E0E0',
+                        'mono-light': '#808080',
+                        'accent-retailer': '#FFD700',
+                        'accent-wholesaler': '#10B981',
+                        'accent-distributor': '#8B5CF6',
+                        'accent-factory': '#F97316',
+                    },
+                    fontFamily: {
+                        sans: ["Roboto Mono", "monospace"],
+                    },
+                },
+            },
+        };
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #F8FAFC;
-            padding: 32px;
-            line-height: 1.5;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            font-size: 40px;
-            color: #0F172A;
-            margin-bottom: 8px;
-            letter-spacing: -0.02em;
-        }
-
-        .subtitle {
-            font-size: 16px;
-            color: #64748B;
-            margin-bottom: 32px;
-        }
-
-        .section {
-            background: white;
-            border-radius: 12px;
-            padding: 32px;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            font-size: 32px;
-            color: #334155;
-            margin-bottom: 24px;
-            letter-spacing: -0.015em;
-        }
-
-        h3 {
-            font-size: 24px;
-            color: #334155;
-            margin-bottom: 16px;
-            margin-top: 32px;
-            letter-spacing: -0.015em;
-        }
-
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .color-swatch {
-            border: 1px solid #E2E8F0;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .color-preview {
-            height: 120px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .color-info {
-            padding: 12px;
-            background: white;
-        }
-
-        .color-name {
-            font-weight: 600;
-            color: #334155;
-            font-size: 14px;
-            margin-bottom: 4px;
-        }
-
-        .color-hex {
-            font-family: 'JetBrains Mono', 'Roboto Mono', monospace;
-            font-size: 12px;
-            color: #64748B;
-        }
-
-        .color-usage {
-            font-size: 12px;
-            color: #64748B;
-            margin-top: 4px;
-        }
-
-        /* Component Examples */
-        .components-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-            margin-top: 24px;
-        }
-
-        .component-demo {
-            padding: 24px;
-            background: #F8FAFC;
-            border-radius: 8px;
-            border: 1px solid #E2E8F0;
-        }
-
-        .component-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 16px;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            border: none;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-block;
-            margin-right: 8px;
-            margin-bottom: 8px;
-        }
-
-        .btn-primary {
-            background: #3B82F6;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2563EB;
-        }
-
-        .btn-accent {
-            background: #14B8A6;
-            color: white;
-        }
-
-        .btn-accent:hover {
-            background: #0D9488;
-        }
-
-        .btn-secondary {
-            background: #E2E8F0;
-            color: #334155;
-        }
-
-        .btn-secondary:hover {
-            background: #CBD5E1;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 2px solid #3B82F6;
-            color: #3B82F6;
-        }
-
-        .btn-outline:hover {
-            background: #EFF6FF;
-        }
-
-        /* Inputs */
-        .input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #E2E8F0;
-            border-radius: 8px;
-            font-size: 16px;
-            margin-bottom: 8px;
-            transition: all 0.2s;
-        }
-
-        .input:focus {
-            outline: none;
-            border-color: #3B82F6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .input.error {
-            border-color: #EF4444;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border: 1px solid #E2E8F0;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .card-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 8px;
-        }
-
-        .card-content {
-            font-size: 16px;
-            color: #64748B;
-        }
-
-        /* Alerts */
-        .alert {
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .alert-success {
-            background: #D1FAE5;
-            color: #065F46;
-            border: 1px solid #10B981;
-        }
-
-        .alert-error {
-            background: #FEE2E2;
-            color: #991B1B;
-            border: 1px solid #EF4444;
-        }
-
-        .alert-warning {
-            background: #FEF3C7;
-            color: #92400E;
-            border: 1px solid #F59E0B;
-        }
-
-        .alert-info {
-            background: #DBEAFE;
-            color: #1E40AF;
-            border: 1px solid #3B82F6;
-        }
-
-        /* Navigation */
-        .nav {
-            background: #3B82F6;
-            padding: 16px 24px;
-            border-radius: 8px;
-            display: flex;
-            gap: 24px;
-            margin-bottom: 16px;
-        }
-
-        .nav-item {
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all 0.2s;
-        }
-
-        .nav-item:hover {
-            background: rgba(255,255,255,0.1);
-            color: white;
-        }
-
-        .nav-item.active {
-            background: rgba(255,255,255,0.2);
-            color: white;
-        }
-
-        /* Chart Colors */
-        .chart-demo {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-            height: 120px;
-            margin-bottom: 16px;
-        }
-
-        .chart-bar {
-            flex: 1;
-            border-radius: 4px 4px 0 0;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding-bottom: 8px;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .bar-retailer {
-            background: #3B82F6;
-            height: 85%;
-        }
-
-        .bar-wholesaler {
-            background: #10B981;
-            height: 70%;
-        }
-
-        .bar-distributor {
-            background: #8B5CF6;
-            height: 95%;
-        }
-
-        .bar-factory {
-            background: #F97316;
-            height: 60%;
-        }
-
-        .chart-legend {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-
-        .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 3px;
-        }
-
-        /* Game Board Preview */
-        .game-board {
-            background: white;
-            border: 2px solid #E2E8F0;
-            border-radius: 12px;
-            padding: 24px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .inventory-box {
-            border: 2px solid #3B82F6;
-            border-radius: 8px;
-            padding: 16px;
-            text-align: center;
-        }
-
-        .inventory-label {
-            font-size: 14px;
-            color: #64748B;
-            margin-bottom: 8px;
-        }
-
-        .inventory-value {
-            font-size: 32px;
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .inventory-positive {
-            color: #10B981;
-        }
-
-        .inventory-negative {
-            color: #EF4444;
-        }
-
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .kpi-card {
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            border: 1px solid #3B82F6;
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        .kpi-label {
-            font-size: 12px;
-            color: #1E40AF;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .kpi-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: #1E3A8A;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .contrast-info {
-            background: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 8px;
-            padding: 16px;
-            margin-top: 16px;
-        }
-
-        .contrast-info h4 {
-            font-size: 14px;
-            color: #334155;
-            margin-bottom: 8px;
-        }
-
-        .contrast-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            font-size: 12px;
-            color: #64748B;
-        }
-
-        .contrast-pass {
-            color: #10B981;
-            font-weight: 600;
+            font-family: 'Roboto Mono', monospace;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Beer Game Color Theme</h1>
-        <p class="subtitle">Interactive visualizer showing the complete color palette on actual UI components</p>
+<body class="bg-mono-bg text-mono-text antialiased">
+    <div class="container mx-auto p-8">
+        <h1 class="text-4xl font-bold text-mono-text mb-2">Beer Game Color Theme</h1>
+        <p class="text-lg text-mono-light mb-8">Interactive visualizer for the "Mono Dark" theme with role-based accent colors.</p>
 
         <!-- Color Palette Section -->
-        <div class="section">
-            <h2>Complete Color Palette</h2>
+        <div class="bg-mono-surface rounded-lg p-8 mb-8">
+            <h2 class="text-3xl font-bold text-mono-text mb-6">Complete Color Palette</h2>
 
-            <h3>Neutrals (60% of UI)</h3>
-            <div class="color-grid">
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #FFFFFF; color: #334155; border-bottom: 1px solid #E2E8F0;">White</div>
-                    <div class="color-info">
-                        <div class="color-name">neutral-0</div>
-                        <div class="color-hex">#FFFFFF</div>
-                        <div class="color-usage">Page background</div>
+            <h3 class="text-2xl font-semibold text-mono-text mb-4">Neutrals (Mono Theme)</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Swatches for mono colors -->
+                <div class="border border-mono-light/20 rounded-lg overflow-hidden">
+                    <div class="h-32" style="background-color: #1A1A1A;"></div>
+                    <div class="p-4 bg-mono-surface">
+                        <div class="font-bold">mono-bg</div>
+                        <div class="text-sm text-mono-light">#1A1A1A</div>
                     </div>
                 </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #F8FAFC; color: #334155;">Slate 50</div>
-                    <div class="color-info">
-                        <div class="color-name">neutral-50</div>
-                        <div class="color-hex">#F8FAFC</div>
-                        <div class="color-usage">Card backgrounds</div>
+                <div class="border border-mono-light/20 rounded-lg overflow-hidden">
+                    <div class="h-32" style="background-color: #2C2C2C;"></div>
+                    <div class="p-4 bg-mono-surface">
+                        <div class="font-bold">mono-surface</div>
+                        <div class="text-sm text-mono-light">#2C2C2C</div>
                     </div>
                 </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #F1F5F9; color: #334155;">Slate 100</div>
-                    <div class="color-info">
-                        <div class="color-name">neutral-100</div>
-                        <div class="color-hex">#F1F5F9</div>
-                        <div class="color-usage">Hover states</div>
+                <div class="border border-mono-light/20 rounded-lg overflow-hidden">
+                    <div class="h-32 flex items-center justify-center" style="background-color: #E0E0E0;">
+                        <span class="text-black">mono-text</span>
+                    </div>
+                    <div class="p-4 bg-mono-surface">
+                        <div class="font-bold">mono-text</div>
+                        <div class="text-sm text-mono-light">#E0E0E0</div>
                     </div>
                 </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #E2E8F0; color: #334155;">Slate 200</div>
-                    <div class="color-info">
-                        <div class="color-name">neutral-200</div>
-                        <div class="color-hex">#E2E8F0</div>
-                        <div class="color-usage">Borders, dividers</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #64748B;">Slate 500</div>
-                    <div class="color-info">
-                        <div class="color-name">neutral-500</div>
-                        <div class="color-hex">#64748B</div>
-                        <div class="color-usage">Body text</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #334155;">Slate 700</div>
-                    <div class="color-info">
-                        <div class="color-name">neutral-700</div>
-                        <div class="color-hex">#334155</div>
-                        <div class="color-usage">Headings</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #0F172A;">Slate 900</div>
-                    <div class="color-info">
-                        <div class="color-name">neutral-900</div>
-                        <div class="color-hex">#0F172A</div>
-                        <div class="color-usage">High-emphasis text</div>
+                <div class="border border-mono-light/20 rounded-lg overflow-hidden">
+                    <div class="h-32" style="background-color: #808080;"></div>
+                    <div class="p-4 bg-mono-surface">
+                        <div class="font-bold">mono-light</div>
+                        <div class="text-sm text-mono-light">#808080</div>
                     </div>
                 </div>
             </div>
 
-            <h3>Primary - Calm Blue (30% of UI)</h3>
-            <div class="color-grid">
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #EFF6FF; color: #1E40AF;">Blue 50</div>
-                    <div class="color-info">
-                        <div class="color-name">primary-50</div>
-                        <div class="color-hex">#EFF6FF</div>
-                        <div class="color-usage">Subtle backgrounds, KPI cards</div>
+            <h3 class="text-2xl font-semibold text-mono-text mb-4">Role-Based Accent Colors</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Swatches for accent colors -->
+                <div class="border border-accent-retailer/50 rounded-lg overflow-hidden">
+                    <div class="h-32" style="background-color: #FFD700;"></div>
+                    <div class="p-4 bg-mono-surface">
+                        <div class="font-bold text-accent-retailer">Retailer</div>
+                        <div class="text-sm text-mono-light">#FFD700</div>
                     </div>
                 </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #3B82F6;">Blue 500</div>
-                    <div class="color-info">
-                        <div class="color-name">primary-500</div>
-                        <div class="color-hex">#3B82F6</div>
-                        <div class="color-usage">Brand color, nav, active tabs, charts</div>
+                <div class="border border-accent-wholesaler/50 rounded-lg overflow-hidden">
+                    <div class="h-32" style="background-color: #10B981;"></div>
+                    <div class="p-4 bg-mono-surface">
+                        <div class="font-bold text-accent-wholesaler">Wholesaler</div>
+                        <div class="text-sm text-mono-light">#10B981</div>
                     </div>
                 </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #2563EB;">Blue 600</div>
-                    <div class="color-info">
-                        <div class="color-name">primary-600</div>
-                        <div class="color-hex">#2563EB</div>
-                        <div class="color-usage">Hover state</div>
+                <div class="border border-accent-distributor/50 rounded-lg overflow-hidden">
+                    <div class="h-32" style="background-color: #8B5CF6;"></div>
+                    <div class="p-4 bg-mono-surface">
+                        <div class="font-bold text-accent-distributor">Distributor</div>
+                        <div class="text-sm text-mono-light">#8B5CF6</div>
                     </div>
                 </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #1D4ED8;">Blue 700</div>
-                    <div class="color-info">
-                        <div class="color-name">primary-700</div>
-                        <div class="color-hex">#1D4ED8</div>
-                        <div class="color-usage">Pressed/active state</div>
+                <div class="border border-accent-factory/50 rounded-lg overflow-hidden">
+                    <div class="h-32" style="background-color: #F97316;"></div>
+                    <div class="p-4 bg-mono-surface">
+                        <div class="font-bold text-accent-factory">Factory</div>
+                        <div class="text-sm text-mono-light">#F97316</div>
                     </div>
-                </div>
-            </div>
-
-            <h3>Accent - Teal (10% of UI)</h3>
-            <div class="color-grid">
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #14B8A6;">Teal 500</div>
-                    <div class="color-info">
-                        <div class="color-name">accent-500</div>
-                        <div class="color-hex">#14B8A6</div>
-                        <div class="color-usage">Primary CTAs, highlights</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #0D9488;">Teal 600</div>
-                    <div class="color-info">
-                        <div class="color-name">accent-600</div>
-                        <div class="color-hex">#0D9488</div>
-                        <div class="color-usage">CTA hover</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #0F766E;">Teal 700</div>
-                    <div class="color-info">
-                        <div class="color-name">accent-700</div>
-                        <div class="color-hex">#0F766E</div>
-                        <div class="color-usage">CTA pressed</div>
-                    </div>
-                </div>
-            </div>
-
-            <h3>Semantic Colors</h3>
-            <div class="color-grid">
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #10B981;">Green 500</div>
-                    <div class="color-info">
-                        <div class="color-name">success-500</div>
-                        <div class="color-hex">#10B981</div>
-                        <div class="color-usage">Positive inventory, good scores</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #EF4444;">Red 500</div>
-                    <div class="color-info">
-                        <div class="color-name">error-500</div>
-                        <div class="color-hex">#EF4444</div>
-                        <div class="color-usage">Backorders, errors</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #F59E0B;">Amber 500</div>
-                    <div class="color-info">
-                        <div class="color-name">warning-500</div>
-                        <div class="color-hex">#F59E0B</div>
-                        <div class="color-usage">Warnings, alerts</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #3B82F6;">Blue 500</div>
-                    <div class="color-info">
-                        <div class="color-name">info-500</div>
-                        <div class="color-hex">#3B82F6</div>
-                        <div class="color-usage">Informational messages</div>
-                    </div>
-                </div>
-            </div>
-
-            <h3>Role Colors (Charts)</h3>
-            <div class="color-grid">
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #3B82F6;">Blue</div>
-                    <div class="color-info">
-                        <div class="color-name">role-retailer</div>
-                        <div class="color-hex">#3B82F6</div>
-                        <div class="color-usage">Retailer role</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #10B981;">Green</div>
-                    <div class="color-info">
-                        <div class="color-name">role-wholesaler</div>
-                        <div class="color-hex">#10B981</div>
-                        <div class="color-usage">Wholesaler role</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #8B5CF6;">Purple</div>
-                    <div class="color-info">
-                        <div class="color-name">role-distributor</div>
-                        <div class="color-hex">#8B5CF6</div>
-                        <div class="color-usage">Distributor role</div>
-                    </div>
-                </div>
-                <div class="color-swatch">
-                    <div class="color-preview" style="background: #F97316;">Orange</div>
-                    <div class="color-info">
-                        <div class="color-name">role-factory</div>
-                        <div class="color-hex">#F97316</div>
-                        <div class="color-usage">Factory role</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="contrast-info">
-                <h4>Accessibility Compliance</h4>
-                <div class="contrast-grid">
-                    <div>Body text (neutral-500 on white): <span class="contrast-pass">✓ 7.1:1 (AAA)</span></div>
-                    <div>Headings (neutral-700 on white): <span class="contrast-pass">✓ 10.4:1 (AAA)</span></div>
-                    <div>Primary button text (white on primary-500): <span class="contrast-pass">✓ 4.6:1 (AA)</span></div>
-                    <div>Success text (success-500 on white): <span class="contrast-pass">✓ 3.4:1 (AA Large)</span></div>
                 </div>
             </div>
         </div>
 
         <!-- Live Components Section -->
-        <div class="section">
-            <h2>Live Component Examples</h2>
-
-            <div class="components-grid">
-                <!-- Buttons -->
-                <div class="component-demo">
-                    <div class="component-title">Buttons</div>
-                    <button class="btn btn-primary">Primary Action</button>
-                    <button class="btn btn-accent">Start Game</button>
-                    <button class="btn btn-secondary">Cancel</button>
-                    <button class="btn btn-outline">Learn More</button>
+        <div class="bg-mono-surface rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-mono-text mb-6">Live Component Examples</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-mono-text mb-4">Buttons</h3>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="bg-accent-retailer text-mono-bg px-4 py-2 rounded font-semibold hover:opacity-80 transition-opacity">Retailer</button>
+                        <button class="bg-accent-wholesaler text-mono-bg px-4 py-2 rounded font-semibold hover:opacity-80 transition-opacity">Wholesaler</button>
+                        <button class="bg-accent-distributor text-mono-bg px-4 py-2 rounded font-semibold hover:opacity-80 transition-opacity">Distributor</button>
+                        <button class="bg-accent-factory text-mono-bg px-4 py-2 rounded font-semibold hover:opacity-80 transition-opacity">Factory</button>
+                    </div>
                 </div>
-
-                <!-- Inputs -->
-                <div class="component-demo">
-                    <div class="component-title">Form Inputs</div>
-                    <input type="text" class="input" placeholder="Order quantity...">
-                    <input type="text" class="input" value="Normal state" readonly>
-                    <input type="text" class="input error" value="Error state" readonly>
+                <div>
+                    <h3 class="text-xl font-semibold text-mono-text mb-4">Form Input</h3>
+                    <input type="number" value="25" class="w-full bg-mono-surface border-mono-light/20 rounded text-center focus:ring-accent-wholesaler focus:border-accent-wholesaler">
                 </div>
-
-                <!-- Cards -->
-                <div class="component-demo">
-                    <div class="component-title">Cards</div>
-                    <div class="card">
-                        <div class="card-title">Week 7 Summary</div>
-                        <div class="card-content">You ordered 12 units. Backlog increased by 5.</div>
+                <div>
+                    <h3 class="text-xl font-semibold text-mono-text mb-4">Inventory Display</h3>
+                     <div class="relative w-56 h-40 flex flex-col items-center justify-center bg-mono-surface border-2 border-accent-distributor rounded-md shadow-xl">
+                        <span class="text-lg text-mono-light">Inventory</span>
+                        <p class="text-7xl font-bold text-accent-distributor">55</p>
+                    </div>
+                </div>
+                 <div>
+                    <h3 class="text-xl font-semibold text-mono-text mb-4">Chat Bubbles</h3>
+                    <div class="space-y-4">
+                        <div class="bg-accent-factory/20 p-3 rounded-lg border border-accent-factory/40 text-mono-text">
+                            <p class="text-sm">Factory: Production is at full capacity.</p>
+                        </div>
+                         <div class="bg-mono-bg p-3 rounded-lg mt-1 border border-mono-light/10">
+                            <p class="text-sm text-mono-text">Wholesaler: Please expedite if possible!</p>
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Navigation -->
-            <h3>Navigation</h3>
-            <div class="nav">
-                <a href="#" class="nav-item active">Game Board</a>
-                <a href="#" class="nav-item">Data & Charts</a>
-                <a href="#" class="nav-item">Results</a>
-                <a href="#" class="nav-item">Exercises</a>
-            </div>
-
-            <!-- Alerts -->
-            <h3>Alerts & Feedback</h3>
-            <div class="alert alert-success">
-                ✓ Game completed successfully! Total cost: $2,450
-            </div>
-            <div class="alert alert-error">
-                ✕ Invalid order quantity. Must be between 0 and 100.
-            </div>
-            <div class="alert alert-warning">
-                ⚠ Your backlog is increasing. Consider ordering more units.
-            </div>
-            <div class="alert alert-info">
-                ℹ Week 7 of 20. Customer demand this week: 8 units.
-            </div>
-        </div>
-
-        <!-- Game Dashboard Preview -->
-        <div class="section">
-            <h2>Game Dashboard Preview</h2>
-
-            <h3>KPI Cards</h3>
-            <div class="kpi-grid">
-                <div class="kpi-card">
-                    <div class="kpi-label">Total Cost</div>
-                    <div class="kpi-value">$2,450</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Inventory</div>
-                    <div class="kpi-value inventory-positive">+12</div>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Backorders</div>
-                    <div class="kpi-value inventory-negative">-5</div>
-                </div>
-            </div>
-
-            <h3>Inventory Display</h3>
-            <div class="game-board">
-                <div class="inventory-box">
-                    <div class="inventory-label">Incoming Order</div>
-                    <div class="inventory-value" style="color: #3B82F6;">8</div>
-                </div>
-                <div class="inventory-box">
-                    <div class="inventory-label">Inventory</div>
-                    <div class="inventory-value inventory-positive">+12</div>
-                </div>
-                <div class="inventory-box">
-                    <div class="inventory-label">Outgoing Order</div>
-                    <div class="inventory-value" style="color: #3B82F6;">15</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chart Colors -->
-        <div class="section">
-            <h2>Role-Based Chart Colors</h2>
-            <p class="subtitle" style="margin-bottom: 16px;">Demonstrating the four supply chain roles with distinct, accessible colors</p>
-
-            <div class="chart-demo">
-                <div class="chart-bar bar-retailer">R</div>
-                <div class="chart-bar bar-wholesaler">W</div>
-                <div class="chart-bar bar-distributor">D</div>
-                <div class="chart-bar bar-factory">F</div>
-            </div>
-
-            <div class="chart-legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #3B82F6;"></div>
-                    <span>Retailer (Blue #3B82F6)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #10B981;"></div>
-                    <span>Wholesaler (Green #10B981)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #8B5CF6;"></div>
-                    <span>Distributor (Purple #8B5CF6)</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background: #F97316;"></div>
-                    <span>Factory (Orange #F97316)</span>
-                </div>
-            </div>
-
-            <div class="contrast-info">
-                <h4>Color Distinction</h4>
-                <p style="font-size: 12px; color: #64748B; margin-top: 8px;">
-                    These four colors are distinguishable for users with color vision deficiencies (tested for deuteranopia and protanopia).
-                    Each role also uses shape/label identification in addition to color.
-                </p>
-            </div>
-        </div>
-
-        <!-- Summary -->
-        <div class="section">
-            <h2>Design Philosophy</h2>
-            <p style="color: #64748B; line-height: 1.6;">
-                This color system balances <strong>calm professionalism</strong> (educational context) with
-                <strong>engaging energy</strong> (game experience). The calm blue primary creates trust and focus,
-                while teal accents add excitement for key actions. Semantic colors provide instant feedback,
-                and role colors make multi-role charts immediately scannable.
-            </p>
-            <p style="color: #64748B; line-height: 1.6; margin-top: 16px;">
-                <strong>60/30/10 Rule Applied:</strong> Neutrals (backgrounds, text) dominate at 60%,
-                primary blue appears consistently at 30% (navigation, charts, borders), and teal accent
-                highlights critical actions at 10% (CTAs, important notifications).
-            </p>
         </div>
     </div>
 </body>
