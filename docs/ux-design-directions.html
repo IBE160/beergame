@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beer Game - Application Mockups</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     <script>
@@ -20,7 +21,8 @@
                         'accent': '#8B5CF6', // Default accent
                     },
                     fontFamily: {
-                        sans: ["Roboto Mono", "monospace"],
+                        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+                        mono: ["Roboto Mono", "monospace"],
                     },
                 },
             },
@@ -28,7 +30,7 @@
     </script>
     <style>
         body {
-            font-family: 'Roboto Mono', monospace;
+            font-family: var(--font-sans);
             background-color: #1A1A1A;
             color: #E0E0E0;
         }
@@ -44,7 +46,7 @@
         }
     </style>
 </head>
-<body class="flex h-screen antialiased">
+<body class="flex h-screen antialiased font-sans">
 
     <!-- Sidebar Menu -->
     <aside class="w-72 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20">

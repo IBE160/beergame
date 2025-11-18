@@ -4,6 +4,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Beer Game - Retailer Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
 <script>
@@ -19,7 +20,8 @@
                         'accent': '#FFD700', // Gold/Amber as the contrasting accent color
                     },
                     fontFamily: {
-                        sans: ["Roboto Mono", "monospace"], // Modern, lightweight sans-serif
+                        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+                        mono: ["Roboto Mono", "monospace"],
                     },
                     borderRadius: {
                         DEFAULT: "0.25rem", // Sharper corners for a modern look
@@ -251,7 +253,7 @@
 <p class="text-xs text-mono-light">10:32 AM</p>
 </div>
 <div class="bg-mono-bg p-3 rounded-lg mt-1 border border-mono-light/10">
-<p class="text-sm text-mono-text">Just shipped your order of 25 units. Should arrive in 2 weeks.</p>
+<p class="text-sm text-mono-text font-sans">Just shipped your order of 25 units. Should arrive in 2 weeks.</p>
 </div>
 </div>
 </div>
@@ -263,7 +265,7 @@
 <p class="text-xs text-mono-light">10:35 AM</p>
 </div>
 <div class="bg-accent/20 p-3 rounded-lg mt-1 border border-accent/40 text-mono-text">
-<p class="text-sm">Great, thanks! We've had a huge spike in customer demand this week.</p>
+<p class="text-sm font-sans">Great, thanks! We've had a huge spike in customer demand this week.</p>
 </div>
 </div>
 </div>
@@ -275,14 +277,14 @@
 <p class="text-xs text-mono-light">10:38 AM</p>
 </div>
 <div class="bg-mono-bg p-3 rounded-lg mt-1 border border-mono-light/10">
-<p class="text-sm text-mono-text">Team, just a heads up, my lead times from the factory are increasing.</p>
+<p class="text-sm text-mono-text font-sans">Team, just a heads up, my lead times from the factory are increasing.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="p-4 border-t border-mono-light/20">
 <div class="relative">
-<input class="w-full pr-10 bg-mono-bg border-mono-light/20 rounded-full py-2 px-4 focus:ring-accent focus:border-accent text-mono-text" placeholder="Type a message..." type="text"/>
+<input class="w-full pr-10 bg-mono-bg border-mono-light/20 rounded-full py-2 px-4 focus:ring-accent focus:border-accent text-mono-text font-sans" placeholder="Type a message..." type="text"/>
 <button class="absolute right-2 top-1/2 -translate-y-1/2 text-mono-light hover:text-accent">
 <span class="material-symbols-outlined">send</span>
 </button>

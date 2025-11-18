@@ -128,7 +128,8 @@ These principles will guide every UX decision to ensure a consistent and intuiti
 ### 3.2 Typography System
 
 **Font Families:**
-- **Primary UI & Numeric/Data:** `"Roboto Mono", monospace` (tabular numbers)
+- **Game Dashboard & Numeric Data:** `"Roboto Mono", monospace` (for immersive in-game feel, tabular numbers, headings, buttons within the game board)
+- **Application UI & Chat:** `"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif` (for general UI elements, navigation, and chat messages for optimal readability)
 
 **Type Scale (Desktop/Laptop):**
 - Base: 16px (1rem), line-height 1.5
@@ -191,10 +192,21 @@ These principles will guide every UX decision to ensure a consistent and intuiti
 
 ### 4.1 Chosen Design Approach
 
-{{design_direction_decision}}
+**Selected Design Direction: Immersive Game Board**
+
+This direction, exemplified by `docs/stich/retailer-game-board-beergame.html` (our golden template), prioritizes an engaging and dynamic experience, making the game board the central element. It aligns with the desired student emotions of fun, excitement, and competitiveness.
+
+**Key Characteristics:**
+-   **Layout:** Centralized game board with animated flow pipes, flanked by a left sidebar for navigation and a collapsible right sidebar for team chat.
+-   **Visual Hierarchy:** The game board is the primary focus, with key performance indicators (KPIs) prominently displayed in the header for quick oversight.
+-   **Interaction Patterns:** Animated "Flow Pipes" visually represent orders and deliveries, providing real-time feedback. The chat is interactive and supports AI assistance.
+-   **Visual Style:** Dark mode theme with role-specific accent colors used strategically for primary calls-to-action and key highlights.
+-   **Typography:** A hybrid approach using `Roboto Mono` for the immersive game dashboard and numeric data, and `Inter` for the application shell and chat for optimal readability.
 
 **Interactive Mockups:**
 
+- **Application Pages Viewer**: [docs/ux-design-directions.html](./ux-design-directions.html)
+  - This interactive viewer provides access to all application mockups, starting with the golden template.
 - Design Direction Mockups from Stich: [distributor-game-board-beergame.html](./stich/distributor-game-board-beergame.html)
 - Design Direction Mockups from Stich: [factory-game-board-beergame.html](./stich/factory-game-board-beergame.html)
 - Design Direction Mockups from Stich: [retailer-game-board-beergame.html](./stich/retailer-game-board-beergame.html)
