@@ -2,30 +2,37 @@
 
 ## Fase 0
 
+- [ ] /run-agent-task analyst *workflow-init
+  - [ ] File: bmm-workflow-status.yaml
 - [ ] Brainstorming
-  - [ ] /analyst *brainstorm "Root Cause Analysis and Solution Design for Player Inactivity"
-  - [ ] /analyst *brainstorm "User Flow Deviations & Edge Cases"
+  - [ ] /run-agent-task analyst *brainstorm "Root Cause Analysis and Solution Design for Player Inactivity"
+    - [ ] File: brainstorming-session-results-date.md
+  - [ ] /run-agent-task analyst *brainstorm "User Flow Deviations & Edge Cases"
+    - [ ] File: brainstorming-session-results-date.md
 - [ ] Research
-  - [ ] /analyst *research "Which AI library should we use for orchestrating LLM interactions?"
+  - [ ] /run-agent-task analyst *research "Which AI library should we use for orchestrating LLM interactions?"
+    - [ ] File: research-technical-date.md
 - [ ] Product Brief
-  - [ ] /analyst *product-brief "Read the two brainstorming sessions the research session and the @proposal.md file, and create a product brief for the project."
+  - [ ] /run-agent-task analyst *product-brief "Read the two brainstorming sessions the research session and the @proposal.md file, and create a product brief for the project."
+    - [ ] File: product-brief.md
 
 ## Fase 1
 
 - [ ] Planning
   - [x] /run-agent-task pm *prd {prompt / user-input-file}
+    - [x] File: PRD.md
   - [x] /run-agent-task pm *validate-prd {prompt / user-input-file}
+    - [ ] File: validation-report-date.md
   - [ ] /run-agent-task ux-designer *create-ux-design {prompt / user-input-file}
   - [ ] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
-  - [ ] /run-agent-task tea *framework {prompt / user-input-file}
-  - [ ] /run-agent-task tea *ci {prompt / user-input-file}
-  - [ ] /run-agent-task tea *test-design {prompt / user-input-file}
 
 ## Fase 2
 
 - [ ] Solutioning
   - [ ] /run-agent-task architect *architecture {prompt / user-input-file}
   - [ ] /run-agent-task architect *validate-architecture {prompt / user-input-file}
+  - [ ] /run-agent-task tea *framework {prompt / user-input-file}
+  - [ ] /run-agent-task tea *ci {prompt / user-input-file}
 
 ## Fase 3
 
