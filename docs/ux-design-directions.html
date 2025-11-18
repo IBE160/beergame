@@ -1,1209 +1,147 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beer Game Design Directions - Interactive Showcase</title>
+    <title>Beer Game - Application Mockups</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        'mono-bg': '#1A1A1A',
+                        'mono-surface': '#2C2C2C',
+                        'mono-text': '#E0E0E0',
+                        'mono-light': '#808080',
+                        'accent': '#8B5CF6', // Default accent
+                    },
+                    fontFamily: {
+                        sans: ["Roboto Mono", "monospace"],
+                    },
+                },
+            },
+        };
+    </script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: #0F172A;
-            color: #F8FAFC;
-            line-height: 1.5;
-        }
-
-        .controls {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #1E293B;
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 1000;
-            border-bottom: 1px solid #334155;
-        }
-
-        .controls h1 {
-            font-size: 20px;
-            color: white;
-        }
-
-        .direction-nav {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-        }
-
-        .nav-btn {
-            background: #3B82F6;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .nav-btn:hover {
-            background: #2563EB;
-        }
-
-        .nav-btn:disabled {
-            background: #334155;
-            cursor: not-allowed;
-        }
-
-        .direction-counter {
-            font-size: 14px;
-            color: #CBD5E1;
-            font-weight: 600;
-        }
-
-        .view-toggle {
-            display: flex;
-            gap: 8px;
-        }
-
-        .toggle-btn {
-            background: #334155;
-            color: #CBD5E1;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-
-        .toggle-btn.active {
-            background: #14B8A6;
-            color: white;
-        }
-
-        .mockup-container {
-            margin-top: 72px;
-            padding: 24px;
-            min-height: calc(100vh - 72px);
-        }
-
-        .mockup-wrapper {
-            display: none;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        .mockup-wrapper.active {
-            display: block;
-        }
-
-        .mockup-info {
-            background: #1E293B;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-            border: 1px solid #334155;
-        }
-
-        .mockup-title {
-            font-size: 32px;
-            color: white;
-            margin-bottom: 8px;
-        }
-
-        .mockup-subtitle {
-            font-size: 16px;
-            color: #94A3B8;
-            margin-bottom: 16px;
-        }
-
-        .mockup-tags {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background: #334155;
-            color: #CBD5E1;
-            padding: 4px 12px;
-            border-radius: 4px;
-            font-size: 12px;
-        }
-
-        .mockup-frame {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-        }
-
-        /* Common Dashboard Styles */
-        .dashboard {
-            display: grid;
-            height: 900px;
-            background: #FFFFFF;
-            color: #0F172A;
-        }
-
-        .header {
-            background: #3B82F6;
-            color: white;
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header-left h2 {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-
-        .header-left p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .kpi-bar {
-            display: flex;
-            gap: 24px;
-        }
-
-        .kpi {
-            text-align: right;
-        }
-
-        .kpi-label {
-            font-size: 12px;
-            opacity: 0.8;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .kpi-value {
-            font-size: 24px;
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .sidebar {
-            background: #F8FAFC;
-            border-right: 1px solid #E2E8F0;
-            padding: 16px;
-        }
-
-        .nav-item {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: #64748B;
-        }
-
-        .nav-item:hover {
-            background: #E2E8F0;
-        }
-
-        .nav-item.active {
-            background: #3B82F6;
-            color: white;
-        }
-
-        .board-container {
-            background: white;
-            padding: 24px;
-            overflow-y: auto;
-        }
-
-        .board {
-            background: white;
-            border: 2px solid #3B82F6;
-            border-radius: 12px;
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-
-        .board-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        .board-slot {
-            border: 2px solid #E2E8F0;
-            border-radius: 8px;
-            padding: 16px;
-            text-align: center;
-        }
-
-        .board-slot.highlight {
-            border-color: #3B82F6;
-            background: #EFF6FF;
-        }
-
-        .slot-label {
-            font-size: 12px;
-            color: #64748B;
-            margin-bottom: 8px;
-            text-transform: uppercase;
-        }
-
-        .slot-value {
-            font-size: 32px;
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-            color: #3B82F6;
-        }
-
-        .slot-value.positive {
-            color: #10B981;
-        }
-
-        .slot-value.negative {
-            color: #EF4444;
-        }
-
-        .chat-sidebar {
-            background: #F8FAFC;
-            border-left: 1px solid #E2E8F0;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .chat-header {
-            font-size: 16px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 16px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid #E2E8F0;
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        .message {
-            background: #E2E8F0;
-            padding: 8px 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .message.ai {
-            background: #DBEAFE;
-            border-left: 3px solid #3B82F6;
-        }
-
-        .chart-section {
-            background: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 8px;
-            padding: 16px;
-            margin-bottom: 16px;
-        }
-
-        .chart-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 12px;
-        }
-
-        .chart-placeholder {
-            height: 180px;
-            background: white;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #94A3B8;
-            font-size: 14px;
-        }
-
-        .action-bar {
-            background: #F8FAFC;
-            border-top: 1px solid #E2E8F0;
-            padding: 16px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .input-group label {
-            font-size: 14px;
-            color: #64748B;
-        }
-
-        .input-group input {
-            width: 100px;
-            padding: 8px 12px;
-            border: 1px solid #E2E8F0;
-            border-radius: 6px;
-            font-size: 16px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border-radius: 6px;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: #14B8A6;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #0D9488;
-        }
-
-        .btn-secondary {
-            background: #E2E8F0;
-            color: #334155;
-        }
-
-        /* Direction-specific layouts */
-        .direction-1 {
-            grid-template-columns: 200px 1fr 300px;
-            grid-template-rows: auto 1fr auto;
-        }
-
-        .direction-1 .sidebar {
-            grid-row: 1 / 4;
-        }
-
-        .direction-2 {
-            grid-template-columns: 1fr 320px;
-            grid-template-rows: auto 1fr auto;
-        }
-
-        .direction-3 {
-            grid-template-rows: auto auto 1fr auto;
-        }
-
-        .direction-4 {
-            grid-template-columns: 250px 1fr;
-            grid-template-rows: auto 1fr auto;
-        }
-
-        .direction-4 .sidebar {
-            grid-row: 1 / 4;
-        }
-
-        .direction-5 {
-            grid-template-rows: auto 1fr;
-        }
-
-        .direction-6 {
-            grid-template-columns: 180px 1fr 280px;
-            grid-template-rows: auto 1fr;
-        }
-
-        .direction-6 .sidebar {
-            grid-row: 1 / 3;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 4px;
-            background: #F1F5F9;
-            padding: 4px;
-            border-radius: 8px;
-            margin-bottom: 16px;
-        }
-
-        .tab {
-            flex: 1;
-            padding: 8px 16px;
-            text-align: center;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 14px;
-            color: #64748B;
-        }
-
-        .tab.active {
-            background: white;
-            color: #3B82F6;
-            font-weight: 600;
-        }
-
-        .kpi-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .kpi-card {
-            background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%);
-            border: 1px solid #3B82F6;
-            border-radius: 8px;
-            padding: 16px;
-        }
-
-        .kpi-card-label {
-            font-size: 12px;
-            color: #1E40AF;
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .kpi-card-value {
-            font-size: 28px;
-            font-weight: 600;
-            color: #1E3A8A;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .split-view {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-        }
-
-        .panel {
-            background: #F8FAFC;
-            border: 1px solid #E2E8F0;
-            border-radius: 8px;
-            padding: 20px;
-        }
-
-        .panel-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 16px;
-        }
-
-        .top-nav {
-            background: white;
-            border-bottom: 1px solid #E2E8F0;
-            padding: 0 24px;
-            display: flex;
-            gap: 32px;
-        }
-
-        .top-nav-item {
-            padding: 16px 0;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-            color: #64748B;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .top-nav-item.active {
-            border-bottom-color: #3B82F6;
-            color: #3B82F6;
-            font-weight: 600;
-        }
-
-        .compact-header {
-            background: white;
-            border-bottom: 1px solid #E2E8F0;
-            padding: 12px 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .compact-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #334155;
-        }
-
-        .compact-kpis {
-            display: flex;
-            gap: 24px;
-        }
-
-        .compact-kpi {
-            text-align: right;
-        }
-
-        .compact-kpi-label {
-            font-size: 11px;
-            color: #64748B;
-            text-transform: uppercase;
-        }
-
-        .compact-kpi-value {
-            font-size: 18px;
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-            color: #334155;
+            font-family: 'Roboto Mono', monospace;
+            background-color: #1A1A1A;
+            color: #E0E0E0;
+        }
+        .main-menu a.active {
+            background-color: #8B5CF6;
+            color: #1A1A1A;
+        }
+        .main-menu a.active .material-symbols-outlined {
+            color: #1A1A1A;
+        }
+        iframe {
+            height: calc(100vh - 4rem); /* Full height minus header */
         }
     </style>
 </head>
-<body>
-    <div class="controls">
-        <h1>Beer Game Design Directions</h1>
-        <div class="direction-nav">
-            <button class="nav-btn" id="prevBtn" onclick="previousDirection()">← Previous</button>
-            <span class="direction-counter" id="counter">1 of 6</span>
-            <button class="nav-btn" id="nextBtn" onclick="nextDirection()">Next →</button>
-        </div>
-        <div class="view-toggle">
-            <button class="toggle-btn active" onclick="setView('single')">Single</button>
-            <button class="toggle-btn" onclick="setView('compare')">Compare</button>
-        </div>
-    </div>
+<body class="flex h-screen antialiased">
 
-    <div class="mockup-container">
-        <!-- Direction 1: Classic Dashboard -->
-        <div class="mockup-wrapper active" id="direction-1">
-            <div class="mockup-info">
-                <h2 class="mockup-title">Direction 1: Classic Dashboard</h2>
-                <p class="mockup-subtitle">Traditional 3-column layout with persistent navigation and chat</p>
-                <div class="mockup-tags">
-                    <span class="tag">Balanced Density</span>
-                    <span class="tag">Sidebar Navigation</span>
-                    <span class="tag">Always-visible Chat</span>
-                    <span class="tag">Top KPI Bar</span>
-                </div>
-            </div>
-            <div class="mockup-frame">
-                <div class="dashboard direction-1">
-                    <div class="sidebar">
-                        <div class="nav-item active">Game Board</div>
-                        <div class="nav-item">Data & Charts</div>
-                        <div class="nav-item">Results</div>
-                        <div class="nav-item">Exercises</div>
-                    </div>
-                    <div class="header">
-                        <div class="header-left">
-                            <h2>Retailer · Week 7 of 20</h2>
-                            <p>Multiplayer Game with 3 players</p>
-                        </div>
-                        <div class="kpi-bar">
-                            <div class="kpi">
-                                <div class="kpi-label">Total Cost</div>
-                                <div class="kpi-value">$2,450</div>
-                            </div>
-                            <div class="kpi">
-                                <div class="kpi-label">Inventory</div>
-                                <div class="kpi-value" style="color: #10B981;">+12</div>
-                            </div>
-                            <div class="kpi">
-                                <div class="kpi-label">Backlog</div>
-                                <div class="kpi-value" style="color: #EF4444;">-5</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="board-container">
-                        <div class="board">
-                            <div class="board-grid">
-                                <div class="board-slot">
-                                    <div class="slot-label">Incoming Order</div>
-                                    <div class="slot-value">8</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Incoming Delivery</div>
-                                    <div class="slot-value">12</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Customer Demand</div>
-                                    <div class="slot-value">10</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Pipeline In</div>
-                                    <div class="slot-value">15</div>
-                                </div>
-                                <div class="board-slot highlight">
-                                    <div class="slot-label">Inventory</div>
-                                    <div class="slot-value positive">+12</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Pipeline Out</div>
-                                    <div class="slot-value">8</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Last Week Order</div>
-                                    <div class="slot-value">15</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Outgoing Delivery</div>
-                                    <div class="slot-value">10</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Backlog</div>
-                                    <div class="slot-value negative">-5</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="chart-section">
-                            <div class="chart-title">Order & Inventory Trend</div>
-                            <div class="chart-placeholder">[Line chart: Orders vs Inventory over 7 weeks]</div>
-                        </div>
-                    </div>
-                    <div class="chat-sidebar">
-                        <div class="chat-header">Team Chat</div>
-                        <div class="chat-messages">
-                            <div class="message ai">AI: Week 7 started. Customer demand: 10 units.</div>
-                            <div class="message">Wholesaler: I have enough stock</div>
-                            <div class="message">You: Ordering 15 units</div>
-                        </div>
-                    </div>
-                    <div class="action-bar" style="grid-column: 2;">
-                        <div class="input-group">
-                            <label>Order Quantity:</label>
-                            <input type="number" value="15">
-                        </div>
-                        <button class="btn btn-primary">Submit Order</button>
-                    </div>
-                </div>
-            </div>
+    <!-- Sidebar Menu -->
+    <aside class="w-72 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20">
+        <div class="h-16 flex items-center justify-center border-b border-mono-light/20 px-4">
+            <h1 class="text-xl font-bold text-accent">Application Pages</h1>
         </div>
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto main-menu">
+            <h2 class="px-3 pt-2 pb-1 text-xs font-semibold text-mono-light uppercase tracking-wider">Game Boards</h2>
+            <a href="./stich/retailer-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+                <span class="material-symbols-outlined mr-3 text-yellow-400">storefront</span>
+                Retailer Dashboard
+            </a>
+            <a href="./stich/wholesaler-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+                <span class="material-symbols-outlined mr-3 text-green-400">warehouse</span>
+                Wholesaler Dashboard
+            </a>
+            <a href="./stich/distributor-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+                <span class="material-symbols-outlined mr-3 text-purple-400">local_shipping</span>
+                Distributor Dashboard
+            </a>
+            <a href="./stich/factory-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+                <span class="material-symbols-outlined mr-3 text-orange-400">factory</span>
+                Factory Dashboard
+            </a>
+            
+            <!-- Future pages will be added here -->
+            <h2 class="px-3 pt-4 pb-1 text-xs font-semibold text-mono-light uppercase tracking-wider">Instructor Pages</h2>
+             <a href="#" class="flex items-center p-3 rounded-md text-mono-light/50 cursor-not-allowed">
+                <span class="material-symbols-outlined mr-3">monitor</span>
+                Monitoring Dashboard
+            </a>
+             <a href="#" class="flex items-center p-3 rounded-md text-mono-light/50 cursor-not-allowed">
+                <span class="material-symbols-outlined mr-3">school</span>
+                Class Management
+            </a>
 
-        <!-- Direction 2: KPI-First Design -->
-        <div class="mockup-wrapper" id="direction-2">
-            <div class="mockup-info">
-                <h2 class="mockup-title">Direction 2: KPI-First Design</h2>
-                <p class="mockup-subtitle">Prominent KPI cards above the board for data-driven decision making</p>
-                <div class="mockup-tags">
-                    <span class="tag">Data-Rich</span>
-                    <span class="tag">KPI Cards</span>
-                    <span class="tag">Collapsible Chat</span>
-                    <span class="tag">Analytics Focus</span>
-                </div>
-            </div>
-            <div class="mockup-frame">
-                <div class="dashboard direction-2">
-                    <div class="header">
-                        <div class="header-left">
-                            <h2>Retailer · Week 7 of 20</h2>
-                            <p>Multiplayer Game</p>
-                        </div>
-                    </div>
-                    <div style="grid-column: 1; padding: 24px;">
-                        <div class="kpi-cards">
-                            <div class="kpi-card">
-                                <div class="kpi-card-label">Total Cost</div>
-                                <div class="kpi-card-value">$2,450</div>
-                            </div>
-                            <div class="kpi-card">
-                                <div class="kpi-card-label">Inventory</div>
-                                <div class="kpi-card-value" style="color: #10B981;">+12</div>
-                            </div>
-                            <div class="kpi-card">
-                                <div class="kpi-card-label">Backlog</div>
-                                <div class="kpi-card-value" style="color: #EF4444;">-5</div>
-                            </div>
-                        </div>
-                        <div class="tabs">
-                            <div class="tab active">Game Board</div>
-                            <div class="tab">Data & Charts</div>
-                            <div class="tab">Results</div>
-                            <div class="tab">Exercises</div>
-                        </div>
-                        <div class="board">
-                            <div class="board-grid">
-                                <div class="board-slot">
-                                    <div class="slot-label">Incoming Order</div>
-                                    <div class="slot-value">8</div>
-                                </div>
-                                <div class="board-slot highlight">
-                                    <div class="slot-label">Inventory</div>
-                                    <div class="slot-value positive">+12</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Customer Demand</div>
-                                    <div class="slot-value">10</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="split-view">
-                            <div class="panel">
-                                <div class="panel-title">Order History</div>
-                                <div class="chart-placeholder">[Bar chart]</div>
-                            </div>
-                            <div class="panel">
-                                <div class="panel-title">Cost Breakdown</div>
-                                <div class="chart-placeholder">[Stacked area]</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-sidebar">
-                        <div class="chat-header">Team Chat</div>
-                        <div class="chat-messages">
-                            <div class="message ai">Week 7 started</div>
-                            <div class="message">Wholesaler: Stock OK</div>
-                        </div>
-                    </div>
-                    <div class="action-bar" style="grid-column: 1 / 3;">
-                        <div class="input-group">
-                            <label>Order Quantity:</label>
-                            <input type="number" value="15">
-                        </div>
-                        <button class="btn btn-primary">Submit Order</button>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <h2 class="px-3 pt-4 pb-1 text-xs font-semibold text-mono-light uppercase tracking-wider">General Pages</h2>
+             <a href="#" class="flex items-center p-3 rounded-md text-mono-light/50 cursor-not-allowed">
+                <span class="material-symbols-outlined mr-3">login</span>
+                Login & Registration
+            </a>
+        </nav>
+    </aside>
 
-        <!-- Direction 3: Clean Minimal -->
-        <div class="mockup-wrapper" id="direction-3">
-            <div class="mockup-info">
-                <h2 class="mockup-title">Direction 3: Clean Minimal</h2>
-                <p class="mockup-subtitle">Spacious layout with top navigation and maximum breathing room</p>
-                <div class="mockup-tags">
-                    <span class="tag">Spacious</span>
-                    <span class="tag">Top Navigation</span>
-                    <span class="tag">Minimal Clutter</span>
-                    <span class="tag">Focus Mode</span>
-                </div>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col">
+        <header class="h-16 bg-mono-surface flex-shrink-0 flex items-center justify-between px-6 border-b border-mono-light/20">
+            <div class="flex items-center">
+                <h2 class="text-lg font-semibold text-mono-text">Live Mockup Viewer</h2>
             </div>
-            <div class="mockup-frame">
-                <div class="dashboard direction-3">
-                    <div class="compact-header">
-                        <div class="compact-title">Retailer · Week 7 of 20</div>
-                        <div class="compact-kpis">
-                            <div class="compact-kpi">
-                                <div class="compact-kpi-label">Cost</div>
-                                <div class="compact-kpi-value">$2,450</div>
-                            </div>
-                            <div class="compact-kpi">
-                                <div class="compact-kpi-label">Inventory</div>
-                                <div class="compact-kpi-value" style="color: #10B981;">+12</div>
-                            </div>
-                            <div class="compact-kpi">
-                                <div class="compact-kpi-label">Backlog</div>
-                                <div class="compact-kpi-value" style="color: #EF4444;">-5</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="top-nav">
-                        <div class="top-nav-item active">Game Board</div>
-                        <div class="top-nav-item">Data & Charts</div>
-                        <div class="top-nav-item">Results</div>
-                        <div class="top-nav-item">Exercises</div>
-                        <div class="top-nav-item">Chat (3)</div>
-                    </div>
-                    <div style="padding: 48px; max-width: 1200px; margin: 0 auto;">
-                        <div class="board">
-                            <div class="board-grid">
-                                <div class="board-slot">
-                                    <div class="slot-label">Incoming Order</div>
-                                    <div class="slot-value">8</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Incoming Delivery</div>
-                                    <div class="slot-value">12</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Customer Demand</div>
-                                    <div class="slot-value">10</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Pipeline In</div>
-                                    <div class="slot-value">15</div>
-                                </div>
-                                <div class="board-slot highlight">
-                                    <div class="slot-label">Inventory</div>
-                                    <div class="slot-value positive">+12</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Pipeline Out</div>
-                                    <div class="slot-value">8</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Last Week Order</div>
-                                    <div class="slot-value">15</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Outgoing Delivery</div>
-                                    <div class="slot-value">10</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Backlog</div>
-                                    <div class="slot-value negative">-5</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="margin-top: 32px;">
-                            <div class="chart-section">
-                                <div class="chart-title">Week-by-Week Trend</div>
-                                <div class="chart-placeholder" style="height: 240px;">[Line chart with more space]</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="action-bar">
-                        <div class="input-group">
-                            <label>Order Quantity for Week 8:</label>
-                            <input type="number" value="15">
-                        </div>
-                        <button class="btn btn-primary">Submit Order →</button>
-                    </div>
-                </div>
+            <div class="text-sm text-mono-light">
+                Select a page from the menu to view the live mockup.
             </div>
+        </header>
+        <div class="flex-1 bg-mono-bg">
+            <iframe name="mockup-frame" class="w-full h-full border-0" src="./stich/retailer-game-board-beergame.html"></iframe>
         </div>
-
-        <!-- Direction 4: Dense Professional -->
-        <div class="mockup-wrapper" id="direction-4">
-            <div class="mockup-info">
-                <h2 class="mockup-title">Direction 4: Dense Professional</h2>
-                <p class="mockup-subtitle">Information-rich layout for power users who need everything visible</p>
-                <div class="mockup-tags">
-                    <span class="tag">Dense</span>
-                    <span class="tag">Power User</span>
-                    <span class="tag">Multi-Panel</span>
-                    <span class="tag">Analytics Heavy</span>
-                </div>
-            </div>
-            <div class="mockup-frame">
-                <div class="dashboard direction-4">
-                    <div class="sidebar">
-                        <div style="margin-bottom: 24px;">
-                            <div style="font-size: 12px; color: #64748B; margin-bottom: 8px;">NAVIGATION</div>
-                            <div class="nav-item active">Board</div>
-                            <div class="nav-item">Data</div>
-                            <div class="nav-item">Results</div>
-                            <div class="nav-item">Exercises</div>
-                        </div>
-                        <div>
-                            <div style="font-size: 12px; color: #64748B; margin-bottom: 8px;">QUICK STATS</div>
-                            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px; margin-bottom: 8px;">
-                                <div style="font-size: 11px; color: #64748B;">Total Cost</div>
-                                <div style="font-size: 20px; font-weight: 600; font-family: monospace;">$2,450</div>
-                            </div>
-                            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px; margin-bottom: 8px;">
-                                <div style="font-size: 11px; color: #64748B;">Inventory</div>
-                                <div style="font-size: 20px; font-weight: 600; font-family: monospace; color: #10B981;">+12</div>
-                            </div>
-                            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px;">
-                                <div style="font-size: 11px; color: #64748B;">Backlog</div>
-                                <div style="font-size: 20px; font-weight: 600; font-family: monospace; color: #EF4444;">-5</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="header">
-                        <div class="header-left">
-                            <h2>Retailer · Week 7 of 20</h2>
-                            <p>Multiplayer · 3 active players</p>
-                        </div>
-                    </div>
-                    <div style="padding: 16px; overflow-y: auto;">
-                        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px;">
-                            <div class="board">
-                                <div class="board-grid">
-                                    <div class="board-slot">
-                                        <div class="slot-label">In Order</div>
-                                        <div class="slot-value" style="font-size: 24px;">8</div>
-                                    </div>
-                                    <div class="board-slot highlight">
-                                        <div class="slot-label">Inventory</div>
-                                        <div class="slot-value positive" style="font-size: 24px;">+12</div>
-                                    </div>
-                                    <div class="board-slot">
-                                        <div class="slot-label">Demand</div>
-                                        <div class="slot-value" style="font-size: 24px;">10</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel">
-                                <div class="panel-title" style="font-size: 14px;">Team Status</div>
-                                <div style="font-size: 12px; color: #64748B;">
-                                    <div style="padding: 8px; background: #F8FAFC; border-radius: 4px; margin-bottom: 4px;">Wholesaler: Ready</div>
-                                    <div style="padding: 8px; background: #F8FAFC; border-radius: 4px; margin-bottom: 4px;">Distributor: Ready</div>
-                                    <div style="padding: 8px; background: #FEF3C7; border-radius: 4px;">Factory: Waiting</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
-                            <div class="chart-section">
-                                <div class="chart-title" style="font-size: 14px;">Orders vs Inventory</div>
-                                <div class="chart-placeholder" style="height: 140px;">[Line chart]</div>
-                            </div>
-                            <div class="chart-section">
-                                <div class="chart-title" style="font-size: 14px;">Cost Accumulation</div>
-                                <div class="chart-placeholder" style="height: 140px;">[Area chart]</div>
-                            </div>
-                        </div>
-                        <div class="panel" style="margin-top: 16px;">
-                            <div class="panel-title" style="font-size: 14px;">Decision History</div>
-                            <div style="font-size: 12px; color: #64748B;">
-                                <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #E2E8F0;">
-                                    <span>Week 6: Ordered 15</span>
-                                    <span>Cost: $350</span>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #E2E8F0;">
-                                    <span>Week 5: Ordered 12</span>
-                                    <span>Cost: $310</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="action-bar">
-                        <div class="input-group">
-                            <label>Order:</label>
-                            <input type="number" value="15" style="width: 80px;">
-                        </div>
-                        <button class="btn btn-primary">Submit →</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Direction 5: Board-Centric -->
-        <div class="mockup-wrapper" id="direction-5">
-            <div class="mockup-info">
-                <h2 class="mockup-title">Direction 5: Board-Centric</h2>
-                <p class="mockup-subtitle">Game board takes center stage with minimal distractions</p>
-                <div class="mockup-tags">
-                    <span class="tag">Board Focus</span>
-                    <span class="tag">Immersive</span>
-                    <span class="tag">Clear Hierarchy</span>
-                    <span class="tag">Beginner-Friendly</span>
-                </div>
-            </div>
-            <div class="mockup-frame">
-                <div class="dashboard direction-5">
-                    <div class="header">
-                        <div class="header-left">
-                            <h2>Retailer · Week 7 of 20</h2>
-                        </div>
-                        <div class="kpi-bar">
-                            <div class="kpi">
-                                <div class="kpi-label">Total Cost</div>
-                                <div class="kpi-value">$2,450</div>
-                            </div>
-                            <div class="kpi">
-                                <div class="kpi-label">Inventory</div>
-                                <div class="kpi-value" style="color: #10B981;">+12</div>
-                            </div>
-                            <div class="kpi">
-                                <div class="kpi-label">Backlog</div>
-                                <div class="kpi-value" style="color: #EF4444;">-5</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="padding: 48px; background: #F8FAFC;">
-                        <div class="tabs" style="max-width: 600px; margin: 0 auto 32px;">
-                            <div class="tab active">Game Board</div>
-                            <div class="tab">Charts</div>
-                            <div class="tab">Results</div>
-                            <div class="tab">Chat</div>
-                        </div>
-                        <div class="board" style="max-width: 800px; margin: 0 auto 32px;">
-                            <div class="board-grid">
-                                <div class="board-slot">
-                                    <div class="slot-label">Incoming Order</div>
-                                    <div class="slot-value">8</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Incoming Delivery</div>
-                                    <div class="slot-value">12</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Customer Demand</div>
-                                    <div class="slot-value">10</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Pipeline In</div>
-                                    <div class="slot-value">15</div>
-                                </div>
-                                <div class="board-slot highlight">
-                                    <div class="slot-label">Inventory</div>
-                                    <div class="slot-value positive">+12</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Pipeline Out</div>
-                                    <div class="slot-value">8</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Last Week Order</div>
-                                    <div class="slot-value">15</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Outgoing Delivery</div>
-                                    <div class="slot-value">10</div>
-                                </div>
-                                <div class="board-slot">
-                                    <div class="slot-label">Backlog</div>
-                                    <div class="slot-value negative">-5</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div style="max-width: 600px; margin: 0 auto; background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 24px; display: flex; justify-content: space-between; align-items: center;">
-                            <div class="input-group">
-                                <label style="font-size: 16px; font-weight: 600;">Order Quantity:</label>
-                                <input type="number" value="15" style="width: 120px; font-size: 18px;">
-                            </div>
-                            <button class="btn btn-primary" style="font-size: 16px; padding: 12px 32px;">Submit Order</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Direction 6: Split Dashboard -->
-        <div class="mockup-wrapper" id="direction-6">
-            <div class="mockup-info">
-                <h2 class="mockup-title">Direction 6: Split Dashboard</h2>
-                <p class="mockup-subtitle">Board and analytics side-by-side for parallel decision-making</p>
-                <div class="mockup-tags">
-                    <span class="tag">Split View</span>
-                    <span class="tag">Analytics Parallel</span>
-                    <span class="tag">Sidebar Nav</span>
-                    <span class="tag">Data-Informed</span>
-                </div>
-            </div>
-            <div class="mockup-frame">
-                <div class="dashboard direction-6">
-                    <div class="sidebar">
-                        <div style="font-size: 18px; font-weight: 600; color: #334155; margin-bottom: 24px;">Views</div>
-                        <div class="nav-item active">Board</div>
-                        <div class="nav-item">Data</div>
-                        <div class="nav-item">Results</div>
-                        <div class="nav-item">Exercises</div>
-                        <div class="nav-item">Chat</div>
-                    </div>
-                    <div class="header">
-                        <div class="header-left">
-                            <h2>Retailer · Week 7 of 20</h2>
-                            <p>Total Cost: $2,450</p>
-                        </div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; padding: 24px; overflow-y: auto; background: #F8FAFC;">
-                        <div>
-                            <div class="panel" style="margin-bottom: 24px;">
-                                <div class="panel-title">Game Board</div>
-                                <div class="board-grid">
-                                    <div class="board-slot">
-                                        <div class="slot-label">In Order</div>
-                                        <div class="slot-value" style="font-size: 24px;">8</div>
-                                    </div>
-                                    <div class="board-slot highlight">
-                                        <div class="slot-label">Inventory</div>
-                                        <div class="slot-value positive" style="font-size: 24px;">+12</div>
-                                    </div>
-                                    <div class="board-slot">
-                                        <div class="slot-label">Demand</div>
-                                        <div class="slot-value" style="font-size: 24px;">10</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel">
-                                <div class="panel-title">Make Your Decision</div>
-                                <div class="input-group" style="margin-bottom: 16px;">
-                                    <label style="display: block; margin-bottom: 8px;">Order Quantity for Week 8:</label>
-                                    <input type="number" value="15" style="width: 100%; font-size: 18px;">
-                                </div>
-                                <button class="btn btn-primary" style="width: 100%; font-size: 16px;">Submit Order</button>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="kpi-cards" style="grid-template-columns: 1fr 1fr;">
-                                <div class="kpi-card">
-                                    <div class="kpi-card-label">Inventory</div>
-                                    <div class="kpi-card-value" style="color: #10B981; font-size: 24px;">+12</div>
-                                </div>
-                                <div class="kpi-card">
-                                    <div class="kpi-card-label">Backlog</div>
-                                    <div class="kpi-card-value" style="color: #EF4444; font-size: 24px;">-5</div>
-                                </div>
-                            </div>
-                            <div class="chart-section">
-                                <div class="chart-title">Orders & Inventory Trend</div>
-                                <div class="chart-placeholder" style="height: 200px;">[Line chart]</div>
-                            </div>
-                            <div class="panel">
-                                <div class="panel-title">Recent Decisions</div>
-                                <div style="font-size: 14px; color: #64748B;">
-                                    <div style="display: flex; justify-content: space-between; padding: 8px; background: white; border-radius: 4px; margin-bottom: 4px;">
-                                        <span>Week 6</span>
-                                        <span style="font-family: monospace; font-weight: 600;">Ordered 15</span>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between; padding: 8px; background: white; border-radius: 4px; margin-bottom: 4px;">
-                                        <span>Week 5</span>
-                                        <span style="font-family: monospace; font-weight: 600;">Ordered 12</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="chat-sidebar">
-                        <div class="chat-header" style="font-size: 14px;">Team Chat</div>
-                        <div class="chat-messages">
-                            <div class="message ai" style="font-size: 12px;">Week 7 started</div>
-                            <div class="message" style="font-size: 12px;">Wholesaler: Ready</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    </main>
 
     <script>
-        let currentDirection = 1;
-        const totalDirections = 6;
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuLinks = document.querySelectorAll('.main-menu a');
+            const iframe = document.querySelector('iframe[name="mockup-frame"]');
 
-        function showDirection(n) {
-            document.querySelectorAll('.mockup-wrapper').forEach(wrapper => {
-                wrapper.classList.remove('active');
+            // Set the first link as active by default
+            if (menuLinks.length > 0) {
+                menuLinks[0].classList.add('active');
+            }
+
+            menuLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    // Don't prevent default for links with href="#"
+                    if (link.getAttribute('href') === '#') {
+                        event.preventDefault();
+                        return;
+                    }
+
+                    // Remove active class from all links
+                    menuLinks.forEach(l => l.classList.remove('active'));
+                    // Add active class to the clicked link
+                    event.currentTarget.classList.add('active');
+                });
             });
-            document.getElementById(`direction-${n}`).classList.add('active');
-            document.getElementById('counter').textContent = `${n} of ${totalDirections}`;
 
-            document.getElementById('prevBtn').disabled = n === 1;
-            document.getElementById('nextBtn').disabled = n === totalDirections;
-
-            currentDirection = n;
-        }
-
-        function nextDirection() {
-            if (currentDirection < totalDirections) {
-                showDirection(currentDirection + 1);
-            }
-        }
-
-        function previousDirection() {
-            if (currentDirection > 1) {
-                showDirection(currentDirection - 1);
-            }
-        }
-
-        function setView(view) {
-            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            // View toggle functionality would be implemented here
-        }
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft') previousDirection();
-            if (e.key === 'ArrowRight') nextDirection();
+            // Optional: Update active state if iframe location changes (e.g., via back/forward)
+            iframe.addEventListener('load', () => {
+                const currentSrc = iframe.contentWindow.location.href.split('/').pop();
+                menuLinks.forEach(link => {
+                    if (link.getAttribute('href').includes(currentSrc)) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            });
         });
     </script>
+
 </body>
 </html>

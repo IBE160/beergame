@@ -10,11 +10,11 @@ _Generated using BMad Method - Create UX Design Workflow v1.0_
 **Project:** Beer Game Interactive Platform - AI-powered supply chain education simulation
 
 **Target Experience:**
-- **Students:** Engaged and curious with the feeling of learning through gameplay
-- **Instructors:** In control and excited about student performance, liberated from administrative tasks
+- **Students:** Fun, excited, in control, curious, determined, and competitive, fostering a sense of learning through engaging gameplay.
+- **Instructors:** Simplicity, oversight, and pleased by having engaged students, feeling liberated from administrative tasks.
 - **Core Magic:** "Great with AI-driven players and feedback, fun with fellow students"
 
-**Design Inspiration:** Khan Academy's progress-driven visual language and educational game engagement patterns
+**Design Inspiration:** Established UX patterns from educational, simulation/strategy game, and productivity/dashboard platforms, focusing on engagement, clear feedback, and efficient oversight.
 
 **User Tiers:**
 1. Free Demo Users - Fixed 20-week games with AI opponents
@@ -69,11 +69,29 @@ All colors, typography, and spacing tokens defined in Section 3 will be configur
 
 ### 2.1 Defining Experience
 
-{{core_experience}}
+The core experience is dual-focused, catering to the distinct needs of students and instructors, while maintaining an overarching feeling of being **excited, in control, curious, determined, and competitive.**
+
+*   **For Students: Effortless Gameplay.** The single most important action is playing the game. The journey from logging in to making a decision each week must be seamless and intuitive. The interface should minimize administrative friction and maximize focus on supply chain strategy, making the learning process feel like engaging gameplay.
+
+*   **For Instructors: Automated Orchestration.** The "magic moment" is the effortless setup and monitoring of a large class session. The platform's value is realized when an instructor can enroll dozens of students, allocate them to games, and monitor their real-time progress from a single dashboard, transforming hours of administrative work into minutes of focused teaching.
 
 ### 2.2 Novel UX Patterns
 
-{{novel_ux_patterns}}
+The following novel UX patterns will be implemented to enhance the core experience:
+
+-   **Flow Pipes:** Animated visual connectors will dynamically illustrate the flow of orders and deliveries, providing real-time feedback on game events and increasing engagement.
+-   **Live Charts:** Real-time updates to charts will empower players with a sense of control and provide immediate data to inform their strategic decisions.
+-   **Team Chat:** The integrated chat feature will foster collaboration and provide a channel for players to seek and offer help, reinforcing the game's core purpose.
+-   **AI Player Visual Cues:** When playing with AI opponents, clear visual cues will be provided in the chat (e.g., an AI badge) and through distinct game event notifications to differentiate AI actions from human player interactions.
+
+### 2.3 Core Experience Principles
+
+These principles will guide every UX decision to ensure a consistent and intuitive experience.
+
+*   **Speed & Clarity:** The system will provide immediate and unambiguous feedback when a user's turn is complete. The game will wait for all players to submit their orders before proceeding, ensuring a synchronized and clear turn progression for everyone.
+*   **Guidance & Support:** The interface will be designed to be intuitive and self-explanatory. For additional support, users can ask an AI assistant in the chat for help regarding game status or next steps.
+*   **Flexibility & Control:** Game configuration is locked for students after the game starts, ensuring a consistent experience. Instructors retain crucial in-game control, such as the ability to substitute inactive players with AI, to ensure the game continues smoothly.
+*   **Feedback & Communication:** System feedback will be subtle and informative. Game events and notifications will be delivered through a dedicated, unobtrusive channel, preventing disruption to gameplay while keeping players informed.
 
 ---
 
