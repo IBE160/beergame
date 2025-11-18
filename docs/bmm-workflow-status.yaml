@@ -32,7 +32,7 @@ workflow_status:
   # Phase 0: Discovery (Optional)
   brainstorm-project: docs/brainstorming-session-results-2025-10-27.md
   research: docs/research-technical-2025-10-27.md
-  product-brief: docs/product-brief.md
+  product-brief: docs/product-brief-beergame-2025-11-13.md
 
   # Phase 1: Planning
   prd: docs/PRD.md
