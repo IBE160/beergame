@@ -177,7 +177,10 @@ All colors, typography, and spacing tokens defined in Section 3 will be configur
 
 **Interactive Mockups:**
 
-- Design Direction Showcase: [ux-design-directions.html](./ux-design-directions.html)
+- Design Direction Mockups from Stich: [distributor-game-board-beergame.html](./stich/distributor-game-board-beergame.html)
+- Design Direction Mockups from Stich: [factory-game-board-beergame.html](./stich/factory-game-board-beergame.html)
+- Design Direction Mockups from Stich: [retailer-game-board-beergame.html](./stich/retailer-game-board-beergame.html)
+- Design Direction Mockups from Stich: [wholesaler-game-board-beergame.html](./stich/wholesaler-game-board-beergame.html)
 
 ---
 
