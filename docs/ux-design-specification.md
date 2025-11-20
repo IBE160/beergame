@@ -298,6 +298,7 @@ This UX Design Specification can serve as input to:
 | Date     | Version | Changes                         | Author        |
 | -------- | ------- | ------------------------------- | ------------- |
 | 2025-11-13 | 1.0     | Initial UX Design Specification | BIP |
+| 2025-11-20 | 1.1     | Standardized typography (Inter for UI, Roboto Mono for Data) | BIP |
 
 ---
 
