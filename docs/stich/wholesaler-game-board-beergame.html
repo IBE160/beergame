@@ -104,37 +104,40 @@
 </head>
 <body class="font-sans bg-mono-bg text-mono-text antialiased">
 <div class="flex h-screen">
-<aside class="w-64 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20">
-<div class="h-16 flex items-center justify-center border-b border-mono-light/20 px-4">
-<h1 class="text-xl font-bold text-accent">BEER GAME</h1>
+<aside id="sidebar-left" class="w-64 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20 transition-all duration-300 ease-in-out">
+<div class="h-16 flex items-center justify-between border-b border-mono-light/20 px-4 overflow-hidden">
+<h1 id="logo-text" class="text-xl font-bold text-accent whitespace-nowrap transition-opacity duration-300">BEER GAME</h1>
+<button id="btn-toggle-left" class="text-mono-light hover:text-accent transition-colors focus:outline-none">
+<span class="material-symbols-outlined">menu_open</span>
+</button>
 </div>
-<nav class="flex-1 p-4 space-y-2">
+<nav class="flex-1 p-4 space-y-2 overflow-x-hidden">
 <a class="flex items-center p-3 rounded-DEFAULT bg-accent/20 text-accent font-semibold" href="#">
 <span class="material-symbols-outlined mr-3">dashboard</span>
-                Dashboard
-            </a>
+<span class="nav-text whitespace-nowrap transition-opacity duration-300">Dashboard</span>
+</a>
 <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
 <span class="material-symbols-outlined mr-3">bar_chart</span>
-                Analytics
-            </a>
+<span class="nav-text whitespace-nowrap transition-opacity duration-300">Analytics</span>
+</a>
 <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
 <span class="material-symbols-outlined mr-3">groups</span>
-                Team
-            </a>
+<span class="nav-text whitespace-nowrap transition-opacity duration-300">Team</span>
+</a>
 <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
 <span class="material-symbols-outlined mr-3">history</span>
-                Game History
-            </a>
+<span class="nav-text whitespace-nowrap transition-opacity duration-300">Game History</span>
+</a>
 </nav>
-<div class="p-4 border-t border-mono-light/20">
+<div class="p-4 border-t border-mono-light/20 overflow-x-hidden">
 <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
 <span class="material-symbols-outlined mr-3">settings</span>
-                Settings
-            </a>
+<span class="nav-text whitespace-nowrap transition-opacity duration-300">Settings</span>
+</a>
 <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
 <span class="material-symbols-outlined mr-3">logout</span>
-                Logout
-            </a>
+<span class="nav-text whitespace-nowrap transition-opacity duration-300">Logout</span>
+</a>
 </div>
 </aside>
 <main class="flex-1 flex flex-col">
@@ -160,6 +163,9 @@
 <p class="text-xs text-mono-light">Wholesaler</p>
 </div>
 </div>
+<button onclick="toggleRightSidebar()" class="text-mono-light hover:text-accent focus:outline-none border-l border-mono-light/20 pl-6 ml-6">
+<span class="material-symbols-outlined">chat</span>
+</button>
 </div>
 </header>
 <div class="flex-1 p-6 overflow-auto">
@@ -275,9 +281,12 @@
 </div>
 </div>
 </main>
-<aside class="w-80 bg-mono-surface flex-shrink-0 flex flex-col border-l border-mono-light/20">
-<div class="h-16 flex items-center px-4 border-b border-mono-light/20">
+<aside id="sidebar-right" class="w-80 bg-mono-surface flex-shrink-0 flex flex-col border-l border-mono-light/20 transition-all duration-300 ease-in-out overflow-hidden">
+<div class="h-16 flex items-center justify-between px-4 border-b border-mono-light/20">
 <h3 class="font-semibold text-mono-text">Team Chat</h3>
+<button onclick="toggleRightSidebar()" class="text-mono-light hover:text-accent lg:hidden">
+<span class="material-symbols-outlined">close</span>
+</button>
 </div>
 <div class="flex-1 p-4 space-y-4 overflow-y-auto">
 <div class="flex items-start space-x-3">
@@ -327,4 +336,37 @@
 </div>
 </aside>
 </div>
+<script>
+    const sidebarLeft = document.getElementById('sidebar-left');
+    const logoText = document.getElementById('logo-text');
+    const btnToggleLeft = document.getElementById('btn-toggle-left');
+    const navTexts = document.querySelectorAll('.nav-text');
+
+    btnToggleLeft.addEventListener('click', () => {
+        const isCollapsed = sidebarLeft.classList.contains('w-64');
+        if (isCollapsed) {
+            sidebarLeft.classList.replace('w-64', 'w-20');
+            logoText.classList.add('opacity-0', 'w-0');
+            btnToggleLeft.querySelector('span').innerText = 'menu';
+            navTexts.forEach(el => el.classList.add('opacity-0', 'w-0', 'hidden'));
+        } else {
+            sidebarLeft.classList.replace('w-20', 'w-64');
+            logoText.classList.remove('opacity-0', 'w-0');
+            btnToggleLeft.querySelector('span').innerText = 'menu_open';
+            navTexts.forEach(el => el.classList.remove('opacity-0', 'w-0', 'hidden'));
+        }
+    });
+
+    function toggleRightSidebar() {
+        const sidebarRight = document.getElementById('sidebar-right');
+        const isOpen = sidebarRight.classList.contains('w-80');
+        if (isOpen) {
+            sidebarRight.classList.replace('w-80', 'w-0');
+            sidebarRight.classList.replace('border-l', 'border-none');
+        } else {
+            sidebarRight.classList.replace('w-0', 'w-80');
+            sidebarRight.classList.replace('border-none', 'border-l');
+        }
+    }
+</script>
 </body></html>
