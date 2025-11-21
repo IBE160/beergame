@@ -37,8 +37,6 @@
 - [ ] Solutioning
   - [ ] /run-agent-task architect *architecture {prompt / user-input-file}
   - [ ] /run-agent-task architect *validate-architecture {prompt / user-input-file}
-  - [ ] /run-agent-task tea *framework {prompt / user-input-file}
-  - [ ] /run-agent-task tea *ci {prompt / user-input-file}
 
 ## Fase 3
 
