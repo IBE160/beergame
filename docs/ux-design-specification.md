@@ -194,7 +194,7 @@ These principles will guide every UX decision to ensure a consistent and intuiti
 
 **Selected Design Direction: Immersive Game Board**
 
-This direction, exemplified by `docs/stich/retailer-game-board-beergame.html` (our golden template), prioritizes an engaging and dynamic experience, making the game board the central element. It aligns with the desired student emotions of fun, excitement, and competitiveness.
+This direction, exemplified by `docs/wireframe/retailer-game-board-beergame.html` (our golden template), prioritizes an engaging and dynamic experience, making the game board the central element. It aligns with the desired student emotions of fun, excitement, and competitiveness.
 
 **Key Characteristics:**
 -   **Layout:** Centralized game board with animated flow pipes, flanked by a left sidebar for navigation and a collapsible right sidebar for team chat.
@@ -207,10 +207,10 @@ This direction, exemplified by `docs/stich/retailer-game-board-beergame.html` (o
 
 - **Application Pages Viewer**: [docs/ux-design-directions.html](./ux-design-directions.html)
   - This interactive viewer provides access to all application mockups, starting with the golden template.
-- Design Direction Mockups from Stich: [distributor-game-board-beergame.html](./stich/distributor-game-board-beergame.html)
-- Design Direction Mockups from Stich: [factory-game-board-beergame.html](./stich/factory-game-board-beergame.html)
-- Design Direction Mockups from Stich: [retailer-game-board-beergame.html](./stich/retailer-game-board-beergame.html)
-- Design Direction Mockups from Stich: [wholesaler-game-board-beergame.html](./stich/wholesaler-game-board-beergame.html)
+- Design Direction Mockups from Stich: [distributor-game-board-beergame.html](./wireframe/distributor-game-board-beergame.html)
+- Design Direction Mockups from Stich: [factory-game-board-beergame.html](./wireframe/factory-game-board-beergame.html)
+- Design Direction Mockups from Stich: [retailer-game-board-beergame.html](./wireframe/retailer-game-board-beergame.html)
+- Design Direction Mockups from Stich: [wholesaler-game-board-beergame.html](./wireframe/wholesaler-game-board-beergame.html)
 
 ---
 
