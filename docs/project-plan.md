@@ -29,7 +29,6 @@
 - [ ] Planning
   - [x] /run-agent-task pm *prd
     - [x] File: PRD.md
-    - [x] File: epics.md
   - [x] /run-agent-task pm *validate-prd
     - [x] File: validation-report-date.md
   - [ ] /run-agent-task ux-designer *create-ux-design {prompt / user-input-file}
@@ -42,7 +41,9 @@
 
 - [ ] Solutioning
   - [ ] /run-agent-task architect *create-architecture {prompt / user-input-file}
+    - [ ] File: architecture.md
   - [ ] /run-agent-task pm *create-epics-and-stories {prompt / user-input-file}
+    - [ ] File: epics.md
   - [ ] /run-agent-task tea *test-design {prompt / user-input-file}
   - [ ] /run-agent-task architect *solutioning-gate-check {prompt / user-input-file}
 
@@ -50,17 +51,22 @@
 
 - [ ] Implementation
   - [ ] /run-agent-task sm *sprint-planning {prompt / user-input-file}
+    - [ ] File: sprint-artifacts/sprint-status.yaml
   - foreach epic in sprint planning:
-    - [ ] /run-agent-task sm epic-tech-context {prompt / user-input-file}
-    - [ ] /run-agent-task sm validate-epic-tech-content {prompt / user-input-file}
+    - [ ] /run-agent-task sm create-epic-tech-context {prompt / user-input-file}
+      - [ ] File: sprint-artifacts/tech-spec-epic-{{epic_id}}.md
+    - [ ] /run-agent-task sm validate-epic-tech-context {prompt / user-input-file}
     - foreach story in epic:
       - [ ] /run-agent-task sm *create-story {prompt / user-input-file}
+        - [ ] File: sprint-artifacts/{{story_key}}.md
       - [ ] /run-agent-task sm *validate-create-story {prompt / user-input-file}
-      - [ ] /run-agent-task sm *story-context {prompt / user-input-file}
+      - [ ] /run-agent-task sm *create-story-context {prompt / user-input-file}
+        - [ ] File: sprint-artifacts/{{story_key}}.context.xml
       - [ ] /run-agent-task sm *validate-story-context {prompt / user-input-file}
-      - [ ] /run-agent-task tea *validate-story-ready {prompt / user-input-file}
-      - [ ] /run-agent-task dev *implement-story {prompt / user-input-file}
-      - [ ] /run-agent-task dev *validate-story {prompt / user-input-file}
-      - [ ] /run-agent-task tea *automate {prompt / user-input-file}
-      - [ ] /run-agent-task tea *test-review {prompt / user-input-file}
-    - [ ] /run-agent-task sm *retrospective {prompt / user-input-file}
+      - [ ] /run-agent-task sm *story-ready-for-dev {prompt / user-input-file}
+      while code-review != approved:
+        - [ ] /run-agent-task dev *develop-story {prompt / user-input-file}
+        - [ ] /run-agent-task dev *code-review {prompt / user-input-file}
+      - [ ] /run-agent-task dev *story-done {prompt / user-input-file}
+      - [ ] /run-agent-task sm *test-review {prompt / user-input-file}
+    - [ ] /run-agent-task sm *epic-retrospective {prompt / user-input-file}
