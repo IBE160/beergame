@@ -95,69 +95,172 @@
 </head>
 <body class="font-sans bg-mono-bg text-mono-text antialiased">
     <div class="w-full h-screen p-6 overflow-auto">
-        <div class="max-w-7xl mx-auto h-full flex flex-col">
-        <div class="relative flex items-center justify-between pb-8 pt-4 w-full">
-        <div class="absolute inset-x-0 top-1/2 h-[2px] bg-mono-light/30 -translate-y-1/2"></div>
-        <div class="flex-1 flex justify-start pl-8 pr-12">
-        <div class="relative bg-mono-surface border-1 border-mono-light/20 rounded-DEFAULT p-3 text-center w-40 flex flex-col justify-center items-center z-10">
-        <p class="font-semibold text-accent text-sm">Outgoing delivery customer</p>
-        <p class="text-3xl font-bold text-mono-text">25</p>
-        <div class="flow-pipe horizontal w-20 active arrow-right absolute top-1/2 -right-20 transform -translate-y-1/2"></div>
-        </div>
-        </div>
-        <div class="flex flex-col items-center flex-shrink-0 z-20">
-        <div class="relative w-56 h-40 flex flex-col items-center justify-center bg-mono-surface border-2 border-accent rounded-md shadow-xl">
-        <span class="text-lg text-mono-light">Inventory</span>
-        <p class="text-7xl font-bold text-accent">50</p>
-        </div>
-        </div>
-        <div class="flex-1 flex justify-end pr-8 pl-12">
-        <div class="relative bg-mono-surface border-1 border-mono-light/20 rounded-DEFAULT p-3 text-center w-40 flex flex-col justify-center items-center z-10">
-        <p class="font-semibold text-accent text-sm">Incoming order customer</p>
-        <p class="text-3xl font-bold text-mono-text">30</p>
-        <div class="flow-pipe horizontal w-20 active arrow-left absolute top-1/2 -left-20 transform -translate-y-1/2"></div>
-        </div>
-        </div>
-        </div>
-        <div class="relative flex justify-center w-full mt-4 pb-8">
-        <div class="absolute inset-x-0 top-1/2 h-[2px] bg-mono-light/30 -translate-y-1/2"></div>
-        <div class="flex items-center justify-between w-full max-w-4xl px-8 z-10">
-        <div class="flex flex-col items-center mr-8">
-        <p class="text-xs text-mono-light mb-1">Incoming delivery</p>
-        <div class="flex space-x-2">
-        <div class="w-16 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
-        <span class="text-xs text-mono-light">Week 2</span>
-        <span class="font-bold text-lg text-mono-text">10</span>
-        </div>
-        <div class="w-16 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
-        <span class="text-xs text-mono-light">Week 1</span>
-        <span class="font-bold text-lg text-mono-text">25</span>
-        </div>
-        </div>
-        <div class="flow-pipe vertical active arrow-down h-8 mt-2"></div>
-        </div>
-        <div class="flex flex-col items-center ml-8">
-        <p class="text-xs text-mono-light mb-1">Outgoing order wholesaler</p>
-        <div class="w-24 h-12 bg-mono-surface rounded-DEFAULT border-1 border-mono-light/20 flex flex-col items-center justify-center">
-        <span class="font-bold text-lg text-mono-text">30</span>
-        </div>
-        <div class="flow-pipe vertical active arrow-up h-8 mt-2"></div>
-        </div>
-        </div>
-        </div>
-        <div class="w-full flex justify-center mt-4 z-30">
-        <form class="flex items-center space-x-2">
-        <label class="text-sm font-medium text-mono-text" for="order-input">Place Order:</label>
-        <input class="w-20 bg-mono-surface border-mono-light/20 rounded-DEFAULT text-center focus:ring-accent focus:border-accent" id="order-input" type="number" value="30"/>
-        <button class="bg-accent text-mono-bg px-4 py-2 rounded-DEFAULT font-semibold hover:bg-yellow-600 transition-colors flex items-center" type="submit">
-                                        Submit
-                                        <span class="material-symbols-outlined text-base ml-1">send</span>
-        </button>
-        </form>
-        </div>
+        <div class="flex-1 flex flex-col w-full max-w-[1600px] mx-auto relative z-10 space-y-6 px-6">
+            
+            <!-- MAIN GAME BOARD (Sketch Implementation) -->
+            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-8 shadow-2xl flex items-stretch justify-between gap-4 relative overflow-hidden">
+                
+                <!-- 1. LEFT NODE: WHOLESALER -->
+                <div class="w-56 bg-mono-surface border border-mono-light/20 rounded-xl flex flex-col shadow-xl relative z-20 group">
+                    <div class="p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center p-4 relative">
+                         <!-- Faint background icon -->
+                         <span class="material-symbols-outlined text-9xl text-mono-light/5 absolute opacity-[0.03]">warehouse</span>
+                    </div>
+                    <!-- Incoming Order Box (Bottom) -->
+                    <div class="p-4 bg-mono-bg/50 rounded-b-xl border-t border-mono-light/10">
+                        <div class="bg-mono-surface border border-dashed border-accent/40 p-3 rounded-lg text-center relative">
+                            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-mono-surface px-2 text-[10px] text-accent uppercase tracking-wider">Incoming Order</span>
+                            <div class="font-sans text-2xl font-bold text-white">30</div>
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Charts Container -->
-        <div id="charts-root" class="w-full flex-1 min-h-[320px] mt-8 mb-8"></div>
+                <!-- PIPE SECTION 1: Wholesaler -> Retailer -->
+                <div class="flex-1 flex flex-col justify-between py-8 relative min-w-[200px]">
+                    
+                    <!-- Top Pipe: Deliveries (Rightward) -->
+                    <div class="relative h-16 w-full flex items-center">
+                        <!-- Pipe Background -->
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-3 bg-mono-light/20 rounded-full overflow-hidden">
+                            <div class="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(16,185,129,0.1)_50%,transparent_100%)] animate-[slideRight_3s_linear_infinite]"></div>
+                        </div>
+
+                        <!-- Delay Boxes (Sitting on pipe) -->
+                        <div class="absolute w-full flex justify-evenly px-4 z-10">
+                             <!-- Week 1 -->
+                             <div class="bg-mono-surface border border-green-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                                <div class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center">20</div>
+                            </div>
+                             <!-- Week 2 -->
+                             <div class="bg-mono-surface border border-green-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                                <div class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center">30</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Pipe: Orders (Leftward) -->
+                    <div class="relative h-16 w-full flex items-center">
+                        <!-- Pipe Background -->
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-3 bg-mono-light/20 rounded-full overflow-hidden">
+                             <div class="absolute inset-0 bg-mono-light/5"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. CENTER NODE: INVENTORY (RETAILER) -->
+                <div class="w-72 bg-mono-surface border-2 border-accent rounded-2xl flex flex-col shadow-[0_0_40px_rgba(0,0,0,0.3)] relative z-30 transform hover:-translate-y-1 transition-transform duration-300">
+                    
+                    <!-- Inventory Display -->
+                    <div class="flex-1 flex flex-col items-center justify-center p-6 border-b border-mono-light/10">
+                        <h3 class="text-mono-light text-sm uppercase tracking-widest mb-2">Current Inventory</h3>
+                        <div class="text-8xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                    </div>
+
+                    <!-- Place Order Section (Integrated) -->
+                    <div class="p-5 bg-mono-bg/40 rounded-b-2xl">
+                        <label class="block text-xs text-accent uppercase font-bold tracking-wider mb-3 text-center">Place Order for Next Week</label>
+                        <form class="flex items-stretch shadow-lg rounded-lg overflow-hidden border border-accent/30 group-focus-within:border-accent transition-colors">
+                            <!-- Numeric Stepper -->
+                            <div class="relative flex-1 bg-mono-bg">
+                                <input type="number" value="30" 
+                                    class="w-full h-12 bg-transparent text-center font-sans text-xl text-white border-0 focus:ring-0 p-0 z-10 relative" 
+                                />
+                                <!-- Custom Arrows (Visual Only for mockup) -->
+                                <div class="absolute right-2 top-1/2 -translate-y-1/2 flex flex-col opacity-50 hover:opacity-100 cursor-pointer">
+                                    <span class="material-symbols-outlined text-xs hover:text-white">keyboard_arrow_up</span>
+                                    <span class="material-symbols-outlined text-xs hover:text-white">keyboard_arrow_down</span>
+                                </div>
+                            </div>
+                            <!-- Submit Button -->
+                                                        <button type="button" class="bg-accent hover:bg-yellow-500 text-mono-bg font-bold px-6 py-2 flex items-center transition-colors">   
+                                                            <span class="material-symbols-outlined">send</span>                                                                             
+                                                        </button>                                           
+                                                    </form>                                                 
+                                                </div>                                                      
+                                            </div>
+                <!-- PIPE SECTION 2: Retailer -> Customer -->
+                <div class="flex-1 flex flex-col justify-between py-8 relative min-w-[200px]">
+                     <!-- Top Pipe: Deliveries (Rightward) -->
+                     <div class="relative h-16 w-full flex items-center">
+                        <!-- Pipe Background -->
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-3 bg-mono-light/20 rounded-full overflow-hidden">
+                             <div class="absolute inset-0 bg-[linear-gradient(90deg,transparent_0%,rgba(16,185,129,0.1)_50%,transparent_100%)] animate-[slideRight_3s_linear_infinite_0.5s]"></div>
+                        </div>
+
+                        <!-- Delay Boxes (Deliveries to Customer) -->
+                        <div class="absolute w-full flex justify-evenly px-4 z-10">
+                            <!-- Week 1 -->
+                             <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                                <div class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center">25</div>
+                            </div>
+                            <!-- Week 2 -->
+                             <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                                <div class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center">20</div>
+                            </div>
+                       </div>
+                    </div>
+
+                    <!-- Bottom Pipe: Demand (Leftward) -->
+                    <div class="relative h-16 w-full flex items-center">
+                         <!-- Pipe Background -->
+                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-3 bg-mono-light/20 rounded-full overflow-hidden">
+                            <div class="absolute inset-0 bg-mono-light/5"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. RIGHT NODE: CUSTOMERS -->
+                <div class="w-56 bg-mono-surface border border-mono-light/20 rounded-xl flex flex-col shadow-xl relative z-20">
+                    <div class="p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Customers</h3>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-center p-4 space-y-2">
+                        <!-- Stick Figures (Icons) -->
+                        <div class="flex -space-x-2">
+                            <span class="material-symbols-outlined text-4xl text-mono-light">person</span>
+                            <span class="material-symbols-outlined text-4xl text-mono-light/80">person</span>
+                            <span class="material-symbols-outlined text-4xl text-mono-light/60">person</span>
+                        </div>
+                        <span class="text-xs text-mono-light">Market Demand</span>
+                    </div>
+                    <!-- Demand Box (Bottom) -->
+                    <div class="p-4 bg-mono-bg/50 rounded-b-xl border-t border-mono-light/10">
+                        <div class="bg-mono-surface border border-red-500/30 p-3 rounded-lg text-center relative">
+                            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-mono-surface px-2 text-[10px] text-red-400 uppercase tracking-wider">Demand</span>
+                            <div class="font-sans text-2xl font-bold text-white">20</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Animation Styles -->
+            <style>
+                @keyframes slideRight {
+                    0% { transform: translateX(-100%); opacity: 0; }
+                    50% { opacity: 1; }
+                    100% { transform: translateX(100%); opacity: 0; }
+                }
+                @keyframes slideLeft {
+                    0% { transform: translateX(100%); opacity: 0; }
+                    50% { opacity: 1; }
+                    100% { transform: translateX(-100%); opacity: 0; }
+                }
+                @keyframes extendLeft {
+                    0% { width: 0; opacity: 0.5; }
+                    100% { width: 100%; opacity: 0; }
+                }
+            </style>
+
+            <!-- Charts Container -->
+            <div id="charts-root" class="w-full flex-1 min-h-[320px] mt-8 mb-8"></div>
         </div>
     </div>
 
