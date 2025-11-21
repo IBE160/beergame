@@ -41,9 +41,6 @@
         .main-menu a.active .material-symbols-outlined {
             color: #1A1A1A;
         }
-        iframe {
-            height: calc(100vh - 4rem); /* Full height minus header */
-        }
     </style>
 </head>
 <body class="flex h-screen antialiased font-sans">
@@ -55,6 +52,10 @@
         </div>
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto main-menu">
             <h2 class="px-3 pt-2 pb-1 text-xs font-semibold text-mono-light uppercase tracking-wider">Game Boards</h2>
+            <a href="./stich/common-layout.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+                <span class="material-symbols-outlined mr-3 text-blue-400">dashboard_customize</span>
+                Common Game Layout
+            </a>
             <a href="./stich/retailer-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
                 <span class="material-symbols-outlined mr-3 text-yellow-400">storefront</span>
                 Retailer Dashboard
@@ -93,16 +94,8 @@
 
     <!-- Main Content -->
     <main class="flex-1 flex flex-col">
-        <header class="h-16 bg-mono-surface flex-shrink-0 flex items-center justify-between px-6 border-b border-mono-light/20">
-            <div class="flex items-center">
-                <h2 class="text-lg font-semibold text-mono-text">Live Mockup Viewer</h2>
-            </div>
-            <div class="text-sm text-mono-light">
-                Select a page from the menu to view the live mockup.
-            </div>
-        </header>
         <div class="flex-1 bg-mono-bg">
-            <iframe name="mockup-frame" class="w-full h-full border-0" src="./stich/retailer-game-board-beergame.html"></iframe>
+            <iframe name="mockup-frame" class="w-full h-full border-0" src="./stich/common-layout.html"></iframe>
         </div>
     </main>
 

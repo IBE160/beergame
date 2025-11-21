@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beer Game - Common Layout</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        'mono-bg': '#1A1A1A', // Dark charcoal/black background
+                        'mono-surface': '#2C2C2C', // Slightly lighter dark gray for cards/surfaces
+                        'mono-text': '#E0E0E0', // Light gray for primary text
+                        'mono-light': '#808080', // Medium gray for secondary text/borders
+                        'accent': '#3b82f6', // Blue as a neutral accent color
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+                        mono: ["Roboto Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem", // Sharper corners for a modern look
+                        'sm': "0.125rem",
+                        'md': "0.375rem",
+                        'lg': "0.5rem",
+                        'xl': "0.75rem",
+                        'full': "9999px",
+                    },
+                    borderWidth: {
+                        '1': '1px',
+                    }
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">body {
+            @apply font-sans bg-mono-bg text-mono-text antialiased;
+        }.flow-pipe {
+            @apply absolute bg-mono-light opacity-50 transition-all duration-300 ease-out;
+        }
+        .flow-pipe.active {
+            @apply bg-accent opacity-100;
+        }
+        .flow-pipe.vertical {
+            @apply w-[2px] h-1/2;
+        }
+        .flow-pipe.horizontal {
+            @apply h-[2px] w-1/2;
+        }
+        .flow-pipe.arrow-end::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            @apply opacity-0 transition-opacity duration-300 ease-out;
+        }
+        .flow-pipe.arrow-end.active::after {
+             @apply opacity-100;
+        }
+        .flow-pipe.arrow-down::after {
+            border-width: 6px 4px 0 4px;border-color: var(--tw-bg-accent) transparent transparent transparent;
+            left: 50%;
+            bottom: -6px;transform: translateX(-50%);
+        }
+        .flow-pipe.arrow-up::after {
+            border-width: 0 4px 6px 4px;border-color: transparent transparent var(--tw-bg-accent) transparent;
+            left: 50%;
+            top: -6px;transform: translateX(-50%);
+        }
+        .flow-pipe.arrow-right::after {
+            border-width: 4px 0 4px 6px;border-color: transparent transparent transparent var(--tw-bg-accent);
+            top: 50%;
+            right: -6px;transform: translateY(-50%);
+        }
+        .flow-pipe.arrow-left::after {
+            border-width: 4px 6px 4px 0;border-color: transparent var(--tw-bg-accent) transparent transparent;
+            top: 50%;
+            left: -6px;transform: translateY(-50%);
+        }.chart-abstract {background: linear-gradient(90deg, #3b82f61A 0%, #3b82f600 100%);border: 1px solid #3b82f640;position: relative;
+            overflow: hidden;
+        }
+        .chart-abstract img {
+            opacity: 0.1;}
+        .chart-abstract::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6 0%, #3b82f600 70%);transform: translateX(-100%);
+            animation: flow 10s infinite linear;}
+        @keyframes flow {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body class="font-sans bg-mono-bg text-mono-text antialiased">
+<div class="flex h-screen overflow-hidden">
+<!-- Left Sidebar -->
+<aside id="sidebar-left" class="fixed inset-y-0 left-0 z-50 w-64 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20 transition-all duration-300 ease-in-out transform -translate-x-full xl:translate-x-0 xl:static xl:transform-none">
+    <div id="sidebar-left-header" class="h-16 flex items-center justify-between border-b border-mono-light/20 px-4 overflow-hidden transition-all duration-300">
+        <h1 id="logo-text" class="text-xl font-bold text-accent whitespace-nowrap transition-all duration-300 overflow-hidden">BEER GAME</h1>
+        <!-- Mobile Close Button -->
+        <button id="btn-mobile-close-left" class="xl:hidden w-10 h-10 flex items-center justify-center rounded-lg text-mono-light hover:text-accent hover:bg-mono-light/10 transition-colors focus:outline-none">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        <!-- Desktop Toggle Button -->
+        <button id="btn-toggle-left" class="hidden xl:flex w-10 h-10 items-center justify-center rounded-lg text-mono-light hover:text-accent hover:bg-mono-light/10 transition-colors focus:outline-none">
+            <span class="material-symbols-outlined">menu_open</span>
+        </button>
+    </div>
+    <nav class="flex-1 p-4 space-y-2 overflow-x-hidden">
+        <a class="flex items-center p-3 rounded-DEFAULT bg-accent/20 text-accent font-semibold" href="#">
+            <span class="material-symbols-outlined mr-3">dashboard</span>
+            <span class="nav-text whitespace-nowrap transition-opacity duration-300">Dashboard</span>
+        </a>
+        <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+            <span class="material-symbols-outlined mr-3">table_chart</span>
+            <span class="nav-text whitespace-nowrap transition-opacity duration-300">Data</span>
+        </a>
+        <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+            <span class="material-symbols-outlined mr-3">fact_check</span>
+            <span class="nav-text whitespace-nowrap transition-opacity duration-300">Results</span>
+        </a>
+        <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+            <span class="material-symbols-outlined mr-3">quiz</span>
+            <span class="nav-text whitespace-nowrap transition-opacity duration-300">Assessments</span>
+        </a>
+    </nav>
+    <div class="p-4 border-t border-mono-light/20 overflow-x-hidden">
+        <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+            <span class="material-symbols-outlined mr-3">settings</span>
+            <span class="nav-text whitespace-nowrap transition-opacity duration-300">Settings</span>
+        </a>
+        <a class="flex items-center p-3 rounded-DEFAULT text-mono-text hover:bg-mono-light/10 transition-colors" href="#">
+            <span class="material-symbols-outlined mr-3">logout</span>
+            <span class="nav-text whitespace-nowrap transition-opacity duration-300">Logout</span>
+        </a>
+    </div>
+</aside>
+
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+    <header class="h-16 bg-mono-surface flex-shrink-0 flex items-center justify-between px-6 border-b border-mono-light/20">
+        <div class="flex items-center">
+            <!-- Mobile Menu Button -->
+            <button id="btn-mobile-menu" class="xl:hidden mr-4 p-2 rounded-lg text-mono-light hover:text-accent hover:bg-mono-light/10 focus:outline-none">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <h2 class="text-lg font-semibold text-mono-text">{{Role}} Dashboard</h2>
+        </div>
+        <div class="flex items-center space-x-6 text-sm">
+            <div class="text-center hidden sm:block">
+                <span class="text-mono-light">Week</span>
+                <p class="font-bold text-lg text-accent">{{Week}}</p>
+            </div>
+            <div class="w-px h-8 bg-mono-light/20 hidden sm:block"></div>
+            <div class="text-center hidden sm:block">
+                <span class="text-mono-light">Cost</span>
+                <p class="font-bold text-lg text-red-500">{{Cost}}</p>
+            </div>
+            <div class="w-px h-8 bg-mono-light/20 hidden sm:block"></div>
+            
+            <!-- Mobile Chat Toggle (Visible < XL) -->
+            <button onclick="toggleRightSidebar()" class="xl:hidden p-2 rounded-lg text-mono-light hover:text-accent hover:bg-mono-light/10 transition-colors flex items-center justify-center">
+                <span class="material-symbols-outlined">chat</span>
+            </button>
+
+            <!-- Desktop User Profile (Visible >= XL) -->
+            <div class="hidden xl:flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-mono-light/20 border border-mono-light/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-mono-light">person</span>
+                </div>
+                <div class="hidden md:block">
+                    <p class="font-semibold text-mono-text">{{Player Name}}</p>
+                    <p class="text-xs text-mono-light">{{Role}}</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="flex-1 p-6 overflow-auto">
+        <div class="w-full h-full flex flex-col items-center justify-center text-mono-light border-2 border-dashed border-mono-light/20 rounded-lg">
+            <span class="material-symbols-outlined text-6xl mb-4 opacity-20">dashboard_customize</span>
+            <p class="text-xl font-medium opacity-50">Game Board Area</p>
+            <p class="text-sm mt-2 opacity-40">The main content stretches to fill the screen</p>
+        </div>
+    </div>
+</main>
+
+<!-- Right Sidebar -->
+<aside id="sidebar-right" class="fixed inset-y-0 right-0 z-50 w-96 bg-mono-surface flex-shrink-0 flex flex-col border-l border-mono-light/20 transition-all duration-300 ease-in-out overflow-hidden transform translate-x-full xl:translate-x-0 xl:static xl:transform-none">
+    <!-- Header (Full Width) -->
+    <div class="h-16 flex items-center border-b border-mono-light/20 bg-mono-surface flex-shrink-0">
+        <div id="chat-title-container" class="flex-1 flex items-center px-4 overflow-hidden whitespace-nowrap min-w-0 transition-all duration-300">
+            <h3 class="font-semibold text-mono-text">{{Channel name}} Chat</h3>
+        </div>
+        
+        <div id="toggle-btn-container" class="w-20 h-full flex items-center justify-center border-l border-mono-light/10 flex-shrink-0 transition-colors duration-300">
+             <!-- Mobile close only -->
+            <button onclick="toggleRightSidebar()" class="text-mono-light hover:text-accent xl:hidden">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+
+             <!-- Desktop Toggle -->
+            <button onclick="toggleRightSidebar()" class="hidden xl:flex p-3 rounded-xl text-mono-light hover:text-accent hover:bg-mono-light/10 transition-colors">
+                <span class="material-symbols-outlined text-2xl">chat</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Body Container (Row: Content + Rail) -->
+    <div class="flex-1 flex flex-row overflow-hidden">
+        <!-- Chat Content Area (Left, Flexible) -->
+        <div class="flex-1 flex flex-col min-w-0 bg-mono-bg/50 relative">
+            <div class="flex-1 p-4 space-y-6 overflow-y-auto">
+                <div class="flex items-start gap-3">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYd4hLaRCslw5RWRvCgiDkpSydnw5I9_H91aRrx_M_LLW9jIeFtT2eOFvxrOmNjxdaVUdMLO8fiKdzHpxI3FeEC_WJtY0Ku-m43sPzZZdVL1iXILCsMOcGRP621H9_AhurH2afPKyLcOdzchgq0jZe-otVoU--jueEvFX1CVwJ8S9vE7tHcDpqu0pFnObzFF9cb_YCUtPJHds9FINV_0yMOgsdCgxxj3ewQm5Uyv_NUgv2QwKIGrCg2_1Mq0eIdX4Z6idKI1zGaow" alt="Distributor avatar" class="w-10 h-10 rounded-full border border-purple-500/40 object-cover flex-shrink-0 mt-1">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1">
+                            <p class="font-semibold text-purple-400 text-xs">{{User Name}}</p>
+                            <p class="text-[10px] text-mono-light">10:32 AM</p>
+                        </div>
+                        <div class="bg-mono-surface p-3 rounded-xl rounded-tl-none border border-mono-light/10 shadow-sm w-full">
+                            <p class="text-sm text-mono-text leading-relaxed">Shipping 20 units your way.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 flex-row-reverse">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYd4hLaRCslw5RWRvCgiDkpSydnw5I9_H91aRrx_M_LLW9jIeFtT2eOFvxrOmNjxdaVUdMLO8fiKdzHpxI3FeEC_WJtY0Ku-m43sPzZZdVL1iXILCsMOcGRP621H9_AhurH2afPKyLcOdzchgq0jZe-otVoU--jueEvFX1CVwJ8S9vE7tHcDpqu0pFnObzFF9cb_YCUtPJHds9FINV_0yMOgsdCgxxj3ewQm5Uyv_NUgv2QwKIGrCg2_1Mq0eIdX4Z6idKI1zGaow" alt="User avatar" class="w-10 h-10 rounded-full border border-accent/40 object-cover flex-shrink-0 mt-1">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center justify-between mb-1 flex-row-reverse">
+                            <p class="font-semibold text-accent text-xs">You</p>
+                            <p class="text-[10px] text-mono-light">10:35 AM</p>
+                        </div>
+                        <div class="bg-accent/10 p-3 rounded-xl rounded-tr-none border border-accent/20 text-mono-text shadow-sm w-full text-left">
+                            <p class="text-sm leading-relaxed">Copy that. We are running low.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-mono-light/20 bg-mono-surface">
+                <div class="relative">
+                    <input class="w-full pr-10 bg-mono-bg border-mono-light/20 rounded-full py-2 px-4 focus:ring-accent focus:border-accent text-mono-text text-sm" placeholder="Message Team..." type="text"/>
+                    <button class="absolute right-2 top-1/2 -translate-y-1/2 text-mono-light hover:text-accent">
+                        <span class="material-symbols-outlined text-xl">send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Channel Rail (Right, Fixed) -->
+        <div class="w-20 flex-shrink-0 flex flex-col items-center py-4 space-y-4 border-l border-mono-light/10 bg-mono-surface z-20">
+            <!-- Team Channel (Active) -->
+            <button class="relative p-3 rounded-xl bg-accent/20 text-accent group transition-all hover:bg-accent/30" onclick="openChat('team')">
+                <span class="material-symbols-outlined text-2xl">groups</span>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-mono-surface">3</span>
+            </button>
+
+            <!-- Other Roles Channel -->
+            <button class="relative p-3 rounded-xl text-mono-light hover:bg-mono-light/10 hover:text-mono-text transition-all" onclick="openChat('global')">
+                <span class="material-symbols-outlined text-2xl">public</span>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-mono-surface">5</span>
+            </button>
+
+            <!-- Instructor Channel -->
+            <button class="relative p-3 rounded-xl text-mono-light hover:bg-mono-light/10 hover:text-mono-text transition-all" onclick="openChat('instructor')">
+                <span class="material-symbols-outlined text-2xl">school</span>
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-mono-surface">1</span>
+            </button>
+            
+            <!-- AI Channel -->
+            <button class="relative p-3 rounded-xl text-mono-light hover:bg-mono-light/10 hover:text-mono-text transition-all" onclick="openChat('ai')">
+                <span class="material-symbols-outlined text-2xl">smart_toy</span>
+            </button>
+            
+            <div class="flex-1"></div>
+            
+            <!-- Mobile User Profile (Visible < XL) -->
+            <button class="xl:hidden relative p-3 rounded-xl text-mono-light hover:bg-mono-light/10 hover:text-mono-text transition-all mb-4" title="{{Player Name}} - {{Role}}">
+                 <div class="w-8 h-8 rounded-full bg-mono-light/20 border border-mono-light/20 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-xl text-mono-light">person</span>
+                </div>
+            </button>
+        </div>
+    </div>
+</aside>
+</div>
+<script>
+    const sidebarLeft = document.getElementById('sidebar-left');
+    const sidebarLeftHeader = document.getElementById('sidebar-left-header');
+    const logoText = document.getElementById('logo-text');
+    const btnToggleLeft = document.getElementById('btn-toggle-left');
+    const navTexts = document.querySelectorAll('.nav-text');
+    const btnMobileMenu = document.getElementById('btn-mobile-menu');
+    const btnMobileCloseLeft = document.getElementById('btn-mobile-close-left');
+
+    // Mobile Left Sidebar Handlers
+    if(btnMobileMenu) {
+        btnMobileMenu.addEventListener('click', () => {
+            sidebarLeft.classList.remove('-translate-x-full');
+            // Close Right Sidebar if open
+            const sidebarRight = document.getElementById('sidebar-right');
+            if (!sidebarRight.classList.contains('translate-x-full')) {
+                sidebarRight.classList.add('translate-x-full');
+            }
+        });
+    }
+    if(btnMobileCloseLeft) {
+        btnMobileCloseLeft.addEventListener('click', () => {
+            sidebarLeft.classList.add('-translate-x-full');
+        });
+    }
+
+    // Desktop Left Sidebar Toggle
+    btnToggleLeft.addEventListener('click', () => {
+        const isCollapsed = sidebarLeft.classList.contains('w-64');
+        if (isCollapsed) {
+            sidebarLeft.classList.replace('w-64', 'w-20');
+            
+            // Header adjustments for collapsed state
+            logoText.classList.add('opacity-0', 'w-0');
+            sidebarLeftHeader.classList.replace('justify-between', 'justify-center');
+            sidebarLeftHeader.classList.replace('px-4', 'px-0');
+            
+            btnToggleLeft.querySelector('span').innerText = 'menu';
+            navTexts.forEach(el => el.classList.add('opacity-0', 'w-0', 'hidden'));
+        } else {
+            sidebarLeft.classList.replace('w-20', 'w-64');
+            
+            // Header adjustments for expanded state
+            logoText.classList.remove('opacity-0', 'w-0');
+            sidebarLeftHeader.classList.replace('justify-center', 'justify-between');
+            sidebarLeftHeader.classList.replace('px-0', 'px-4');
+
+            btnToggleLeft.querySelector('span').innerText = 'menu_open';
+            navTexts.forEach(el => el.classList.remove('opacity-0', 'w-0', 'hidden'));
+        }
+    });
+
+    function toggleRightSidebar() {
+        const sidebarRight = document.getElementById('sidebar-right');
+        const chatTitleContainer = document.getElementById('chat-title-container');
+        const toggleBtnContainer = document.getElementById('toggle-btn-container');
+        const isMobile = window.innerWidth < 1280; // Updated breakpoint
+        
+        if (isMobile) {
+            // Mobile: Toggle visibility (slide)
+            const isClosed = sidebarRight.classList.contains('translate-x-full');
+            if (isClosed) {
+                // Opening Right Sidebar - Close Left Sidebar if open
+                const sidebarLeft = document.getElementById('sidebar-left');
+                if (!sidebarLeft.classList.contains('-translate-x-full')) {
+                    sidebarLeft.classList.add('-translate-x-full');
+                }
+                sidebarRight.classList.remove('translate-x-full');
+            } else {
+                sidebarRight.classList.add('translate-x-full');
+            }
+            return; // Skip desktop logic
+        }
+        
+        // Desktop: Toggle width
+        const isExpanded = sidebarRight.classList.contains('w-96');
+        
+        if (isExpanded) {
+            sidebarRight.classList.replace('w-96', 'w-20');
+            
+            // Smoothly hide header title
+            chatTitleContainer.classList.add('opacity-0', 'px-0');
+            
+            // Hide button border to avoid double border look
+            toggleBtnContainer.classList.add('border-transparent');
+            toggleBtnContainer.classList.remove('border-mono-light/10');
+        } else {
+            sidebarRight.classList.replace('w-20', 'w-96');
+            
+            // Show header title
+            chatTitleContainer.classList.remove('opacity-0', 'px-0');
+            
+            // Restore button border
+            toggleBtnContainer.classList.remove('border-transparent');
+            toggleBtnContainer.classList.add('border-mono-light/10');
+        }
+    }
+    
+    function openChat(channel) {
+        const sidebarRight = document.getElementById('sidebar-right');
+        const isMobile = window.innerWidth < 1280; // Updated breakpoint
+        
+        if (isMobile) {
+             sidebarRight.classList.remove('translate-x-full');
+        } else {
+             // On desktop, if collapsed, expand it
+             if (sidebarRight.classList.contains('w-20')) {
+                toggleRightSidebar();
+             }
+        }
+        console.log('Switching to channel:', channel);
+    }
+</script>
+</body></html>
