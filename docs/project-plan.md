@@ -70,3 +70,11 @@
       - [ ] /run-agent-task dev *story-done {prompt / user-input-file}
       - [ ] /run-agent-task sm *test-review {prompt / user-input-file}
     - [ ] /run-agent-task sm *epic-retrospective {prompt / user-input-file}
+
+
+
+
+
+## BMAD workflow
+
+<img src="images/bmad-workflow.svg" alt="BMAD workflow">
