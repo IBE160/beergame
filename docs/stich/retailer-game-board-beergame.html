@@ -7,6 +7,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+
+<!-- React & Recharts Dependencies -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+<script src="https://unpkg.com/recharts@2.5.0/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
 <script>
         tailwind.config = {
             darkMode: "class",
@@ -147,20 +155,92 @@
         </button>
         </form>
         </div>
-        <div class="grid grid-cols-2 gap-6 mt-8 w-full mb-8">
-        <div class="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
-        <h3 class="font-semibold mb-4 text-mono-text">Orders vs. Inventory</h3>
-        <div class="flex-1 w-full bg-accent/5 border border-accent/10 rounded flex items-center justify-center overflow-hidden p-2">
-        <img alt="Orders vs Inventory Chart" class="w-full h-full object-contain filter drop-shadow-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJZqBXGyfg2PiDQEaW4O8zHPPlwpl4HOwdDnPTObSdz3zDnOJN4oDS9Ohugdi2lt6amKQOEjKNtDiGtjk0OYA2O6hPnrA-eKd89WduV4FTIZ9Gu_2Kyng6KsyIzHBVtSwWqqUgGuz5Y1Q-yP3E3EvgDGTtK3_-ewHXBZrWNW1Zd0hm97hjPH154uHw8WE_2ofrCV1a9VHMsop9l0pJwxDe1yz-pieO-OUS3hweAKLUdbSIgMZJ60lfVtQMgAz9BaNHyDM_r8Kmov8"/>
-        </div>
-        </div>
-        <div class="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
-        <h3 class="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
-        <div class="flex-1 w-full bg-accent/5 border border-accent/10 rounded flex items-center justify-center overflow-hidden p-2">
-        <img alt="Cost Accumulation Chart" class="w-full h-full object-contain filter drop-shadow-lg" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDMlLJTM-isw2sCYmRqcHdmkZTzPXTE-0GOkTzOeQKj67VIGyxJ1LlvS2QUI85iyhQzktqrzbLo_z9DfAyP_dQuAZbNBS45aiV63aWSLO83rWr8ob8Ah5hEo14atEF3ZuPwuCJM2vPLpEDJuXTOLGh8kNmSe4F1LAuFgA0ONh3muleeZkqskskAG6PWBpH8SvbSArGJM99NNgVIvw8JbY7UO4FoJHCJA0BcgvY2w1g3RsgsdDET6nLQyUbPCLTS3O7-IoRvFWIn7fc"/>
-        </div>
-        </div>
-        </div>
+
+        <!-- Charts Container -->
+        <div id="charts-root" class="w-full flex-1 min-h-[320px] mt-8 mb-8"></div>
         </div>
     </div>
+
+    <script type="text/babel">
+        const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
+
+        // Mock Data for Beer Game (Retailer Perspective - Customer Demand Spikes)
+        const data = [
+            { week: 'W1', orders: 12, inventory: 40, cost: 60 },
+            { week: 'W2', orders: 15, inventory: 35, cost: 130 },
+            { week: 'W3', orders: 25, inventory: 25, cost: 210 },
+            { week: 'W4', orders: 40, inventory: 5, cost: 320 },
+            { week: 'W5', orders: 35, inventory: -10, cost: 480 },
+            { week: 'W6', orders: 30, inventory: -25, cost: 700 },
+            { week: 'W7', orders: 20, inventory: -15, cost: 850 },
+            { week: 'W8', orders: 15, inventory: 0, cost: 950 },
+            { week: 'W9', orders: 12, inventory: 10, cost: 1000 },
+            { week: 'W10', orders: 12, inventory: 15, cost: 1050 },
+        ];
+
+        const CustomTooltip = ({ active, payload, label }) => {
+            if (active && payload && payload.length) {
+                return (
+                    <div className="bg-mono-surface border border-mono-light/20 p-3 rounded shadow-xl">
+                        <p className="text-mono-text font-bold mb-1">{label}</p>
+                        {payload.map((entry, index) => (
+                            <p key={index} style={{ color: entry.color }} className="text-sm">
+                                {entry.name}: {entry.value}
+                            </p>
+                        ))}
+                    </div>
+                );
+            }
+            return null;
+        };
+
+        const DashboardCharts = () => {
+            return (
+                <div className="grid grid-cols-2 gap-6 w-full h-full">
+                    {/* Orders vs Inventory Chart */}
+                    <div className="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
+                        <h3 className="font-semibold mb-4 text-mono-text">Orders vs. Inventory</h3>
+                        <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded overflow-hidden">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+                                    <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                    <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Legend verticalAlign="top" height={36} />
+                                    <Line type="monotone" dataKey="orders" name="Orders" stroke="#E0E0E0" strokeWidth={2} dot={{r: 3, fill: '#E0E0E0'}} activeDot={{r: 5}} />
+                                    <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#FFD700" strokeWidth={3} dot={{r: 3, fill: '#FFD700'}} activeDot={{r: 6}} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Cost Accumulation Chart */}
+                    <div className="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
+                        <h3 className="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
+                        <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded overflow-hidden">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorCostRetailer" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#FFD700" stopOpacity={0.8}/>
+                                            <stop offset="95%" stopColor="#FFD700" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+                                    <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                    <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Area type="monotone" dataKey="cost" name="Total Cost ($)" stroke="#FFD700" fillOpacity={1} fill="url(#colorCostRetailer)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('charts-root'));
+        root.render(<DashboardCharts />);
+    </script>
 </body></html>

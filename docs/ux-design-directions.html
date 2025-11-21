@@ -126,14 +126,19 @@
 
             // Optional: Update active state if iframe location changes (e.g., via back/forward)
             iframe.addEventListener('load', () => {
-                const currentSrc = iframe.contentWindow.location.href.split('/').pop();
-                menuLinks.forEach(link => {
-                    if (link.getAttribute('href').includes(currentSrc)) {
-                        link.classList.add('active');
-                    } else {
-                        link.classList.remove('active');
-                    }
-                });
+                try {
+                    const currentSrc = iframe.contentWindow.location.href.split('/').pop();
+                    menuLinks.forEach(link => {
+                        const href = link.getAttribute('href');
+                         if (href && href !== '#' && href.includes(currentSrc)) {
+                            link.classList.add('active');
+                        } else {
+                            link.classList.remove('active');
+                        }
+                    });
+                } catch (e) {
+                    console.log("Cross-origin access blocked - skipping active state sync from iframe.");
+                }
             });
         });
     </script>
