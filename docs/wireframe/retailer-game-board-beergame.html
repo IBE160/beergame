@@ -128,7 +128,7 @@
                     <div class="p-4 bg-mono-surface rounded-b-xl flex justify-end">
                          <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center">30</div>
+                                <div class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center">&nbsp;</div>
                         </div>
                     </div>
                 </div>
@@ -207,6 +207,8 @@
                                 const orderInput = document.getElementById('orderInput');
                                 const btnUp = document.getElementById('btnUp');
                                 const btnDown = document.getElementById('btnDown');
+                                // Updated selector to match the new button styles
+                                const btnSend = document.querySelector('button.w-full.bg-transparent.border-accent'); 
 
                                 btnUp.addEventListener('click', () => {
                                     orderInput.stepUp();
@@ -220,13 +222,40 @@
                                 orderInput.addEventListener('change', () => {
                                      if (orderInput.value < 0) orderInput.value = 0;
                                 });
+
+                                // Send Button Logic (State 1 -> Transition -> State 2)
+                                if (btnSend) {
+                                    btnSend.addEventListener('click', () => {
+                                        // State 1 -> Transition
+                                        // Disable interactions immediately
+                                        orderInput.disabled = true;
+                                        btnUp.disabled = true;
+                                        btnDown.disabled = true;
+                                        btnSend.disabled = true;
+                                        
+                                        // Update visual state to "Sending..."
+                                        const originalText = btnSend.querySelector('span').innerText;
+                                        btnSend.querySelector('span').innerText = "WAIT";
+                                        btnSend.classList.add('opacity-50', 'cursor-not-allowed');
+                                        // Remove hover effect
+                                        btnSend.classList.remove('hover:bg-accent/10');
+
+                                        // Simulate 5 second delay for network/transition
+                                        setTimeout(() => {
+                                            // State 2: Sent/Waiting
+                                            btnSend.querySelector('span').innerText = "SENT";
+                                            // Keep disabled (State 2 requirement: order cannot be changed)
+                                            console.log("Transition to State 2 complete. Order locked.");
+                                        }, 5000);
+                                    });
+                                }
                             });
                         </script>
 
                         <!-- Demand Box (Right, Dashed) -->
                          <div class="bg-mono-surface border border-dashed border-red-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform cursor-pointer">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Demand</div>
-                            <div class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center">20</div>
+                            <div class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center">&nbsp;</div>
                         </div>
                     </div>                                                      
                 </div>
@@ -277,7 +306,7 @@
                     <div class="p-4 bg-mono-surface rounded-b-xl flex justify-start">
                         <div class="bg-mono-surface border border-red-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Demand</div>
-                            <div class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center">20</div>                        </div>
+                            <div class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center">?</div>                        </div>
                     </div>
                 </div>
 

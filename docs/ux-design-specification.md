@@ -93,6 +93,19 @@ These principles will guide every UX decision to ensure a consistent and intuiti
 *   **Flexibility & Control:** Game configuration is locked for students after the game starts, ensuring a consistent experience. Instructors retain crucial in-game control, such as the ability to substitute inactive players with AI, to ensure the game continues smoothly.
 *   **Feedback & Communication:** System feedback will be subtle and informative. Game events and notifications will be delivered through a dedicated, unobtrusive channel, preventing disruption to gameplay while keeping players informed.
 
+### 2.4 Game Round States
+
+To effectively manage the flow of the game and provide clear feedback to the user, each round is divided into three distinct states. These states guide the animation and interaction logic of the game board.
+
+1.  **Player Input Pending** (Action Required)
+    *   **Description:** The round has started, and the system is waiting for the local player to make a decision. The user must determine their order amount for the week and click the "Send" button. All interactive elements for placing an order are active.
+
+2.  **Network Synchronization** (Waiting for Opponents)
+    *   **Description:** The local player has successfully submitted their order. The "Send" button is disabled or replaced with a "Waiting..." indicator. The system is now waiting for other roles (opponents or teammates) to complete their turns. Visual feedback should clearly indicate that the user's action is recorded and the game is pending external inputs.
+
+3.  **Round Resolution & Simulation** (Animation Phase)
+    *   **Description:** All players have submitted their orders for the current week. The game engine calculates the new state, including inventory levels, backlogs, and costs. This state triggers the visual animations: orders moving upstream and shipments moving downstream through the "Flow Pipes," effectively simulating the movement of goods and information before the next round begins.
+
 ---
 
 ## 3. Visual Foundation
