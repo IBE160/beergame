@@ -338,7 +338,7 @@
                                             if (targetEl.innerText.trim() === '' || targetEl.innerText.trim() === '&nbsp;') {
                                                 targetEl.innerText = input ? input.value : clone.innerText.trim();
                                             }
-                                            if (onComplete) onComplete();
+                                            if (onComplete) onComplete(clone);
                                         };
                                     };
 
@@ -346,10 +346,39 @@
                                     animateClone(els.retailerOrderInner, els.wholesalerOrderInner, null, 'direct', () => {
                                         // PHASE 2: Wholesaler Order -> Wholesaler Inventory (Vertical Dogleg)
                                         // Copy moves from Order box to Inventory, original stays visible
-                                        // Added 1 second delay
                                         setTimeout(() => {
                                             if (els.wholesalerOrderInner && els.wholesalerInventory) {
-                                                animateClone(els.wholesalerOrderInner, els.wholesalerInventory, null, 'vertical-dogleg', null, true);
+                                                animateClone(els.wholesalerOrderInner, els.wholesalerInventory, null, 'vertical-dogleg', (persistedClone) => {
+                                                    // PHASE 3: Morph & Move to Week 1
+                                                    setTimeout(() => {
+                                                        if (!persistedClone) return;
+                                                        
+                                                        // 1. Morph into Green Delivery
+                                                        // Remove yellow accent styles
+                                                        persistedClone.classList.remove('bg-accent/10', 'border-accent/20', 'text-accent');
+                                                        // Add green success styles
+                                                        persistedClone.classList.add('bg-green-500/10', 'border-green-500/20', 'text-green-400');
+                                                        
+                                                        // Calculate & Update Value: Min(25, Order)
+                                                        const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
+                                                        const orderVal = parseInt(valSpan.innerText) || 0;
+                                                        const deliverVal = Math.min(25, orderVal);
+                                                        valSpan.innerText = deliverVal;
+
+                                                        // 2. Move to Week 1 (Vertical Dogleg: Up then Right)
+                                                        if (els.greenWeek1) {
+                                                            animateClone(persistedClone, els.greenWeek1, deliverVal, 'vertical-dogleg', () => {
+                                                                const w1Num = els.greenWeek1.querySelector('.font-bold');
+                                                                if (w1Num) {
+                                                                    w1Num.innerText = deliverVal;
+                                                                    w1Num.style.opacity = '1';
+                                                                }
+                                                            });
+                                                            // Hide the static morphed clone as the moving one takes over
+                                                            persistedClone.style.opacity = '0';
+                                                        }
+                                                    }, 1000);
+                                                }, true);
                                             }
                                         }, 1000);
                                     });
