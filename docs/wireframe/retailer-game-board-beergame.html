@@ -341,13 +341,23 @@
                                     const gw2Number = els.greenWeek2.querySelector('.font-bold');
                                     if (gw2Number) gw2Number.style.opacity = '0';
 
-                                    /*
                                     // 3. Green Week 1 -> Green Week 2
-                                    if (els.greenWeek1) {
-                                        const originalText = els.greenWeek1.querySelector('.font-bold').innerText;
-                                        animateClone(els.greenWeek1, els.greenWeek2);
+                                    if (els.greenWeek1 && els.greenWeek2) {
+                                        const val = els.greenWeek1.querySelector('.font-bold').innerText;
+                                        animateClone(els.greenWeek1, els.greenWeek2, null, 'direct', () => {
+                                            // Update Week 2 with Week 1's value and show it
+                                            const targetNum = els.greenWeek2.querySelector('.font-bold');
+                                            if (targetNum) {
+                                                targetNum.innerText = val;
+                                                targetNum.style.opacity = '1';
+                                            }
+                                        });
+                                        // Hide source Week 1 number immediately
+                                        const gw1Number = els.greenWeek1.querySelector('.font-bold');
+                                        if (gw1Number) gw1Number.style.opacity = '0';
                                     }
 
+                                    /*
                                     // 4. Yellow Week 2 -> Customer (Market Demand area)
                                     animateClone(els.yellowWeek2, els.customerNode);
 
