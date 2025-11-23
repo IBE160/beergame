@@ -446,9 +446,12 @@
 
                                     // 6. Customer Demand -> Retailer Demand
                                     if (els.customerDemand && els.retailerDemand) {
-                                        animateClone(els.customerDemand, els.retailerDemand, "20", 'direct', () => {
+                                        // Random Demand 10-20
+                                        const randomDemand = Math.floor(Math.random() * 11) + 10;
+                                        
+                                        animateClone(els.customerDemand, els.retailerDemand, randomDemand.toString(), 'direct', () => {
                                             const targetNum = els.retailerDemand.querySelector('.font-bold');
-                                            if (targetNum) targetNum.innerText = "20";
+                                            if (targetNum) targetNum.innerText = randomDemand;
 
                                             // Phase 3: Retailer Demand -> Middle of Inventory (Vertical Align Y)
                                             // Imitates Wholesaler Order movements
@@ -467,7 +470,8 @@
 
                                                             // Calculate & Update Value: Min(CurrentInv, Demand)
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
-                                                            const demandVal = parseInt(valSpan.innerText) || 0;
+                                                            // Use the randomDemand we generated
+                                                            const demandVal = randomDemand;
                                                             
                                                             // Get current inventory to calculate delivery cap
                                                             const invNumber = els.retailerInventory.querySelector('.text-5xl');
