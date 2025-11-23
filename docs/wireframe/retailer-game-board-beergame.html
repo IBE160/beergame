@@ -225,7 +225,8 @@
                                     yellowWeek2: document.querySelectorAll('[class*="border-accent/30"]:not(.border-dashed)')[1], 
                                     retailerDemand: getEl('.bg-mono-surface.border-dashed[class*="border-red-500/30"]'), 
                                     customerDemand: getEl('.bg-mono-surface[class*="border-red-500/30"]:not(.border-dashed)'), 
-                                    customerIcons: getEl('.w-56:last-child .flex.-space-x-2') 
+                                    customerIcons: getEl('.w-56:last-child .flex.-space-x-2'),
+                                    wholesalerInventory: document.querySelectorAll('[class*="bg-mono-bg/30"][class*="mt-[15px]"]')[0] 
                                 };
 
                                 // --- Input Logic ---
@@ -300,6 +301,21 @@
                                                 { transform: `translate(${waypointX}px, 0)`, offset: 0.6 },
                                                 { transform: `translate(${finalX}px, ${finalY}px)`, offset: 1 }
                                             ];
+                                        } else if (pathType === 'vertical-dogleg') {
+                                            // Vertical first, then horizontal
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
+                                            
+                                            const finalX = deltaX + centerOffsetX;
+                                            const finalY = deltaY + centerOffsetY;
+                                            // Move vertically to target's Y level (plus centering)
+                                            const waypointY = finalY;
+                                            
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)', offset: 0 },
+                                                { transform: `translate(0, ${waypointY}px)`, offset: 0.6 },
+                                                { transform: `translate(${finalX}px, ${finalY}px)`, offset: 1 }
+                                            ];
                                         } else {
                                             // Direct path
                                             keyframes = [
@@ -326,7 +342,16 @@
                                     };
 
                                     // 1. Retailer Order -> Wholesaler Order (Direct)
-                                    animateClone(els.retailerOrderInner, els.wholesalerOrderInner);
+                                    animateClone(els.retailerOrderInner, els.wholesalerOrderInner, null, 'direct', () => {
+                                        // PHASE 2: Wholesaler Order -> Wholesaler Inventory (Vertical Dogleg)
+                                        // Copy moves from Order box to Inventory, original stays visible
+                                        // Added 1 second delay
+                                        setTimeout(() => {
+                                            if (els.wholesalerOrderInner && els.wholesalerInventory) {
+                                                animateClone(els.wholesalerOrderInner, els.wholesalerInventory, null, 'vertical-dogleg');
+                                            }
+                                        }, 1000);
+                                    });
                                     // Clear source Retailer Order immediately as it "moves"
                                     const orderInput = els.retailerOrderInner.querySelector('input');
                                     if (orderInput) orderInput.value = ''; 
