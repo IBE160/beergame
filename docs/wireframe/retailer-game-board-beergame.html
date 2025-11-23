@@ -310,12 +310,13 @@
                                             const finalX = deltaX + centerOffsetX;
                                             const finalY = deltaY + centerOffsetY;
                                             // Move vertically to target's Y level (plus centering)
-                                            const waypointY = finalY;
+                                            // Adjusted by +10px to reduce upward movement as requested
+                                            const adjustedY = finalY + 10;
                                             
                                             keyframes = [
                                                 { transform: 'translate(0, 0)', offset: 0 },
-                                                { transform: `translate(0, ${waypointY}px)`, offset: 0.6 },
-                                                { transform: `translate(${finalX}px, ${finalY}px)`, offset: 1 }
+                                                { transform: `translate(0, ${adjustedY}px)`, offset: 0.6 },
+                                                { transform: `translate(${finalX}px, ${adjustedY}px)`, offset: 1 }
                                             ];
                                         } else if (pathType === 'vertical-align-y') {
                                             // Vertical only, align to target's Y center, preserve Source X
