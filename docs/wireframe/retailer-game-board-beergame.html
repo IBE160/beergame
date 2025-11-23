@@ -224,6 +224,7 @@
                                     yellowWeek1: document.querySelectorAll('[class*="border-accent/30"]:not(.border-dashed)')[0], 
                                     yellowWeek2: document.querySelectorAll('[class*="border-accent/30"]:not(.border-dashed)')[1], 
                                     retailerDemand: getEl('.bg-mono-surface.border-dashed[class*="border-red-500/30"]'), 
+                                    retailerDemandInner: getEl('.bg-mono-surface.border-dashed[class*="border-red-500/30"] [class*="bg-red-500/10"]'),
                                     customerDemand: getEl('.bg-mono-surface[class*="border-red-500/30"]:not(.border-dashed)'), 
                                     customerIcons: getEl('.w-56:last-child .flex.-space-x-2'),
                                     wholesalerInventory: document.querySelectorAll('[class*="bg-mono-bg/30"][class*="mt-[15px]"]')[0] 
@@ -411,6 +412,14 @@
                                         animateClone(els.customerDemand, els.retailerDemand, "20", 'direct', () => {
                                             const targetNum = els.retailerDemand.querySelector('.font-bold');
                                             if (targetNum) targetNum.innerText = "20";
+
+                                            // Phase 3: Retailer Demand -> Retailer Inventory (Vertical Dogleg)
+                                            // Imitates Wholesaler Order movements
+                                            setTimeout(() => {
+                                                if (els.retailerDemandInner && els.retailerInventory) {
+                                                    animateClone(els.retailerDemandInner, els.retailerInventory, null, 'vertical-dogleg', null, true);
+                                                }
+                                            }, 1000);
                                         });
                                     }
                                 };
