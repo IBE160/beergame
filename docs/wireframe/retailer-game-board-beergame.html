@@ -450,11 +450,41 @@
                                             const targetNum = els.retailerDemand.querySelector('.font-bold');
                                             if (targetNum) targetNum.innerText = "20";
 
-                                            // Phase 3: Retailer Demand -> Retailer Inventory (Vertical Dogleg)
+                                            // Phase 3: Retailer Demand -> Middle of Inventory (Vertical Align Y)
                                             // Imitates Wholesaler Order movements
                                             setTimeout(() => {
                                                 if (els.retailerDemandInner && els.retailerInventory) {
-                                                    animateClone(els.retailerDemandInner, els.retailerInventory, null, 'vertical-dogleg', null, true);
+                                                    animateClone(els.retailerDemandInner, els.retailerInventory, null, 'vertical-align-y', (persistedClone) => {
+                                                        // Phase 4: Morph & Move to Yellow Week 1
+                                                        setTimeout(() => {
+                                                            if (!persistedClone) return;
+
+                                                            // 1. Morph into Yellow Delivery Order
+                                                            // Remove red demand styles
+                                                            persistedClone.classList.remove('bg-red-500/10', 'border-red-500/20', 'text-red-400');
+                                                            // Add yellow accent styles
+                                                            persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
+
+                                                            // Calculate & Update Value: Min(50, Demand) - Assuming Inventory is 50
+                                                            const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
+                                                            const demandVal = parseInt(valSpan.innerText) || 0;
+                                                            const deliverVal = Math.min(50, demandVal);
+                                                            valSpan.innerText = deliverVal;
+
+                                                            // 2. Move to Yellow Week 1 (Vertical Dogleg: Up then Right)
+                                                            if (els.yellowWeek1) {
+                                                                animateClone(persistedClone, els.yellowWeek1, deliverVal, 'vertical-dogleg', () => {
+                                                                    const w1Num = els.yellowWeek1.querySelector('.font-bold');
+                                                                    if (w1Num) {
+                                                                        w1Num.innerText = deliverVal;
+                                                                        w1Num.style.opacity = '1';
+                                                                    }
+                                                                });
+                                                                // Remove the intermediate clone
+                                                                persistedClone.remove();
+                                                            }
+                                                        }, 1000);
+                                                    }, true);
                                                 }
                                             }, 1000);
                                         });
