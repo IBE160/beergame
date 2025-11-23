@@ -231,9 +231,29 @@
                                 };
 
                                 // --- Input Logic ---
-                                btnUp.addEventListener('click', () => { orderInput.stepUp(); });
-                                btnDown.addEventListener('click', () => { orderInput.stepDown(); });
-                                orderInput.addEventListener('change', () => { if (orderInput.value < 0) orderInput.value = 0; });
+                                const validateInput = () => {
+                                    const val = orderInput.value;
+                                    const isEmpty = val === '' || val === null;
+                                    
+                                    if (isEmpty) {
+                                        btnSend.disabled = true;
+                                        btnSend.classList.add('opacity-50', 'cursor-not-allowed');
+                                        btnSend.classList.remove('hover:bg-accent/10');
+                                    } else {
+                                        btnSend.disabled = false;
+                                        btnSend.classList.remove('opacity-50', 'cursor-not-allowed');
+                                        btnSend.classList.add('hover:bg-accent/10');
+                                    }
+                                };
+
+                                btnUp.addEventListener('click', () => { orderInput.stepUp(); validateInput(); });
+                                btnDown.addEventListener('click', () => { orderInput.stepDown(); validateInput(); });
+                                orderInput.addEventListener('input', validateInput);
+                                orderInput.addEventListener('change', () => { 
+                                    if (orderInput.value < 0) orderInput.value = 0;
+                                    validateInput(); 
+                                });
+                                validateInput();
 
                                 // --- Animation Logic ---
                                 window.startState3Animation = () => {
@@ -497,15 +517,14 @@
                                                                     }
 
                                                                     // Reset Interface for Next Round
-                                                                    if (btnSend) {
-                                                                        btnSend.disabled = false;
-                                                                        btnSend.querySelector('span').innerText = "Send";
-                                                                        btnSend.classList.remove('opacity-50', 'cursor-not-allowed');
-                                                                        btnSend.classList.add('hover:bg-accent/10');
-                                                                    }
                                                                     if (orderInput) orderInput.disabled = false;
                                                                     if (btnUp) btnUp.disabled = false;
                                                                     if (btnDown) btnDown.disabled = false;
+
+                                                                    if (btnSend) {
+                                                                        btnSend.querySelector('span').innerText = "Send";
+                                                                        validateInput();
+                                                                    }
                                                                 });
                                                                 // Remove the intermediate clone
                                                                 persistedClone.remove();
