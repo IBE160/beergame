@@ -381,10 +381,13 @@
                                         if (yw1Number) yw1Number.style.opacity = '0';
                                     }
 
-                                    /*
                                     // 6. Customer Demand -> Retailer Demand
-                                    animateClone(els.customerDemand, els.retailerDemand, "20");
-                                    */
+                                    if (els.customerDemand && els.retailerDemand) {
+                                        animateClone(els.customerDemand, els.retailerDemand, "20", 'direct', () => {
+                                            const targetNum = els.retailerDemand.querySelector('.font-bold');
+                                            if (targetNum) targetNum.innerText = "20";
+                                        });
+                                    }
                                 };
 
                                 // --- Send Button Logic ---
