@@ -239,7 +239,7 @@
                                     console.log("Starting State 3 Animations (Order + Green Week 2)...");
 
                                     // Helper to clone and animate
-                                    const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null) => {
+                                    const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null, persist = false) => {
                                         if (!sourceEl || !targetEl) {
                                             console.error("Animation Source or Target missing", { sourceEl, targetEl });
                                             return;
@@ -332,7 +332,7 @@
                                         });
 
                                         animation.onfinish = () => {
-                                            clone.remove();
+                                            if (!persist) clone.remove();
                                             // Optional: update target text
                                             if (targetEl.innerText.trim() === '' || targetEl.innerText.trim() === '&nbsp;') {
                                                 targetEl.innerText = input ? input.value : clone.innerText.trim();
@@ -348,7 +348,7 @@
                                         // Added 1 second delay
                                         setTimeout(() => {
                                             if (els.wholesalerOrderInner && els.wholesalerInventory) {
-                                                animateClone(els.wholesalerOrderInner, els.wholesalerInventory, null, 'vertical-dogleg');
+                                                animateClone(els.wholesalerOrderInner, els.wholesalerInventory, null, 'vertical-dogleg', null, true);
                                             }
                                         }, 1000);
                                     });
