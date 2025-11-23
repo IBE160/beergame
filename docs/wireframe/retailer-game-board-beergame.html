@@ -240,7 +240,7 @@
                                     console.log("Starting State 3 Animations (Order + Green Week 2)...");
 
                                     // Helper to clone and animate
-                                    const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null, persist = false) => {
+                                    const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null, persist = false, overwrite = false) => {
                                         if (!sourceEl || !targetEl) {
                                             console.error("Animation Source or Target missing", { sourceEl, targetEl });
                                             return;
@@ -344,7 +344,7 @@
                                         animation.onfinish = () => {
                                             if (!persist) clone.remove();
                                             // Optional: update target text
-                                            if (targetEl.innerText.trim() === '' || targetEl.innerText.trim() === '&nbsp;') {
+                                            if (overwrite || targetEl.innerText.trim() === '' || targetEl.innerText.trim() === '&nbsp;') {
                                                 targetEl.innerText = input ? input.value : clone.innerText.trim();
                                             }
                                             if (onComplete) onComplete(clone);
@@ -389,7 +389,7 @@
                                                 }, true);
                                             }
                                         }, 1000);
-                                    });
+                                    }, false, true); // persist=false, overwrite=true
                                     // Clear source Retailer Order immediately as it "moves"
                                     const orderInput = els.retailerOrderInner.querySelector('input');
                                     if (orderInput) orderInput.value = ''; 
@@ -465,7 +465,7 @@
                                                             // Add yellow accent styles
                                                             persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
 
-                                                            // Calculate & Update Value
+                                                            // Calculate & Update Value: Min(CurrentInv, Demand)
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
                                                             const demandVal = parseInt(valSpan.innerText) || 0;
                                                             
