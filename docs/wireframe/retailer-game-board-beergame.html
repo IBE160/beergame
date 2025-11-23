@@ -221,11 +221,11 @@
                                     // For lists, query parent then children to be safe
                                     greenWeek1: document.querySelectorAll('[class*="border-green-500/30"]')[0], 
                                     greenWeek2: document.querySelectorAll('[class*="border-green-500/30"]')[1], 
-                                    yellowWeek1: document.querySelectorAll('[class*="border-accent/30"]')[0], 
-                                    yellowWeek2: document.querySelectorAll('[class*="border-accent/30"]')[1], 
+                                    yellowWeek1: document.querySelectorAll('[class*="border-accent/30"]:not(.border-dashed)')[0], 
+                                    yellowWeek2: document.querySelectorAll('[class*="border-accent/30"]:not(.border-dashed)')[1], 
                                     retailerDemand: getEl('.bg-mono-surface.border-dashed[class*="border-red-500/30"]'), 
                                     customerDemand: getEl('.bg-mono-surface[class*="border-red-500/30"]:not(.border-dashed)'), 
-                                    customerNode: getEl('.w-56:last-child') 
+                                    customerIcons: getEl('.w-56:last-child .flex.-space-x-2') 
                                 };
 
                                 // --- Input Logic ---
@@ -357,10 +357,15 @@
                                         if (gw1Number) gw1Number.style.opacity = '0';
                                     }
 
-                                    /*
                                     // 4. Yellow Week 2 -> Customer (Market Demand area)
-                                    animateClone(els.yellowWeek2, els.customerNode);
+                                    if (els.yellowWeek2 && els.customerIcons) {
+                                        animateClone(els.yellowWeek2, els.customerIcons, null, 'dogleg');
+                                        // Hide source number immediately
+                                        const yw2Number = els.yellowWeek2.querySelector('.font-bold');
+                                        if (yw2Number) yw2Number.style.opacity = '0';
+                                    }
 
+                                    /*
                                     // 5. Yellow Week 1 -> Yellow Week 2
                                     if (els.yellowWeek1) {
                                         animateClone(els.yellowWeek1, els.yellowWeek2);
