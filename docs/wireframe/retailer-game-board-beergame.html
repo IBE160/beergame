@@ -465,11 +465,22 @@
                                                             // Add yellow accent styles
                                                             persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
 
-                                                            // Calculate & Update Value: Min(50, Demand) - Assuming Inventory is 50
+                                                            // Calculate & Update Value
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
                                                             const demandVal = parseInt(valSpan.innerText) || 0;
-                                                            const deliverVal = Math.min(50, demandVal);
+                                                            
+                                                            // Get current inventory to calculate delivery cap
+                                                            const invNumber = els.retailerInventory.querySelector('.text-5xl');
+                                                            let currentInv = 0;
+                                                            if (invNumber) currentInv = parseInt(invNumber.innerText) || 0;
+
+                                                            const deliverVal = Math.min(currentInv, demandVal);
                                                             valSpan.innerText = deliverVal;
+
+                                                            // Decrease Inventory Level
+                                                            if (invNumber) {
+                                                                invNumber.innerText = Math.max(0, currentInv - deliverVal);
+                                                            }
 
                                                             // 2. Move to Yellow Week 1 (Vertical Dogleg: Up then Right)
                                                             if (els.yellowWeek1) {
