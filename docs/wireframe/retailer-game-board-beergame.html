@@ -365,12 +365,23 @@
                                         if (yw2Number) yw2Number.style.opacity = '0';
                                     }
 
-                                    /*
                                     // 5. Yellow Week 1 -> Yellow Week 2
-                                    if (els.yellowWeek1) {
-                                        animateClone(els.yellowWeek1, els.yellowWeek2);
+                                    if (els.yellowWeek1 && els.yellowWeek2) {
+                                        const val = els.yellowWeek1.querySelector('.font-bold').innerText;
+                                        animateClone(els.yellowWeek1, els.yellowWeek2, null, 'direct', () => {
+                                            // Update Week 2 with Week 1's value and show it
+                                            const targetNum = els.yellowWeek2.querySelector('.font-bold');
+                                            if (targetNum) {
+                                                targetNum.innerText = val;
+                                                targetNum.style.opacity = '1';
+                                            }
+                                        });
+                                        // Hide source Week 1 number immediately
+                                        const yw1Number = els.yellowWeek1.querySelector('.font-bold');
+                                        if (yw1Number) yw1Number.style.opacity = '0';
                                     }
 
+                                    /*
                                     // 6. Customer Demand -> Retailer Demand
                                     animateClone(els.customerDemand, els.retailerDemand, "20");
                                     */
