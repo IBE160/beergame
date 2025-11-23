@@ -238,7 +238,7 @@
                                     console.log("Starting State 3 Animations (Order + Green Week 2)...");
 
                                     // Helper to clone and animate
-                                    const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct') => {
+                                    const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null) => {
                                         if (!sourceEl || !targetEl) {
                                             console.error("Animation Source or Target missing", { sourceEl, targetEl });
                                             return;
@@ -321,6 +321,7 @@
                                             if (targetEl.innerText.trim() === '' || targetEl.innerText.trim() === '&nbsp;') {
                                                 targetEl.innerText = input ? input.value : clone.innerText.trim();
                                             }
+                                            if (onComplete) onComplete();
                                         };
                                     };
 
@@ -331,7 +332,11 @@
                                     if (orderInput) orderInput.value = ''; 
 
                                     // 2. Green Week 2 -> Retailer Inventory (Dogleg)
-                                    animateClone(els.greenWeek2, els.retailerInventory, null, 'dogleg');
+                                    animateClone(els.greenWeek2, els.retailerInventory, null, 'dogleg', () => {
+                                        // Update Inventory to 80 (50 + 30)
+                                        const invNumber = els.retailerInventory.querySelector('.text-5xl');
+                                        if (invNumber) invNumber.innerText = '80';
+                                    });
                                     // Hide source Green Week 2 number immediately
                                     const gw2Number = els.greenWeek2.querySelector('.font-bold');
                                     if (gw2Number) gw2Number.style.opacity = '0';
