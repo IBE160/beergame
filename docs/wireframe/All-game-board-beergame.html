@@ -604,9 +604,9 @@
                         els.retailerDeliveryWeek1.style.opacity = '0';
 
                         // 3. Orders move upstream
-                        // Factory Order → Production Week 2
+                        // Factory Order → Production Week 1 (entry point of pipeline)
                         const factoryOrderVal = els.factoryOrderInput.value || '0';
-                        animateClone(els.factoryOrderInput.parentElement, els.productionWeek2, factoryOrderVal, 'horizontal-then-vertical', null, (clone) => {
+                        animateClone(els.factoryOrderInput.parentElement, els.productionWeek1, factoryOrderVal, 'horizontal-then-vertical', null, (clone) => {
                             if (clone) {
                                 clone.style.transition = 'all 0.3s ease-out';
                                 clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)';
@@ -614,8 +614,8 @@
                                 clone.style.color = '#06B6D4';
                                 setTimeout(() => clone.remove(), 300);
                             }
-                            els.productionWeek2.innerText = factoryOrderVal;
-                            els.productionWeek2.style.opacity = '1';
+                            els.productionWeek1.innerText = factoryOrderVal;
+                            els.productionWeek1.style.opacity = '1';
                         }, true);
                         els.factoryOrderInput.value = '';
 
