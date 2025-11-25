@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beer Game - Full Supply Chain Board</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+
+<script>
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    'mono-bg': '#1A1A1A',
+                    'mono-surface': '#2C2C2C',
+                    'mono-text': '#E0E0E0',
+                    'mono-light': '#808080',
+                    'production': '#06B6D4',        // Cyan - Production pipeline
+                    'accent-factory': '#F97316',    // Orange
+                    'accent-distributor': '#8B5CF6', // Purple
+                    'accent-wholesaler': '#10B981', // Green
+                    'accent-retailer': '#FFD700',   // Gold
+                },
+                fontFamily: {
+                    sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+                    mono: ["Roboto Mono", "monospace"],
+                },
+                borderRadius: {
+                    DEFAULT: "0.25rem",
+                    'sm': "0.125rem",
+                    'md': "0.375rem",
+                    'lg': "0.5rem",
+                    'xl': "0.75rem",
+                    'full': "9999px",
+                },
+            },
+        },
+    };
+</script>
+<style type="text/tailwindcss">
+    body {
+        @apply font-sans bg-mono-bg text-mono-text antialiased;
+    }
+    /* Hide numeric spinners */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
+</head>
+<body class="font-sans bg-mono-bg text-mono-text antialiased">
+    <div class="w-full min-h-screen p-4 overflow-auto">
+        <div class="w-full max-w-[1800px] mx-auto relative z-10 space-y-4">
+
+            <!-- Header -->
+            <div class="text-center mb-2">
+                <h1 class="text-2xl font-bold text-mono-text">Beer Game - Full Supply Chain</h1>
+                <p class="text-sm text-mono-light">Production → Factory → Distributor → Wholesaler → Retailer → Customers</p>
+            </div>
+
+            <!-- MAIN GAME BOARD -->
+            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-4 shadow-2xl flex items-stretch justify-between gap-0 relative overflow-hidden">
+
+                <!-- 1. PRODUCTION (Left Endpoint) -->
+                <div class="w-40 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
+                    <div class="p-3 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Production</h3>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-evenly p-3 relative">
+                        <span class="material-symbols-outlined text-7xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">precision_manufacturing</span>
+
+                        <!-- Week 2 -->
+                        <div class="bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-105 transition-transform z-10">
+                            <div class="text-[9px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                            <div id="production-week-2" class="bg-production/10 px-2 py-1 rounded border border-production/20 text-production font-sans font-bold text-center text-sm min-w-[40px]">30</div>
+                        </div>
+                        <!-- Week 1 -->
+                        <div class="bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-105 transition-transform z-10">
+                            <div class="text-[9px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                            <div id="production-week-1" class="bg-production/10 px-2 py-1 rounded border border-production/20 text-production font-sans font-bold text-center text-sm min-w-[40px]">20</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIPE 1: Production → Factory -->
+                <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
+                    <div class="relative h-12 top-[30px] w-full flex items-center">
+                        <div id="pipe-prod-factory" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                    </div>
+                    <div class="relative h-12 w-full flex items-center top-[5px]">
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                    </div>
+                </div>
+
+                <!-- 2. FACTORY -->
+                <div class="w-40 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
+                    <div class="p-3 border-b border-mono-light/10 bg-accent-factory/10 rounded-t-xl">
+                        <h3 class="text-accent-factory text-xs uppercase tracking-widest font-bold text-center">Factory</h3>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center p-3">
+                        <div id="factory-inventory" class="bg-mono-bg/30 p-3 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[80px] min-h-[70px]">
+                            <h4 class="text-mono-text text-[9px] uppercase tracking-widest mb-1">Inventory</h4>
+                            <div class="text-3xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1">
+                        <div class="flex flex-col items-center gap-1">
+                            <button id="factory-send-btn" class="w-full bg-transparent border border-accent-factory hover:bg-accent-factory/10 text-white rounded py-1 px-2 shadow-md transition-colors flex items-center justify-center">
+                                <span class="text-[9px] font-bold uppercase">Send</span>
+                            </button>
+                            <div class="bg-mono-surface border border-dashed border-accent-factory/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                                <div class="bg-accent-factory/10 px-1 py-0 rounded border border-accent-factory/20 flex items-center justify-center min-w-[40px]">
+                                    <input type="number" value="30" id="factory-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-factory text-xs border-0 p-0 focus:ring-0" />
+                                    <div class="flex flex-col ml-0.5">
+                                        <button class="order-up text-accent-factory hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                        <button class="order-down text-accent-factory hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-mono-surface border border-dashed border-accent-distributor/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div id="factory-incoming-order" class="bg-accent-distributor/10 px-2 py-1 rounded border border-accent-distributor/20 text-accent-distributor font-sans font-bold text-center text-xs min-w-[40px]">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIPE 2: Factory → Distributor -->
+                <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
+                    <div class="relative h-12 top-[30px] w-full flex items-center">
+                        <div id="pipe-factory-dist" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[8px]">
+                            <div class="bg-mono-surface border border-accent-factory/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
+                                <div id="factory-delivery-week-1" class="bg-accent-factory/10 px-2 py-0.5 rounded border border-accent-factory/20 text-accent-factory font-sans font-bold text-center text-xs min-w-[30px]">25</div>
+                            </div>
+                            <div class="bg-mono-surface border border-accent-factory/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center">W2</div>
+                                <div id="factory-delivery-week-2" class="bg-accent-factory/10 px-2 py-0.5 rounded border border-accent-factory/20 text-accent-factory font-sans font-bold text-center text-xs min-w-[30px]">20</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative h-12 w-full flex items-center top-[5px]">
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                    </div>
+                </div>
+
+                <!-- 3. DISTRIBUTOR -->
+                <div class="w-40 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
+                    <div class="p-3 border-b border-mono-light/10 bg-accent-distributor/10 rounded-t-xl">
+                        <h3 class="text-accent-distributor text-xs uppercase tracking-widest font-bold text-center">Distributor</h3>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center p-3">
+                        <div id="distributor-inventory" class="bg-mono-bg/30 p-3 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[80px] min-h-[70px]">
+                            <h4 class="text-mono-text text-[9px] uppercase tracking-widest mb-1">Inventory</h4>
+                            <div class="text-3xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1">
+                        <div class="flex flex-col items-center gap-1">
+                            <button id="distributor-send-btn" class="w-full bg-transparent border border-accent-distributor hover:bg-accent-distributor/10 text-white rounded py-1 px-2 shadow-md transition-colors flex items-center justify-center">
+                                <span class="text-[9px] font-bold uppercase">Send</span>
+                            </button>
+                            <div class="bg-mono-surface border border-dashed border-accent-distributor/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                                <div class="bg-accent-distributor/10 px-1 py-0 rounded border border-accent-distributor/20 flex items-center justify-center min-w-[40px]">
+                                    <input type="number" value="30" id="distributor-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-distributor text-xs border-0 p-0 focus:ring-0" />
+                                    <div class="flex flex-col ml-0.5">
+                                        <button class="order-up text-accent-distributor hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                        <button class="order-down text-accent-distributor hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-mono-surface border border-dashed border-accent-wholesaler/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div id="distributor-incoming-order" class="bg-accent-wholesaler/10 px-2 py-1 rounded border border-accent-wholesaler/20 text-accent-wholesaler font-sans font-bold text-center text-xs min-w-[40px]">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIPE 3: Distributor → Wholesaler -->
+                <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
+                    <div class="relative h-12 top-[30px] w-full flex items-center">
+                        <div id="pipe-dist-whole" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[8px]">
+                            <div class="bg-mono-surface border border-accent-distributor/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
+                                <div id="distributor-delivery-week-1" class="bg-accent-distributor/10 px-2 py-0.5 rounded border border-accent-distributor/20 text-accent-distributor font-sans font-bold text-center text-xs min-w-[30px]">25</div>
+                            </div>
+                            <div class="bg-mono-surface border border-accent-distributor/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center">W2</div>
+                                <div id="distributor-delivery-week-2" class="bg-accent-distributor/10 px-2 py-0.5 rounded border border-accent-distributor/20 text-accent-distributor font-sans font-bold text-center text-xs min-w-[30px]">20</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative h-12 w-full flex items-center top-[5px]">
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                    </div>
+                </div>
+
+                <!-- 4. WHOLESALER -->
+                <div class="w-40 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
+                    <div class="p-3 border-b border-mono-light/10 bg-accent-wholesaler/10 rounded-t-xl">
+                        <h3 class="text-accent-wholesaler text-xs uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center p-3">
+                        <div id="wholesaler-inventory" class="bg-mono-bg/30 p-3 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[80px] min-h-[70px]">
+                            <h4 class="text-mono-text text-[9px] uppercase tracking-widest mb-1">Inventory</h4>
+                            <div class="text-3xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1">
+                        <div class="flex flex-col items-center gap-1">
+                            <button id="wholesaler-send-btn" class="w-full bg-transparent border border-accent-wholesaler hover:bg-accent-wholesaler/10 text-white rounded py-1 px-2 shadow-md transition-colors flex items-center justify-center">
+                                <span class="text-[9px] font-bold uppercase">Send</span>
+                            </button>
+                            <div class="bg-mono-surface border border-dashed border-accent-wholesaler/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                                <div class="bg-accent-wholesaler/10 px-1 py-0 rounded border border-accent-wholesaler/20 flex items-center justify-center min-w-[40px]">
+                                    <input type="number" value="30" id="wholesaler-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-wholesaler text-xs border-0 p-0 focus:ring-0" />
+                                    <div class="flex flex-col ml-0.5">
+                                        <button class="order-up text-accent-wholesaler hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                        <button class="order-down text-accent-wholesaler hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-mono-surface border border-dashed border-accent-retailer/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div id="wholesaler-incoming-order" class="bg-accent-retailer/10 px-2 py-1 rounded border border-accent-retailer/20 text-accent-retailer font-sans font-bold text-center text-xs min-w-[40px]">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIPE 4: Wholesaler → Retailer -->
+                <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
+                    <div class="relative h-12 top-[30px] w-full flex items-center">
+                        <div id="pipe-whole-retail" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[8px]">
+                            <div class="bg-mono-surface border border-accent-wholesaler/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
+                                <div id="wholesaler-delivery-week-1" class="bg-accent-wholesaler/10 px-2 py-0.5 rounded border border-accent-wholesaler/20 text-accent-wholesaler font-sans font-bold text-center text-xs min-w-[30px]">25</div>
+                            </div>
+                            <div class="bg-mono-surface border border-accent-wholesaler/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center">W2</div>
+                                <div id="wholesaler-delivery-week-2" class="bg-accent-wholesaler/10 px-2 py-0.5 rounded border border-accent-wholesaler/20 text-accent-wholesaler font-sans font-bold text-center text-xs min-w-[30px]">20</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative h-12 w-full flex items-center top-[5px]">
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                    </div>
+                </div>
+
+                <!-- 5. RETAILER -->
+                <div class="w-40 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
+                    <div class="p-3 border-b border-mono-light/10 bg-accent-retailer/10 rounded-t-xl">
+                        <h3 class="text-accent-retailer text-xs uppercase tracking-widest font-bold text-center">Retailer</h3>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center p-3">
+                        <div id="retailer-inventory" class="bg-mono-bg/30 p-3 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[80px] min-h-[70px]">
+                            <h4 class="text-mono-text text-[9px] uppercase tracking-widest mb-1">Inventory</h4>
+                            <div class="text-3xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                        </div>
+                    </div>
+                    <div class="p-3 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1">
+                        <div class="flex flex-col items-center gap-1">
+                            <button id="retailer-send-btn" class="w-full bg-transparent border border-accent-retailer hover:bg-accent-retailer/10 text-white rounded py-1 px-2 shadow-md transition-colors flex items-center justify-center">
+                                <span class="text-[9px] font-bold uppercase">Send</span>
+                            </button>
+                            <div class="bg-mono-surface border border-dashed border-accent-retailer/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                                <div class="bg-accent-retailer/10 px-1 py-0 rounded border border-accent-retailer/20 flex items-center justify-center min-w-[40px]">
+                                    <input type="number" value="30" id="retailer-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-retailer text-xs border-0 p-0 focus:ring-0" />
+                                    <div class="flex flex-col ml-0.5">
+                                        <button class="order-up text-accent-retailer hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                        <button class="order-down text-accent-retailer hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-mono-surface border border-dashed border-red-500/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Demand</div>
+                            <div id="retailer-incoming-order" class="bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center text-xs min-w-[40px]">&nbsp;</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIPE 5: Retailer → Customers -->
+                <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
+                    <div class="relative h-12 top-[30px] w-full flex items-center">
+                        <div id="pipe-retail-cust" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[8px]">
+                            <div class="bg-mono-surface border border-accent-retailer/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
+                                <div id="retailer-delivery-week-1" class="bg-accent-retailer/10 px-2 py-0.5 rounded border border-accent-retailer/20 text-accent-retailer font-sans font-bold text-center text-xs min-w-[30px]">25</div>
+                            </div>
+                            <div class="bg-mono-surface border border-accent-retailer/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center">W2</div>
+                                <div id="retailer-delivery-week-2" class="bg-accent-retailer/10 px-2 py-0.5 rounded border border-accent-retailer/20 text-accent-retailer font-sans font-bold text-center text-xs min-w-[30px]">20</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative h-12 w-full flex items-center top-[5px]">
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
+                    </div>
+                </div>
+
+                <!-- 6. CUSTOMERS (Right Endpoint) -->
+                <div class="w-40 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
+                    <div class="p-3 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Customers</h3>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-center p-3 relative">
+                        <span class="material-symbols-outlined text-7xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">groups</span>
+
+                        <!-- Customer Icons -->
+                        <div class="flex items-end justify-center -space-x-3 mb-2 z-10">
+                            <div class="w-8 h-8 bg-mono-light/20 rounded-full flex items-center justify-center border-2 border-mono-surface">
+                                <span class="material-symbols-outlined text-mono-text text-lg">person</span>
+                            </div>
+                            <div class="w-10 h-10 bg-mono-light/30 rounded-full flex items-center justify-center border-2 border-mono-surface z-10">
+                                <span class="material-symbols-outlined text-mono-text text-xl">person</span>
+                            </div>
+                            <div class="w-8 h-8 bg-mono-light/20 rounded-full flex items-center justify-center border-2 border-mono-surface">
+                                <span class="material-symbols-outlined text-mono-text text-lg">person</span>
+                            </div>
+                        </div>
+                        <p class="text-[9px] uppercase tracking-widest text-mono-light z-10">Market Demand</p>
+                    </div>
+                    <div class="p-3 bg-mono-surface rounded-b-xl flex justify-start">
+                        <div class="bg-mono-surface border border-red-500/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Demand</div>
+                            <div id="customer-demand" class="bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center text-xs min-w-[40px]">?</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Animation Script -->
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    // --- Element References ---
+                    const els = {
+                        // Production
+                        productionWeek1: document.getElementById('production-week-1'),
+                        productionWeek2: document.getElementById('production-week-2'),
+
+                        // Factory
+                        factoryInventory: document.getElementById('factory-inventory'),
+                        factoryOrderInput: document.getElementById('factory-order-input'),
+                        factoryIncomingOrder: document.getElementById('factory-incoming-order'),
+                        factoryDeliveryWeek1: document.getElementById('factory-delivery-week-1'),
+                        factoryDeliveryWeek2: document.getElementById('factory-delivery-week-2'),
+                        factorySendBtn: document.getElementById('factory-send-btn'),
+
+                        // Distributor
+                        distributorInventory: document.getElementById('distributor-inventory'),
+                        distributorOrderInput: document.getElementById('distributor-order-input'),
+                        distributorIncomingOrder: document.getElementById('distributor-incoming-order'),
+                        distributorDeliveryWeek1: document.getElementById('distributor-delivery-week-1'),
+                        distributorDeliveryWeek2: document.getElementById('distributor-delivery-week-2'),
+                        distributorSendBtn: document.getElementById('distributor-send-btn'),
+
+                        // Wholesaler
+                        wholesalerInventory: document.getElementById('wholesaler-inventory'),
+                        wholesalerOrderInput: document.getElementById('wholesaler-order-input'),
+                        wholesalerIncomingOrder: document.getElementById('wholesaler-incoming-order'),
+                        wholesalerDeliveryWeek1: document.getElementById('wholesaler-delivery-week-1'),
+                        wholesalerDeliveryWeek2: document.getElementById('wholesaler-delivery-week-2'),
+                        wholesalerSendBtn: document.getElementById('wholesaler-send-btn'),
+
+                        // Retailer
+                        retailerInventory: document.getElementById('retailer-inventory'),
+                        retailerOrderInput: document.getElementById('retailer-order-input'),
+                        retailerIncomingOrder: document.getElementById('retailer-incoming-order'),
+                        retailerDeliveryWeek1: document.getElementById('retailer-delivery-week-1'),
+                        retailerDeliveryWeek2: document.getElementById('retailer-delivery-week-2'),
+                        retailerSendBtn: document.getElementById('retailer-send-btn'),
+
+                        // Customers
+                        customerDemand: document.getElementById('customer-demand'),
+
+                        // Pipes
+                        pipeProdFactory: document.getElementById('pipe-prod-factory'),
+                        pipeFactoryDist: document.getElementById('pipe-factory-dist'),
+                        pipeDistWhole: document.getElementById('pipe-dist-whole'),
+                        pipeWholeRetail: document.getElementById('pipe-whole-retail'),
+                        pipeRetailCust: document.getElementById('pipe-retail-cust'),
+                    };
+
+                    // --- Order Input Up/Down Buttons ---
+                    document.querySelectorAll('.order-up').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const input = btn.closest('.bg-mono-surface').querySelector('input[type="number"]');
+                            if (input) input.stepUp();
+                        });
+                    });
+                    document.querySelectorAll('.order-down').forEach(btn => {
+                        btn.addEventListener('click', () => {
+                            const input = btn.closest('.bg-mono-surface').querySelector('input[type="number"]');
+                            if (input) input.stepDown();
+                        });
+                    });
+
+                    // --- Animation Helper ---
+                    const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', pipeEl = null, onComplete = null, persist = false) => {
+                        if (!sourceEl || !targetEl) {
+                            console.error("Animation Source or Target missing", { sourceEl, targetEl });
+                            return;
+                        }
+
+                        const rectSource = sourceEl.getBoundingClientRect();
+                        const rectTarget = targetEl.getBoundingClientRect();
+
+                        const clone = sourceEl.cloneNode(true);
+                        clone.id = '';
+
+                        const input = clone.querySelector('input');
+                        if (input) {
+                            const val = input.value;
+                            const span = document.createElement('span');
+                            span.innerText = val;
+                            span.className = input.className.replace('bg-transparent', '');
+                            span.style.display = 'inline-block';
+                            input.replaceWith(span);
+                            const btns = clone.querySelectorAll('button');
+                            btns.forEach(b => b.remove());
+                        }
+
+                        if (textOverride !== null) {
+                            const numberDiv = clone.querySelector('.font-bold') || clone;
+                            numberDiv.innerText = textOverride;
+                        }
+
+                        clone.style.position = 'fixed';
+                        clone.style.left = `${rectSource.left}px`;
+                        clone.style.top = `${rectSource.top}px`;
+                        clone.style.width = `${rectSource.width}px`;
+                        clone.style.height = `${rectSource.height}px`;
+                        clone.style.margin = '0';
+                        clone.style.zIndex = '9999';
+                        clone.style.pointerEvents = 'none';
+                        clone.style.transition = 'none';
+                        document.body.appendChild(clone);
+
+                        let keyframes;
+                        const deltaX = rectTarget.left - rectSource.left;
+                        const deltaY = rectTarget.top - rectSource.top;
+                        const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                        const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
+
+                        if (pathType === 'via-pipe' && pipeEl) {
+                            const pipeRect = pipeEl.getBoundingClientRect();
+                            const pipeCenterY = pipeRect.top + pipeRect.height / 2;
+                            const sourceCenterY = rectSource.top + rectSource.height / 2;
+                            const step1Y = pipeCenterY - sourceCenterY;
+                            const step2X = rectTarget.left - rectSource.left;
+                            const finalCenterY = (rectTarget.top + rectTarget.height / 2) - pipeCenterY;
+                            const finalX = step2X + centerOffsetX;
+                            const finalY = step1Y + finalCenterY;
+
+                            keyframes = [
+                                { transform: 'translate(0, 0)', offset: 0 },
+                                { transform: `translate(0, ${step1Y}px)`, offset: 0.25 },
+                                { transform: `translate(${step2X}px, ${step1Y}px)`, offset: 0.7 },
+                                { transform: `translate(${finalX}px, ${finalY}px)`, offset: 1 }
+                            ];
+                        } else if (pathType === 'horizontal-then-vertical') {
+                            const step1X = deltaX + centerOffsetX;
+                            const finalY = deltaY + centerOffsetY;
+                            keyframes = [
+                                { transform: 'translate(0, 0)', offset: 0 },
+                                { transform: `translate(${step1X}px, 0)`, offset: 0.6 },
+                                { transform: `translate(${step1X}px, ${finalY}px)`, offset: 1 }
+                            ];
+                        } else if (pathType === 'horizontal') {
+                            const finalX = deltaX + centerOffsetX;
+                            keyframes = [
+                                { transform: 'translate(0, 0)' },
+                                { transform: `translate(${finalX}px, 0)` }
+                            ];
+                        } else {
+                            keyframes = [
+                                { transform: 'translate(0, 0)' },
+                                { transform: `translate(${deltaX + centerOffsetX}px, ${deltaY + centerOffsetY}px)` }
+                            ];
+                        }
+
+                        const animation = clone.animate(keyframes, {
+                            duration: 2000,
+                            easing: 'ease-in-out',
+                            fill: 'forwards'
+                        });
+
+                        animation.onfinish = () => {
+                            if (!persist) clone.remove();
+                            if (onComplete) onComplete(clone);
+                        };
+                    };
+
+                    // --- Main Animation Function ---
+                    const startFullChainAnimation = () => {
+                        console.log("Starting Full Chain Animation...");
+
+                        // 1. Deliveries move downstream (Week 2 → Inventory)
+                        // Production Week 1 → Factory Inventory
+                        animateClone(els.productionWeek1, els.factoryInventory, null, 'via-pipe', els.pipeProdFactory, () => {
+                            const invNum = els.factoryInventory.querySelector('.text-3xl');
+                            if (invNum) {
+                                const current = parseInt(invNum.innerText) || 0;
+                                const incoming = parseInt(els.productionWeek1.innerText) || 0;
+                                invNum.innerText = current + incoming;
+                            }
+                        });
+                        els.productionWeek1.style.opacity = '0';
+
+                        // Factory Week 2 → Distributor Inventory
+                        animateClone(els.factoryDeliveryWeek2, els.distributorInventory, null, 'via-pipe', els.pipeFactoryDist, () => {
+                            const invNum = els.distributorInventory.querySelector('.text-3xl');
+                            if (invNum) {
+                                const current = parseInt(invNum.innerText) || 0;
+                                const incoming = parseInt(els.factoryDeliveryWeek2.innerText) || 0;
+                                invNum.innerText = current + incoming;
+                            }
+                        });
+                        els.factoryDeliveryWeek2.style.opacity = '0';
+
+                        // Distributor Week 2 → Wholesaler Inventory
+                        animateClone(els.distributorDeliveryWeek2, els.wholesalerInventory, null, 'via-pipe', els.pipeDistWhole, () => {
+                            const invNum = els.wholesalerInventory.querySelector('.text-3xl');
+                            if (invNum) {
+                                const current = parseInt(invNum.innerText) || 0;
+                                const incoming = parseInt(els.distributorDeliveryWeek2.innerText) || 0;
+                                invNum.innerText = current + incoming;
+                            }
+                        });
+                        els.distributorDeliveryWeek2.style.opacity = '0';
+
+                        // Wholesaler Week 2 → Retailer Inventory
+                        animateClone(els.wholesalerDeliveryWeek2, els.retailerInventory, null, 'via-pipe', els.pipeWholeRetail, () => {
+                            const invNum = els.retailerInventory.querySelector('.text-3xl');
+                            if (invNum) {
+                                const current = parseInt(invNum.innerText) || 0;
+                                const incoming = parseInt(els.wholesalerDeliveryWeek2.innerText) || 0;
+                                invNum.innerText = current + incoming;
+                            }
+                        });
+                        els.wholesalerDeliveryWeek2.style.opacity = '0';
+
+                        // Retailer Week 2 → Customers (just disappears)
+                        animateClone(els.retailerDeliveryWeek2, els.customerDemand, null, 'via-pipe', els.pipeRetailCust);
+                        els.retailerDeliveryWeek2.style.opacity = '0';
+
+                        // 2. Pipeline advances (Week 1 → Week 2)
+                        // Production Week 2 → Week 1
+                        const prodVal2 = els.productionWeek2.innerText;
+                        animateClone(els.productionWeek2, els.productionWeek1, null, 'direct', null, () => {
+                            els.productionWeek1.innerText = prodVal2;
+                            els.productionWeek1.style.opacity = '1';
+                        });
+                        els.productionWeek2.style.opacity = '0';
+
+                        // Factory Week 1 → Week 2
+                        const factVal1 = els.factoryDeliveryWeek1.innerText;
+                        animateClone(els.factoryDeliveryWeek1, els.factoryDeliveryWeek2, null, 'direct', null, () => {
+                            els.factoryDeliveryWeek2.innerText = factVal1;
+                            els.factoryDeliveryWeek2.style.opacity = '1';
+                        });
+                        els.factoryDeliveryWeek1.style.opacity = '0';
+
+                        // Distributor Week 1 → Week 2
+                        const distVal1 = els.distributorDeliveryWeek1.innerText;
+                        animateClone(els.distributorDeliveryWeek1, els.distributorDeliveryWeek2, null, 'direct', null, () => {
+                            els.distributorDeliveryWeek2.innerText = distVal1;
+                            els.distributorDeliveryWeek2.style.opacity = '1';
+                        });
+                        els.distributorDeliveryWeek1.style.opacity = '0';
+
+                        // Wholesaler Week 1 → Week 2
+                        const wholeVal1 = els.wholesalerDeliveryWeek1.innerText;
+                        animateClone(els.wholesalerDeliveryWeek1, els.wholesalerDeliveryWeek2, null, 'direct', null, () => {
+                            els.wholesalerDeliveryWeek2.innerText = wholeVal1;
+                            els.wholesalerDeliveryWeek2.style.opacity = '1';
+                        });
+                        els.wholesalerDeliveryWeek1.style.opacity = '0';
+
+                        // Retailer Week 1 → Week 2
+                        const retailVal1 = els.retailerDeliveryWeek1.innerText;
+                        animateClone(els.retailerDeliveryWeek1, els.retailerDeliveryWeek2, null, 'direct', null, () => {
+                            els.retailerDeliveryWeek2.innerText = retailVal1;
+                            els.retailerDeliveryWeek2.style.opacity = '1';
+                        });
+                        els.retailerDeliveryWeek1.style.opacity = '0';
+
+                        // 3. Orders move upstream
+                        // Factory Order → Production Week 2
+                        const factoryOrderVal = els.factoryOrderInput.value || '0';
+                        animateClone(els.factoryOrderInput.parentElement, els.productionWeek2, factoryOrderVal, 'horizontal-then-vertical', null, (clone) => {
+                            if (clone) {
+                                clone.style.transition = 'all 0.3s ease-out';
+                                clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)';
+                                clone.style.borderColor = 'rgba(6, 182, 212, 0.2)';
+                                clone.style.color = '#06B6D4';
+                                setTimeout(() => clone.remove(), 300);
+                            }
+                            els.productionWeek2.innerText = factoryOrderVal;
+                            els.productionWeek2.style.opacity = '1';
+                        }, true);
+                        els.factoryOrderInput.value = '';
+
+                        // Distributor Order → Factory Week 1
+                        const distOrderVal = els.distributorOrderInput.value || '0';
+                        animateClone(els.distributorOrderInput.parentElement, els.factoryDeliveryWeek1, distOrderVal, 'horizontal-then-vertical', null, (clone) => {
+                            if (clone) {
+                                clone.style.transition = 'all 0.3s ease-out';
+                                clone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                clone.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                                clone.style.color = '#F97316';
+                                setTimeout(() => clone.remove(), 300);
+                            }
+                            els.factoryDeliveryWeek1.innerText = distOrderVal;
+                            els.factoryDeliveryWeek1.style.opacity = '1';
+                        }, true);
+                        els.distributorOrderInput.value = '';
+
+                        // Wholesaler Order → Distributor Week 1
+                        const wholeOrderVal = els.wholesalerOrderInput.value || '0';
+                        animateClone(els.wholesalerOrderInput.parentElement, els.distributorDeliveryWeek1, wholeOrderVal, 'horizontal-then-vertical', null, (clone) => {
+                            if (clone) {
+                                clone.style.transition = 'all 0.3s ease-out';
+                                clone.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
+                                clone.style.borderColor = 'rgba(139, 92, 246, 0.2)';
+                                clone.style.color = '#8B5CF6';
+                                setTimeout(() => clone.remove(), 300);
+                            }
+                            els.distributorDeliveryWeek1.innerText = wholeOrderVal;
+                            els.distributorDeliveryWeek1.style.opacity = '1';
+                        }, true);
+                        els.wholesalerOrderInput.value = '';
+
+                        // Retailer Order → Wholesaler Week 1
+                        const retailOrderVal = els.retailerOrderInput.value || '0';
+                        animateClone(els.retailerOrderInput.parentElement, els.wholesalerDeliveryWeek1, retailOrderVal, 'horizontal-then-vertical', null, (clone) => {
+                            if (clone) {
+                                clone.style.transition = 'all 0.3s ease-out';
+                                clone.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                                clone.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+                                clone.style.color = '#10B981';
+                                setTimeout(() => clone.remove(), 300);
+                            }
+                            els.wholesalerDeliveryWeek1.innerText = retailOrderVal;
+                            els.wholesalerDeliveryWeek1.style.opacity = '1';
+                        }, true);
+                        els.retailerOrderInput.value = '';
+
+                        // Customer Demand → Retailer incoming order
+                        const randomDemand = Math.floor(Math.random() * 11) + 10;
+                        animateClone(els.customerDemand, els.retailerIncomingOrder, randomDemand.toString(), 'horizontal', null, () => {
+                            els.retailerIncomingOrder.innerText = randomDemand;
+                        });
+
+                        // New random demand appears at customer
+                        setTimeout(() => {
+                            els.customerDemand.innerText = '?';
+                        }, 500);
+
+                        // Reset Week 1 values to new random for next round
+                        setTimeout(() => {
+                            els.retailerDeliveryWeek1.innerText = Math.floor(Math.random() * 20) + 10;
+                            els.retailerDeliveryWeek1.style.opacity = '1';
+                        }, 2500);
+                    };
+
+                    // --- Send Button Click Handlers ---
+                    const sendBtns = [els.factorySendBtn, els.distributorSendBtn, els.wholesalerSendBtn, els.retailerSendBtn];
+                    sendBtns.forEach(btn => {
+                        if (btn) {
+                            btn.addEventListener('click', () => {
+                                // Disable all send buttons
+                                sendBtns.forEach(b => {
+                                    if (b) {
+                                        b.disabled = true;
+                                        b.classList.add('opacity-50', 'cursor-not-allowed');
+                                        b.querySelector('span').innerText = 'WAIT';
+                                    }
+                                });
+
+                                setTimeout(() => {
+                                    sendBtns.forEach(b => {
+                                        if (b) b.querySelector('span').innerText = 'SENT';
+                                    });
+                                    startFullChainAnimation();
+
+                                    // Re-enable after animation
+                                    setTimeout(() => {
+                                        sendBtns.forEach(b => {
+                                            if (b) {
+                                                b.disabled = false;
+                                                b.classList.remove('opacity-50', 'cursor-not-allowed');
+                                                b.querySelector('span').innerText = 'Send';
+                                            }
+                                        });
+                                    }, 3000);
+                                }, 1000);
+                            });
+                        }
+                    });
+                });
+            </script>
+
+        </div>
+    </div>
+</body></html>
