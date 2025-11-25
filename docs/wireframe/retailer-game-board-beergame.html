@@ -336,10 +336,18 @@
                                             // Vertical only, align to target's Y center, preserve Source X
                                             const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
                                             const finalY = deltaY + centerOffsetY;
-                                            
+
                                             keyframes = [
                                                 { transform: 'translate(0, 0)' },
                                                 { transform: `translate(0, ${finalY}px)` }
+                                            ];
+                                        } else if (pathType === 'horizontal') {
+                                            // Horizontal only, keep Y at 0, center at target
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const finalX = deltaX + centerOffsetX;
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)' },
+                                                { transform: `translate(${finalX}px, 0)` }
                                             ];
                                         } else {
                                             // Direct path
@@ -451,7 +459,7 @@
                                         // Random Demand 10-20
                                         const randomDemand = Math.floor(Math.random() * 11) + 10;
                                         
-                                        animateClone(els.customerDemand, els.retailerDemand, randomDemand.toString(), 'direct', () => {
+                                        animateClone(els.customerDemand, els.retailerDemand, randomDemand.toString(), 'horizontal', () => {
                                             const targetNum = els.retailerDemand.querySelector('.font-bold');
                                             if (targetNum) targetNum.innerText = randomDemand;
 
@@ -594,9 +602,9 @@
                     </div>
                     <!-- Demand Box (Bottom) -->
                     <div class="p-4 bg-mono-surface rounded-b-xl flex justify-start">
-                        <div id="customer-demand" class="bg-mono-surface border border-red-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                        <div class="bg-mono-surface border border-red-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Demand</div>
-                            <div class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center min-w-[55px]">?</div>                        </div>
+                            <div id="customer-demand" class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center min-w-[55px]">?</div>                        </div>
                     </div>
                 </div>
 
