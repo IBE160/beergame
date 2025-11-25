@@ -2,7 +2,7 @@
 <html class="" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Beer Game - Retailer Dashboard</title>
+<title>Beer Game - Factory Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
@@ -25,7 +25,7 @@
                         'mono-surface': '#2C2C2C', // Slightly lighter dark gray for cards/surfaces
                         'mono-text': '#E0E0E0', // Light gray for primary text
                         'mono-light': '#808080', // Medium gray for secondary text/borders
-                        'accent': '#FFD700', // Gold/Amber as the contrasting accent color
+                        'accent': '#F97316', // Orange as the contrasting accent color
                     },
                     fontFamily: {
                         sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
@@ -112,11 +112,11 @@
                 <!-- 1. LEFT NODE: WHOLESALER -->
                 <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
                     <div class="p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Production</h3>
                     </div>
                     <div class="flex-1 flex items-center justify-start pt-[34px] p-4 relative flex-col">
                          <!-- Faint background icon -->
-                         <span class="material-symbols-outlined text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">warehouse</span>
+                         <span class="material-symbols-outlined text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">precision_manufacturing</span>
                          
                          <!-- Hidden Inventory Box (Wholesaler) -->
                          <div id="wholesaler-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
@@ -168,7 +168,7 @@
                     
                     <!-- Header -->
                     <div class="p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Retailer</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Factory</h3>
                     </div>
 
                     <!-- Inventory Display (Wrapped Box) -->
@@ -589,7 +589,7 @@
                 <!-- 3. RIGHT NODE: CUSTOMERS -->
                 <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
                     <div class="p-4 border-b  border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Customers</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Distributor</h3>
                     </div>
                     <div class="flex-1 flex flex-col items-center justify-center p-4 space-y-2">
                         <!-- Stick Figures (Icons) -->
