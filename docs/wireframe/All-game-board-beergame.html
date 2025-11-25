@@ -40,6 +40,11 @@
         },
     };
 </script>
+<style>
+    /* Prevent FOUC - hide until Tailwind loads */
+    body { opacity: 0; }
+    body.loaded { opacity: 1; transition: opacity 0.1s ease-in; }
+</style>
 <style type="text/tailwindcss">
     body {
         @apply font-sans bg-mono-bg text-mono-text antialiased;
@@ -338,6 +343,12 @@
             <!-- Animation Script -->
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
+                    // Show page after Tailwind has processed
+                    requestAnimationFrame(() => {
+                        requestAnimationFrame(() => {
+                            document.body.classList.add('loaded');
+                        });
+                    });
                     // --- Element References ---
                     const els = {
                         // Production
