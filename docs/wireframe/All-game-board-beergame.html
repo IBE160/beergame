@@ -498,6 +498,12 @@
                                 { transform: 'translate(0, 0)' },
                                 { transform: `translate(${finalX}px, 0)` }
                             ];
+                        } else if (pathType === 'vertical') {
+                            const finalY = deltaY + centerOffsetY;
+                            keyframes = [
+                                { transform: 'translate(0, 0)' },
+                                { transform: `translate(0, ${finalY}px)` }
+                            ];
                         } else {
                             keyframes = [
                                 { transform: 'translate(0, 0)' },
@@ -659,11 +665,110 @@
                             els.customerDemand.innerText = '?';
                         }, 500);
 
+                        // ==================== PHASE 2 ====================
+                        // After Phase 1 completes (~2000ms), incoming orders move up to inventory,
+                        // morph into delivery boxes with min(inventory, order), reduce inventory
+                        setTimeout(() => {
+                            // Helper function for Phase 2 animation
+                            const animatePhase2 = (incomingOrderEl, inventoryEl, deliveryColor, deliveryBorderColor, textColor) => {
+                                const orderVal = parseInt(incomingOrderEl.innerText) || 0;
+                                if (orderVal === 0 || incomingOrderEl.innerText === '&nbsp;' || incomingOrderEl.innerText.trim() === '') return;
+
+                                const invNumEl = inventoryEl.querySelector('.text-3xl');
+                                const currentInv = parseInt(invNumEl?.innerText) || 0;
+                                const deliveryAmount = Math.min(currentInv, orderVal);
+
+                                // Animate incoming order up to inventory center
+                                const rectSource = incomingOrderEl.getBoundingClientRect();
+                                const rectTarget = inventoryEl.getBoundingClientRect();
+
+                                const clone = incomingOrderEl.cloneNode(true);
+                                clone.id = '';
+                                clone.innerText = deliveryAmount.toString();
+                                clone.style.position = 'fixed';
+                                clone.style.left = `${rectSource.left}px`;
+                                clone.style.top = `${rectSource.top}px`;
+                                clone.style.width = `${rectSource.width}px`;
+                                clone.style.height = `${rectSource.height}px`;
+                                clone.style.margin = '0';
+                                clone.style.zIndex = '9999';
+                                clone.style.pointerEvents = 'none';
+                                clone.style.transition = 'background-color 0.3s, border-color 0.3s, color 0.3s';
+                                document.body.appendChild(clone);
+
+                                // Clear the original incoming order
+                                incomingOrderEl.innerHTML = '&nbsp;';
+
+                                const deltaY = (rectTarget.top + rectTarget.height / 2) - (rectSource.top + rectSource.height / 2);
+
+                                const animation = clone.animate([
+                                    { transform: 'translate(0, 0)' },
+                                    { transform: `translate(0, ${deltaY}px)` }
+                                ], {
+                                    duration: 1000,
+                                    easing: 'ease-in-out',
+                                    fill: 'forwards'
+                                });
+
+                                // Morph color halfway through
+                                setTimeout(() => {
+                                    clone.style.backgroundColor = deliveryColor;
+                                    clone.style.borderColor = deliveryBorderColor;
+                                    clone.style.color = textColor;
+                                }, 500);
+
+                                animation.onfinish = () => {
+                                    // Update inventory
+                                    if (invNumEl) {
+                                        invNumEl.innerText = currentInv - deliveryAmount;
+                                    }
+                                    clone.remove();
+                                };
+                            };
+
+                            // Factory: incoming order → inventory (morph to orange/factory delivery)
+                            animatePhase2(
+                                els.factoryIncomingOrder,
+                                els.factoryInventory,
+                                'rgba(249, 115, 22, 0.1)',
+                                'rgba(249, 115, 22, 0.2)',
+                                '#F97316'
+                            );
+
+                            // Distributor: incoming order → inventory (morph to purple/distributor delivery)
+                            animatePhase2(
+                                els.distributorIncomingOrder,
+                                els.distributorInventory,
+                                'rgba(139, 92, 246, 0.1)',
+                                'rgba(139, 92, 246, 0.2)',
+                                '#8B5CF6'
+                            );
+
+                            // Wholesaler: incoming order → inventory (morph to green/wholesaler delivery)
+                            animatePhase2(
+                                els.wholesalerIncomingOrder,
+                                els.wholesalerInventory,
+                                'rgba(16, 185, 129, 0.1)',
+                                'rgba(16, 185, 129, 0.2)',
+                                '#10B981'
+                            );
+
+                            // Retailer: incoming order → inventory (morph to gold/retailer delivery)
+                            animatePhase2(
+                                els.retailerIncomingOrder,
+                                els.retailerInventory,
+                                'rgba(255, 215, 0, 0.1)',
+                                'rgba(255, 215, 0, 0.2)',
+                                '#FFD700'
+                            );
+
+                        }, 2200); // Wait for Phase 1 to complete
+
                         // Reset Week 1 values to new random for next round
                         setTimeout(() => {
                             els.retailerDeliveryWeek1.innerText = Math.floor(Math.random() * 20) + 10;
                             els.retailerDeliveryWeek1.style.opacity = '1';
-                        }, 2500);
+                        }, 4000);
                     };
 
                     // --- Main Send Button Click Handler ---
@@ -677,11 +782,11 @@
                                 els.mainSendBtn.querySelector('span:last-child').innerText = 'SENDING';
                                 startFullChainAnimation();
 
-                                // Re-enable after animation
+                                // Re-enable after animation (Phase 1: 2000ms + Phase 2: 1000ms + buffer)
                                 setTimeout(() => {
                                     els.mainSendBtn.querySelector('span:last-child').innerText = 'Send Orders';
                                     validateOrders();
-                                }, 3000);
+                                }, 4500);
                             }, 500);
                         });
                     }
