@@ -514,16 +514,16 @@
                         console.log("Starting Full Chain Animation...");
 
                         // 1. Deliveries move downstream (Week 2 → Inventory)
-                        // Production Week 1 → Factory Inventory
-                        animateClone(els.productionWeek1, els.factoryInventory, null, 'via-pipe', els.pipeProdFactory, () => {
+                        // Production Week 2 → Factory Inventory
+                        animateClone(els.productionWeek2, els.factoryInventory, null, 'via-pipe', els.pipeProdFactory, () => {
                             const invNum = els.factoryInventory.querySelector('.text-3xl');
                             if (invNum) {
                                 const current = parseInt(invNum.innerText) || 0;
-                                const incoming = parseInt(els.productionWeek1.innerText) || 0;
+                                const incoming = parseInt(els.productionWeek2.innerText) || 0;
                                 invNum.innerText = current + incoming;
                             }
                         });
-                        els.productionWeek1.style.opacity = '0';
+                        els.productionWeek2.style.opacity = '0';
 
                         // Factory Week 2 → Distributor Inventory
                         animateClone(els.factoryDeliveryWeek2, els.distributorInventory, null, 'via-pipe', els.pipeFactoryDist, () => {
@@ -563,13 +563,13 @@
                         els.retailerDeliveryWeek2.style.opacity = '0';
 
                         // 2. Pipeline advances (Week 1 → Week 2)
-                        // Production Week 2 → Week 1
-                        const prodVal2 = els.productionWeek2.innerText;
-                        animateClone(els.productionWeek2, els.productionWeek1, null, 'direct', null, () => {
-                            els.productionWeek1.innerText = prodVal2;
-                            els.productionWeek1.style.opacity = '1';
+                        // Production Week 1 → Week 2
+                        const prodVal1 = els.productionWeek1.innerText;
+                        animateClone(els.productionWeek1, els.productionWeek2, null, 'direct', null, () => {
+                            els.productionWeek2.innerText = prodVal1;
+                            els.productionWeek2.style.opacity = '1';
                         });
-                        els.productionWeek2.style.opacity = '0';
+                        els.productionWeek1.style.opacity = '0';
 
                         // Factory Week 1 → Week 2
                         const factVal1 = els.factoryDeliveryWeek1.innerText;
