@@ -481,7 +481,7 @@
                             keyframes = [
                                 { transform: 'translate(0, 0)', offset: 0 },
                                 { transform: `translate(0, ${step1Y}px)`, offset: 0.25 },
-                                { transform: `translate(${step2X}px, ${step1Y}px)`, offset: 0.7 },
+                                { transform: `translate(${finalX}px, ${step1Y}px)`, offset: 0.7 },
                                 { transform: `translate(${finalX}px, ${finalY}px)`, offset: 1 }
                             ];
                         } else if (pathType === 'horizontal-then-vertical') {
@@ -522,8 +522,8 @@
                         console.log("Starting Full Chain Animation...");
 
                         // 1. Deliveries move downstream (Week 2 → Inventory)
-                        // Production Week 2 → Factory Inventory
-                        animateClone(els.productionWeek2, els.factoryInventory, null, 'horizontal-then-vertical', null, () => {
+                        // Production Week 2 → Factory Inventory (up to pipe, horizontal, down into inventory)
+                        animateClone(els.productionWeek2, els.factoryInventory, null, 'via-pipe', els.pipeProdFactory, () => {
                             const invNum = els.factoryInventory.querySelector('.text-3xl');
                             if (invNum) {
                                 const current = parseInt(invNum.innerText) || 0;
