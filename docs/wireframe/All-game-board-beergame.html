@@ -111,18 +111,13 @@
                         </div>
                     </div>
                     <div class="p-3 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1">
-                        <div class="flex flex-col items-center gap-1">
-                            <button id="factory-send-btn" class="w-full bg-transparent border border-accent-factory hover:bg-accent-factory/10 text-white rounded py-1 px-2 shadow-md transition-colors flex items-center justify-center">
-                                <span class="text-[9px] font-bold uppercase">Send</span>
-                            </button>
-                            <div class="bg-mono-surface border border-dashed border-accent-factory/30 p-1 rounded shadow-lg">
-                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div class="bg-accent-factory/10 px-1 py-0 rounded border border-accent-factory/20 flex items-center justify-center min-w-[40px]">
-                                    <input type="number" value="30" id="factory-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-factory text-xs border-0 p-0 focus:ring-0" />
-                                    <div class="flex flex-col ml-0.5">
-                                        <button class="order-up text-accent-factory hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
-                                        <button class="order-down text-accent-factory hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
-                                    </div>
+                        <div class="bg-mono-surface border border-dashed border-accent-factory/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div class="bg-accent-factory/10 px-1 py-0 rounded border border-accent-factory/20 flex items-center justify-center min-w-[40px]">
+                                <input type="number" value="30" id="factory-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-factory text-xs border-0 p-0 focus:ring-0 order-input" />
+                                <div class="flex flex-col ml-0.5">
+                                    <button class="order-up text-accent-factory hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                    <button class="order-down text-accent-factory hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
                                 </div>
                             </div>
                         </div>
@@ -165,18 +160,13 @@
                         </div>
                     </div>
                     <div class="p-3 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1">
-                        <div class="flex flex-col items-center gap-1">
-                            <button id="distributor-send-btn" class="w-full bg-transparent border border-accent-distributor hover:bg-accent-distributor/10 text-white rounded py-1 px-2 shadow-md transition-colors flex items-center justify-center">
-                                <span class="text-[9px] font-bold uppercase">Send</span>
-                            </button>
-                            <div class="bg-mono-surface border border-dashed border-accent-distributor/30 p-1 rounded shadow-lg">
-                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div class="bg-accent-distributor/10 px-1 py-0 rounded border border-accent-distributor/20 flex items-center justify-center min-w-[40px]">
-                                    <input type="number" value="30" id="distributor-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-distributor text-xs border-0 p-0 focus:ring-0" />
-                                    <div class="flex flex-col ml-0.5">
-                                        <button class="order-up text-accent-distributor hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
-                                        <button class="order-down text-accent-distributor hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
-                                    </div>
+                        <div class="bg-mono-surface border border-dashed border-accent-distributor/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div class="bg-accent-distributor/10 px-1 py-0 rounded border border-accent-distributor/20 flex items-center justify-center min-w-[40px]">
+                                <input type="number" value="30" id="distributor-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-distributor text-xs border-0 p-0 focus:ring-0 order-input" />
+                                <div class="flex flex-col ml-0.5">
+                                    <button class="order-up text-accent-distributor hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                    <button class="order-down text-accent-distributor hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
                                 </div>
                             </div>
                         </div>
@@ -219,18 +209,13 @@
                         </div>
                     </div>
                     <div class="p-3 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1">
-                        <div class="flex flex-col items-center gap-1">
-                            <button id="wholesaler-send-btn" class="w-full bg-transparent border border-accent-wholesaler hover:bg-accent-wholesaler/10 text-white rounded py-1 px-2 shadow-md transition-colors flex items-center justify-center">
-                                <span class="text-[9px] font-bold uppercase">Send</span>
-                            </button>
-                            <div class="bg-mono-surface border border-dashed border-accent-wholesaler/30 p-1 rounded shadow-lg">
-                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div class="bg-accent-wholesaler/10 px-1 py-0 rounded border border-accent-wholesaler/20 flex items-center justify-center min-w-[40px]">
-                                    <input type="number" value="30" id="wholesaler-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-wholesaler text-xs border-0 p-0 focus:ring-0" />
-                                    <div class="flex flex-col ml-0.5">
-                                        <button class="order-up text-accent-wholesaler hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
-                                        <button class="order-down text-accent-wholesaler hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
-                                    </div>
+                        <div class="bg-mono-surface border border-dashed border-accent-wholesaler/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div class="bg-accent-wholesaler/10 px-1 py-0 rounded border border-accent-wholesaler/20 flex items-center justify-center min-w-[40px]">
+                                <input type="number" value="30" id="wholesaler-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-wholesaler text-xs border-0 p-0 focus:ring-0 order-input" />
+                                <div class="flex flex-col ml-0.5">
+                                    <button class="order-up text-accent-wholesaler hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                    <button class="order-down text-accent-wholesaler hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
                                 </div>
                             </div>
                         </div>
@@ -273,18 +258,13 @@
                         </div>
                     </div>
                     <div class="p-3 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1">
-                        <div class="flex flex-col items-center gap-1">
-                            <button id="retailer-send-btn" class="w-full bg-transparent border border-accent-retailer hover:bg-accent-retailer/10 text-white rounded py-1 px-2 shadow-md transition-colors flex items-center justify-center">
-                                <span class="text-[9px] font-bold uppercase">Send</span>
-                            </button>
-                            <div class="bg-mono-surface border border-dashed border-accent-retailer/30 p-1 rounded shadow-lg">
-                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div class="bg-accent-retailer/10 px-1 py-0 rounded border border-accent-retailer/20 flex items-center justify-center min-w-[40px]">
-                                    <input type="number" value="30" id="retailer-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-retailer text-xs border-0 p-0 focus:ring-0" />
-                                    <div class="flex flex-col ml-0.5">
-                                        <button class="order-up text-accent-retailer hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
-                                        <button class="order-down text-accent-retailer hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
-                                    </div>
+                        <div class="bg-mono-surface border border-dashed border-accent-retailer/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div class="bg-accent-retailer/10 px-1 py-0 rounded border border-accent-retailer/20 flex items-center justify-center min-w-[40px]">
+                                <input type="number" value="30" id="retailer-order-input" min="0" class="w-5 bg-transparent text-center font-sans font-bold text-accent-retailer text-xs border-0 p-0 focus:ring-0 order-input" />
+                                <div class="flex flex-col ml-0.5">
+                                    <button class="order-up text-accent-retailer hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                    <button class="order-down text-accent-retailer hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
                                 </div>
                             </div>
                         </div>
@@ -347,6 +327,14 @@
 
             </div>
 
+            <!-- Send Button (below Production) -->
+            <div class="flex justify-start mt-2 ml-0">
+                <button id="main-send-btn" class="bg-mono-surface border border-mono-light/30 hover:bg-mono-light/10 text-mono-text rounded px-4 py-1.5 shadow-md transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span class="material-symbols-outlined text-sm">send</span>
+                    <span class="text-xs font-bold uppercase">Send Orders</span>
+                </button>
+            </div>
+
             <!-- Animation Script -->
             <script>
                 document.addEventListener('DOMContentLoaded', () => {
@@ -362,7 +350,6 @@
                         factoryIncomingOrder: document.getElementById('factory-incoming-order'),
                         factoryDeliveryWeek1: document.getElementById('factory-delivery-week-1'),
                         factoryDeliveryWeek2: document.getElementById('factory-delivery-week-2'),
-                        factorySendBtn: document.getElementById('factory-send-btn'),
 
                         // Distributor
                         distributorInventory: document.getElementById('distributor-inventory'),
@@ -370,7 +357,6 @@
                         distributorIncomingOrder: document.getElementById('distributor-incoming-order'),
                         distributorDeliveryWeek1: document.getElementById('distributor-delivery-week-1'),
                         distributorDeliveryWeek2: document.getElementById('distributor-delivery-week-2'),
-                        distributorSendBtn: document.getElementById('distributor-send-btn'),
 
                         // Wholesaler
                         wholesalerInventory: document.getElementById('wholesaler-inventory'),
@@ -378,7 +364,6 @@
                         wholesalerIncomingOrder: document.getElementById('wholesaler-incoming-order'),
                         wholesalerDeliveryWeek1: document.getElementById('wholesaler-delivery-week-1'),
                         wholesalerDeliveryWeek2: document.getElementById('wholesaler-delivery-week-2'),
-                        wholesalerSendBtn: document.getElementById('wholesaler-send-btn'),
 
                         // Retailer
                         retailerInventory: document.getElementById('retailer-inventory'),
@@ -386,7 +371,6 @@
                         retailerIncomingOrder: document.getElementById('retailer-incoming-order'),
                         retailerDeliveryWeek1: document.getElementById('retailer-delivery-week-1'),
                         retailerDeliveryWeek2: document.getElementById('retailer-delivery-week-2'),
-                        retailerSendBtn: document.getElementById('retailer-send-btn'),
 
                         // Customers
                         customerDemand: document.getElementById('customer-demand'),
@@ -397,19 +381,43 @@
                         pipeDistWhole: document.getElementById('pipe-dist-whole'),
                         pipeWholeRetail: document.getElementById('pipe-whole-retail'),
                         pipeRetailCust: document.getElementById('pipe-retail-cust'),
+
+                        // Main Send Button
+                        mainSendBtn: document.getElementById('main-send-btn'),
                     };
+
+                    // --- Order Input Validation ---
+                    const orderInputs = document.querySelectorAll('.order-input');
+                    const validateOrders = () => {
+                        const allFilled = Array.from(orderInputs).every(input => input.value !== '' && input.value !== null);
+                        if (els.mainSendBtn) {
+                            els.mainSendBtn.disabled = !allFilled;
+                        }
+                    };
+
+                    orderInputs.forEach(input => {
+                        input.addEventListener('input', validateOrders);
+                        input.addEventListener('change', validateOrders);
+                    });
+                    validateOrders(); // Initial check
 
                     // --- Order Input Up/Down Buttons ---
                     document.querySelectorAll('.order-up').forEach(btn => {
                         btn.addEventListener('click', () => {
                             const input = btn.closest('.bg-mono-surface').querySelector('input[type="number"]');
-                            if (input) input.stepUp();
+                            if (input) {
+                                input.stepUp();
+                                validateOrders();
+                            }
                         });
                     });
                     document.querySelectorAll('.order-down').forEach(btn => {
                         btn.addEventListener('click', () => {
                             const input = btn.closest('.bg-mono-surface').querySelector('input[type="number"]');
-                            if (input) input.stepDown();
+                            if (input) {
+                                input.stepDown();
+                                validateOrders();
+                            }
                         });
                     });
 
@@ -682,40 +690,25 @@
                         }, 2500);
                     };
 
-                    // --- Send Button Click Handlers ---
-                    const sendBtns = [els.factorySendBtn, els.distributorSendBtn, els.wholesalerSendBtn, els.retailerSendBtn];
-                    sendBtns.forEach(btn => {
-                        if (btn) {
-                            btn.addEventListener('click', () => {
-                                // Disable all send buttons
-                                sendBtns.forEach(b => {
-                                    if (b) {
-                                        b.disabled = true;
-                                        b.classList.add('opacity-50', 'cursor-not-allowed');
-                                        b.querySelector('span').innerText = 'WAIT';
-                                    }
-                                });
+                    // --- Main Send Button Click Handler ---
+                    if (els.mainSendBtn) {
+                        els.mainSendBtn.addEventListener('click', () => {
+                            // Disable button
+                            els.mainSendBtn.disabled = true;
+                            els.mainSendBtn.querySelector('span:last-child').innerText = 'WAIT...';
 
+                            setTimeout(() => {
+                                els.mainSendBtn.querySelector('span:last-child').innerText = 'SENDING';
+                                startFullChainAnimation();
+
+                                // Re-enable after animation
                                 setTimeout(() => {
-                                    sendBtns.forEach(b => {
-                                        if (b) b.querySelector('span').innerText = 'SENT';
-                                    });
-                                    startFullChainAnimation();
-
-                                    // Re-enable after animation
-                                    setTimeout(() => {
-                                        sendBtns.forEach(b => {
-                                            if (b) {
-                                                b.disabled = false;
-                                                b.classList.remove('opacity-50', 'cursor-not-allowed');
-                                                b.querySelector('span').innerText = 'Send';
-                                            }
-                                        });
-                                    }, 3000);
-                                }, 1000);
-                            });
-                        }
-                    });
+                                    els.mainSendBtn.querySelector('span:last-child').innerText = 'Send Orders';
+                                    validateOrders();
+                                }, 3000);
+                            }, 500);
+                        });
+                    }
                 });
             </script>
 
