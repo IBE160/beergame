@@ -627,19 +627,11 @@
                         }, true);
                         els.factoryOrderInput.value = '';
 
-                        // Distributor Order → Factory Week 1
+                        // Distributor Order → Factory incoming-order (Phase 1: horizontal left)
                         const distOrderVal = els.distributorOrderInput.value || '0';
-                        animateClone(els.distributorOrderInput.parentElement, els.factoryDeliveryWeek1, distOrderVal, 'horizontal-then-vertical', null, (clone) => {
-                            if (clone) {
-                                clone.style.transition = 'all 0.3s ease-out';
-                                clone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
-                                clone.style.borderColor = 'rgba(249, 115, 22, 0.2)';
-                                clone.style.color = '#F97316';
-                                setTimeout(() => clone.remove(), 300);
-                            }
-                            els.factoryDeliveryWeek1.innerText = distOrderVal;
-                            els.factoryDeliveryWeek1.style.opacity = '1';
-                        }, true);
+                        animateClone(els.distributorOrderInput.parentElement, els.factoryIncomingOrder, distOrderVal, 'horizontal', null, () => {
+                            els.factoryIncomingOrder.innerText = distOrderVal;
+                        });
                         els.distributorOrderInput.value = '';
 
                         // Wholesaler Order → Distributor Week 1
