@@ -636,18 +636,105 @@
     <script type="text/babel">
         const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
 
-        // Mock Data for Beer Game (Retailer Perspective - Customer Demand Spikes)
+        // Statistics Calculator Utility
+        const StatisticsCalculator = {
+            calculate(values) {
+                if (!values || values.length === 0) return this.getEmptyStats();
+
+                const n = values.length;
+                const sorted = [...values].sort((a, b) => a - b);
+
+                // Central tendency
+                const sum = values.reduce((a, b) => a + b, 0);
+                const mean = sum / n;
+                const median = this.calculateMedian(sorted);
+                const mode = this.calculateMode(values);
+
+                // Dispersion
+                const min = sorted[0];
+                const max = sorted[n - 1];
+                const range = max - min;
+                const variance = n > 1 ? values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1) : 0;
+                const stdDev = Math.sqrt(variance);
+
+                // Distribution shape
+                const coeffVar = mean !== 0 ? (stdDev / Math.abs(mean)) * 100 : null;
+                const skewness = this.calculateSkewness(values, mean, stdDev, n);
+                const kurtosis = this.calculateKurtosis(values, mean, stdDev, n);
+                const iqr = this.calculateIQR(sorted);
+
+                // Inference (95% CI using CLT)
+                const sem = n > 0 ? stdDev / Math.sqrt(n) : 0;
+                const tCritical = this.getTCritical(n - 1);
+                const marginError = tCritical * sem;
+                const ci95Lower = mean - marginError;
+                const ci95Upper = mean + marginError;
+
+                return { n, min, max, mean, stdDev, coeffVar, mode, median, range, iqr, skewness, kurtosis, sem, marginError, ci95Lower, ci95Upper };
+            },
+
+            calculateMedian(sorted) {
+                const n = sorted.length;
+                const mid = Math.floor(n / 2);
+                return n % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+            },
+
+            calculateMode(values) {
+                const freq = {};
+                values.forEach(v => freq[v] = (freq[v] || 0) + 1);
+                const maxFreq = Math.max(...Object.values(freq));
+                if (maxFreq === 1) return 'None';
+                const modes = Object.keys(freq).filter(k => freq[k] === maxFreq).map(Number);
+                return modes.length === values.length ? 'None' : modes.join(', ');
+            },
+
+            calculateSkewness(values, mean, stdDev, n) {
+                if (stdDev === 0 || n < 3) return null;
+                const m3 = values.reduce((s, v) => s + Math.pow(v - mean, 3), 0) / n;
+                const m2 = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n;
+                return (m3 / Math.pow(m2, 1.5)) * Math.sqrt(n * (n - 1)) / (n - 2);
+            },
+
+            calculateKurtosis(values, mean, stdDev, n) {
+                if (stdDev === 0 || n < 4) return null;
+                const m4 = values.reduce((s, v) => s + Math.pow(v - mean, 4), 0) / n;
+                const m2 = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n;
+                const g2 = (m4 / Math.pow(m2, 2)) - 3;
+                return ((n + 1) * g2 + 6) * (n - 1) / ((n - 2) * (n - 3));
+            },
+
+            calculateIQR(sorted) {
+                const n = sorted.length;
+                const q1 = sorted[Math.floor(n * 0.25)];
+                const q3 = sorted[Math.floor(n * 0.75)];
+                return q3 - q1;
+            },
+
+            getTCritical(df) {
+                const tTable = {1:12.706,2:4.303,3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,
+                                11:2.201,12:2.179,13:2.160,14:2.145,15:2.131,20:2.086,25:2.060,29:2.045};
+                if (df >= 30) return 1.96;
+                return tTable[df] || tTable[Math.max(...Object.keys(tTable).map(Number).filter(k => k <= df))] || 2.0;
+            },
+
+            getEmptyStats() {
+                return { n:0, min:'-', max:'-', mean:'-', stdDev:'-', coeffVar:'-', mode:'-', median:'-',
+                         range:'-', iqr:'-', skewness:'-', kurtosis:'-', sem:'-', marginError:'-', ci95Lower:'-', ci95Upper:'-' };
+            }
+        };
+
+        // Mock Data for Beer Game (Retailer Perspective - with all metrics)
         const data = [
-            { week: 'W1', orders: 12, inventory: 40, cost: 60 },
-            { week: 'W2', orders: 15, inventory: 35, cost: 130 },
-            { week: 'W3', orders: 25, inventory: 25, cost: 210 },
-            { week: 'W4', orders: 40, inventory: 5, cost: 320 },
-            { week: 'W5', orders: 35, inventory: -10, cost: 480 },
-            { week: 'W6', orders: 30, inventory: -25, cost: 700 },
-            { week: 'W7', orders: 20, inventory: -15, cost: 850 },
-            { week: 'W8', orders: 15, inventory: 0, cost: 950 },
-            { week: 'W9', orders: 12, inventory: 10, cost: 1000 },
-            { week: 'W10', orders: 12, inventory: 15, cost: 1050 },
+            { week: 'W1', inventory: 40, backorders: 0, incomingOrders: 12, outgoingOrders: 12, holdingCost: 40, backorderCost: 0, totalCost: 60 },
+            { week: 'W2', inventory: 35, backorders: 0, incomingOrders: 15, outgoingOrders: 15, holdingCost: 35, backorderCost: 0, totalCost: 130 },
+            { week: 'W3', inventory: 25, backorders: 0, incomingOrders: 25, outgoingOrders: 20, holdingCost: 25, backorderCost: 0, totalCost: 210 },
+            { week: 'W4', inventory: 5, backorders: 0, incomingOrders: 40, outgoingOrders: 30, holdingCost: 5, backorderCost: 0, totalCost: 320 },
+            { week: 'W5', inventory: 0, backorders: 10, incomingOrders: 35, outgoingOrders: 25, holdingCost: 0, backorderCost: 100, totalCost: 480 },
+            { week: 'W6', inventory: 0, backorders: 25, incomingOrders: 30, outgoingOrders: 15, holdingCost: 0, backorderCost: 250, totalCost: 700 },
+            { week: 'W7', inventory: 0, backorders: 15, incomingOrders: 20, outgoingOrders: 30, holdingCost: 0, backorderCost: 150, totalCost: 850 },
+            { week: 'W8', inventory: 0, backorders: 0, incomingOrders: 15, outgoingOrders: 15, holdingCost: 0, backorderCost: 0, totalCost: 950 },
+            { week: 'W9', inventory: 10, backorders: 0, incomingOrders: 12, outgoingOrders: 12, holdingCost: 10, backorderCost: 0, totalCost: 1000 },
+            { week: 'W10', inventory: 15, backorders: 0, incomingOrders: 12, outgoingOrders: 10, holdingCost: 15, backorderCost: 0, totalCost: 1050 },
         ];
 
         const CustomTooltip = ({ active, payload, label }) => {
@@ -666,47 +753,152 @@
             return null;
         };
 
+        // StatItem - individual stat display
+        const StatItem = ({ label, value }) => (
+            <div className="flex justify-between items-center">
+                <span className="text-xs text-mono-light">{label}</span>
+                <span className="font-mono text-sm font-medium text-mono-text">{value}</span>
+            </div>
+        );
+
+        // StatGroup - grouped statistics with header
+        const StatGroup = ({ title, children }) => (
+            <div className="bg-mono-bg/30 rounded-xl p-3 border border-mono-light/10">
+                <h4 className="text-[10px] uppercase tracking-wider text-mono-light mb-2 font-medium">{title}</h4>
+                <div className="space-y-1.5">{children}</div>
+            </div>
+        );
+
+        // Metrics configuration
+        const METRICS = [
+            { id: 'inventory', label: 'Inventory' },
+            { id: 'backorders', label: 'Backorders' },
+            { id: 'incomingOrders', label: 'Incoming' },
+            { id: 'outgoingOrders', label: 'Outgoing' },
+            { id: 'holdingCost', label: 'Hold $' },
+            { id: 'backorderCost', label: 'Back $' },
+            { id: 'totalCost', label: 'Total $' },
+        ];
+
+        // StatisticsPanel - main statistics component with tabs
+        const StatisticsPanel = ({ gameData }) => {
+            const [activeMetric, setActiveMetric] = React.useState('inventory');
+
+            const metricValues = React.useMemo(() =>
+                gameData.map(week => week[activeMetric] ?? 0), [gameData, activeMetric]);
+
+            const stats = React.useMemo(() =>
+                StatisticsCalculator.calculate(metricValues), [metricValues]);
+
+            const fmt = (v, d = 2) => {
+                if (v === '-' || v === 'None' || v === null) return v ?? '-';
+                return typeof v === 'number' ? (Number.isInteger(v) ? v : v.toFixed(d)) : v;
+            };
+
+            return (
+                <div className="flex flex-col h-full">
+                    <h3 className="font-semibold mb-3 text-mono-text">Statistics</h3>
+
+                    {/* Metric Tabs */}
+                    <div className="flex flex-wrap gap-1 mb-4 pb-2 border-b border-mono-light/10">
+                        {METRICS.map(m => (
+                            <button key={m.id} onClick={() => setActiveMetric(m.id)}
+                                className={`px-2 py-1 text-xs font-medium rounded transition-all
+                                    ${activeMetric === m.id
+                                        ? 'bg-accent/20 text-accent border-b-2 border-accent'
+                                        : 'text-mono-light hover:text-mono-text hover:bg-mono-bg/30'}`}>
+                                {m.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Statistics Grid - 2x2 */}
+                    <div className="grid grid-cols-2 gap-3 flex-1 overflow-y-auto">
+                        <StatGroup title="Central Tendency">
+                            <StatItem label="Mean" value={fmt(stats.mean)} />
+                            <StatItem label="Median" value={fmt(stats.median)} />
+                            <StatItem label="Mode" value={stats.mode} />
+                        </StatGroup>
+
+                        <StatGroup title="Dispersion">
+                            <StatItem label="Min" value={fmt(stats.min, 0)} />
+                            <StatItem label="Max" value={fmt(stats.max, 0)} />
+                            <StatItem label="Range" value={fmt(stats.range, 0)} />
+                            <StatItem label="Std Dev" value={fmt(stats.stdDev)} />
+                        </StatGroup>
+
+                        <StatGroup title="Distribution">
+                            <StatItem label="CV" value={stats.coeffVar !== null ? `${fmt(stats.coeffVar)}%` : '-'} />
+                            <StatItem label="Skewness" value={fmt(stats.skewness)} />
+                            <StatItem label="Kurtosis" value={fmt(stats.kurtosis)} />
+                            <StatItem label="IQR" value={fmt(stats.iqr)} />
+                        </StatGroup>
+
+                        <StatGroup title="Inference (95% CI)">
+                            <StatItem label="Std Error" value={fmt(stats.sem)} />
+                            <StatItem label="Margin" value={fmt(stats.marginError)} />
+                            <StatItem label="CI Lower" value={fmt(stats.ci95Lower)} />
+                            <StatItem label="CI Upper" value={fmt(stats.ci95Upper)} />
+                        </StatGroup>
+                    </div>
+
+                    {/* Sample Size */}
+                    <div className="mt-3 pt-2 border-t border-mono-light/10 text-center">
+                        <span className="text-[10px] text-mono-light uppercase tracking-wider">n = {gameData.length} weeks</span>
+                    </div>
+                </div>
+            );
+        };
+
         const DashboardCharts = () => {
             return (
                 <div className="grid grid-cols-2 gap-6 w-full h-full">
-                    {/* Orders vs Inventory Chart */}
-                    <div className="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
-                        <h3 className="font-semibold mb-4 text-mono-text">Orders vs. Inventory</h3>
-                        <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded overflow-hidden">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                    <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                    <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Legend verticalAlign="top" height={36} />
-                                    <Line type="monotone" dataKey="orders" name="Orders" stroke="#E0E0E0" strokeWidth={2} dot={{r: 3, fill: '#E0E0E0'}} activeDot={{r: 5}} />
-                                    <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#FFD700" strokeWidth={3} dot={{r: 3, fill: '#FFD700'}} activeDot={{r: 6}} />
-                                </LineChart>
-                            </ResponsiveContainer>
+                    {/* LEFT COLUMN - Charts stacked vertically */}
+                    <div className="flex flex-col gap-6">
+                        {/* Orders vs Inventory Chart */}
+                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col h-80">
+                            <h3 className="font-semibold mb-4 text-mono-text">Orders vs. Inventory</h3>
+                            <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <Tooltip content={<CustomTooltip />} />
+                                        <Legend verticalAlign="top" height={36} />
+                                        <Line type="monotone" dataKey="outgoingOrders" name="Orders" stroke="#E0E0E0" strokeWidth={2} dot={{r: 3, fill: '#E0E0E0'}} activeDot={{r: 5}} />
+                                        <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#FFD700" strokeWidth={3} dot={{r: 3, fill: '#FFD700'}} activeDot={{r: 6}} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        {/* Cost Accumulation Chart */}
+                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col h-80">
+                            <h3 className="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
+                            <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                        <defs>
+                                            <linearGradient id="colorCostRetailer" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#FFD700" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="#FFD700" stopOpacity={0}/>
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <Tooltip content={<CustomTooltip />} />
+                                        <Area type="monotone" dataKey="totalCost" name="Total Cost ($)" stroke="#FFD700" fillOpacity={1} fill="url(#colorCostRetailer)" />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Cost Accumulation Chart */}
-                    <div className="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
-                        <h3 className="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
-                        <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded overflow-hidden">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="colorCostRetailer" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#FFD700" stopOpacity={0.8}/>
-                                            <stop offset="95%" stopColor="#FFD700" stopOpacity={0}/>
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                    <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                    <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Area type="monotone" dataKey="cost" name="Total Cost ($)" stroke="#FFD700" fillOpacity={1} fill="url(#colorCostRetailer)" />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </div>
+                    {/* RIGHT COLUMN - Statistics Panel */}
+                    <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col" style={{ minHeight: '672px' }}>
+                        <StatisticsPanel gameData={data} />
                     </div>
                 </div>
             );
