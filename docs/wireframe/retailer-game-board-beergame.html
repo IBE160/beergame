@@ -724,17 +724,18 @@
         };
 
         // Mock Data for Beer Game (Retailer Perspective - with all metrics)
+        // Cumulative costs for stacked area chart
         const data = [
-            { week: 'W1', inventory: 40, backorders: 0, incomingOrders: 12, outgoingOrders: 12, holdingCost: 40, backorderCost: 0, totalCost: 60 },
-            { week: 'W2', inventory: 35, backorders: 0, incomingOrders: 15, outgoingOrders: 15, holdingCost: 35, backorderCost: 0, totalCost: 130 },
-            { week: 'W3', inventory: 25, backorders: 0, incomingOrders: 25, outgoingOrders: 20, holdingCost: 25, backorderCost: 0, totalCost: 210 },
-            { week: 'W4', inventory: 5, backorders: 0, incomingOrders: 40, outgoingOrders: 30, holdingCost: 5, backorderCost: 0, totalCost: 320 },
-            { week: 'W5', inventory: 0, backorders: 10, incomingOrders: 35, outgoingOrders: 25, holdingCost: 0, backorderCost: 100, totalCost: 480 },
-            { week: 'W6', inventory: 0, backorders: 25, incomingOrders: 30, outgoingOrders: 15, holdingCost: 0, backorderCost: 250, totalCost: 700 },
-            { week: 'W7', inventory: 0, backorders: 15, incomingOrders: 20, outgoingOrders: 30, holdingCost: 0, backorderCost: 150, totalCost: 850 },
-            { week: 'W8', inventory: 0, backorders: 0, incomingOrders: 15, outgoingOrders: 15, holdingCost: 0, backorderCost: 0, totalCost: 950 },
-            { week: 'W9', inventory: 10, backorders: 0, incomingOrders: 12, outgoingOrders: 12, holdingCost: 10, backorderCost: 0, totalCost: 1000 },
-            { week: 'W10', inventory: 15, backorders: 0, incomingOrders: 12, outgoingOrders: 10, holdingCost: 15, backorderCost: 0, totalCost: 1050 },
+            { week: 'W1', inventory: 40, backorders: 0, incomingOrders: 12, outgoingOrders: 12, holdingCost: 40, backorderCost: 0, cumHoldingCost: 40, cumBackorderCost: 0, totalCost: 40 },
+            { week: 'W2', inventory: 35, backorders: 0, incomingOrders: 15, outgoingOrders: 15, holdingCost: 35, backorderCost: 0, cumHoldingCost: 75, cumBackorderCost: 0, totalCost: 75 },
+            { week: 'W3', inventory: 25, backorders: 0, incomingOrders: 25, outgoingOrders: 20, holdingCost: 25, backorderCost: 0, cumHoldingCost: 100, cumBackorderCost: 0, totalCost: 100 },
+            { week: 'W4', inventory: 5, backorders: 0, incomingOrders: 40, outgoingOrders: 30, holdingCost: 5, backorderCost: 0, cumHoldingCost: 105, cumBackorderCost: 0, totalCost: 105 },
+            { week: 'W5', inventory: 0, backorders: 10, incomingOrders: 35, outgoingOrders: 25, holdingCost: 0, backorderCost: 100, cumHoldingCost: 105, cumBackorderCost: 100, totalCost: 205 },
+            { week: 'W6', inventory: 0, backorders: 25, incomingOrders: 30, outgoingOrders: 15, holdingCost: 0, backorderCost: 250, cumHoldingCost: 105, cumBackorderCost: 350, totalCost: 455 },
+            { week: 'W7', inventory: 0, backorders: 15, incomingOrders: 20, outgoingOrders: 30, holdingCost: 0, backorderCost: 150, cumHoldingCost: 105, cumBackorderCost: 500, totalCost: 605 },
+            { week: 'W8', inventory: 0, backorders: 5, incomingOrders: 15, outgoingOrders: 15, holdingCost: 0, backorderCost: 50, cumHoldingCost: 105, cumBackorderCost: 550, totalCost: 655 },
+            { week: 'W9', inventory: 10, backorders: 0, incomingOrders: 12, outgoingOrders: 12, holdingCost: 10, backorderCost: 0, cumHoldingCost: 115, cumBackorderCost: 550, totalCost: 665 },
+            { week: 'W10', inventory: 15, backorders: 0, incomingOrders: 12, outgoingOrders: 10, holdingCost: 15, backorderCost: 0, cumHoldingCost: 130, cumBackorderCost: 550, totalCost: 680 },
         ];
 
         const CustomTooltip = ({ active, payload, label }) => {
@@ -873,23 +874,29 @@
                             </div>
                         </div>
 
-                        {/* Cost Accumulation Chart */}
+                        {/* Cost Accumulation Chart - Stacked */}
                         <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col h-80">
                             <h3 className="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
                             <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                         <defs>
-                                            <linearGradient id="colorCostRetailer" x1="0" y1="0" x2="0" y2="1">
+                                            <linearGradient id="colorHoldingCost" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="5%" stopColor="#FFD700" stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor="#FFD700" stopOpacity={0}/>
+                                                <stop offset="95%" stopColor="#FFD700" stopOpacity={0.2}/>
+                                            </linearGradient>
+                                            <linearGradient id="colorBackorderCost" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#EF4444" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="#EF4444" stopOpacity={0.2}/>
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        <Area type="monotone" dataKey="totalCost" name="Total Cost ($)" stroke="#FFD700" fillOpacity={1} fill="url(#colorCostRetailer)" />
+                                        <Legend verticalAlign="top" height={36} />
+                                        <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#FFD700" fillOpacity={1} fill="url(#colorHoldingCost)" />
+                                        <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="#EF4444" fillOpacity={1} fill="url(#colorBackorderCost)" />
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
