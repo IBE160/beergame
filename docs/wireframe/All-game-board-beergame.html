@@ -132,7 +132,7 @@
                 <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
                     <div class="relative h-12 top-[30px] w-full flex items-center">
                         <div id="pipe-factory-dist" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
-                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[8px]">
+                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[3px] gap-2">
                             <div class="bg-mono-surface border border-accent-factory/30 p-1 rounded shadow-lg">
                                 <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
                                 <div id="factory-delivery-week-1" class="bg-accent-factory/10 px-2 py-0.5 rounded border border-accent-factory/20 text-accent-factory font-sans font-bold text-center text-xs min-w-[30px]">25</div>
@@ -181,7 +181,7 @@
                 <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
                     <div class="relative h-12 top-[30px] w-full flex items-center">
                         <div id="pipe-dist-whole" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
-                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[8px]">
+                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[3px] gap-2">
                             <div class="bg-mono-surface border border-accent-distributor/30 p-1 rounded shadow-lg">
                                 <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
                                 <div id="distributor-delivery-week-1" class="bg-accent-distributor/10 px-2 py-0.5 rounded border border-accent-distributor/20 text-accent-distributor font-sans font-bold text-center text-xs min-w-[30px]">25</div>
@@ -230,7 +230,7 @@
                 <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
                     <div class="relative h-12 top-[30px] w-full flex items-center">
                         <div id="pipe-whole-retail" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
-                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[8px]">
+                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[3px] gap-2">
                             <div class="bg-mono-surface border border-accent-wholesaler/30 p-1 rounded shadow-lg">
                                 <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
                                 <div id="wholesaler-delivery-week-1" class="bg-accent-wholesaler/10 px-2 py-0.5 rounded border border-accent-wholesaler/20 text-accent-wholesaler font-sans font-bold text-center text-xs min-w-[30px]">25</div>
@@ -279,7 +279,7 @@
                 <div class="flex-1 flex flex-col justify-between py-3 relative min-w-[100px]">
                     <div class="relative h-12 top-[30px] w-full flex items-center">
                         <div id="pipe-retail-cust" class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] bg-mono-surface rounded-none"></div>
-                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[8px]">
+                        <div class="absolute w-full flex justify-evenly px-2 z-10 top-0 -mt-[3px] gap-2">
                             <div class="bg-mono-surface border border-accent-retailer/30 p-1 rounded shadow-lg">
                                 <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
                                 <div id="retailer-delivery-week-1" class="bg-accent-retailer/10 px-2 py-0.5 rounded border border-accent-retailer/20 text-accent-retailer font-sans font-bold text-center text-xs min-w-[30px]">25</div>
@@ -699,8 +699,25 @@
                                 // Clear the original incoming order
                                 incomingOrderEl.innerHTML = '&nbsp;';
 
-                                // Phase 2: Move up to inventory center
-                                const deltaY_phase2 = (rectInv.top + rectInv.height / 2) - (rectSource.top + rectSource.height / 2);
+                                // Calculate all positions from source
+                                const sourceCenterX = rectSource.left + rectSource.width / 2;
+                                const sourceCenterY = rectSource.top + rectSource.height / 2;
+                                const invCenterY = rectInv.top + rectInv.height / 2;
+                                const pipeRect = pipeEl.getBoundingClientRect();
+                                const pipeCenterY = pipeRect.top + pipeRect.height / 2;
+                                const week1Rect = week1El.getBoundingClientRect();
+                                const week1CenterX = week1Rect.left + week1Rect.width / 2;
+                                const week1CenterY = week1Rect.top + week1Rect.height / 2;
+
+                                // Phase 2: Move up to inventory center (Y only)
+                                const deltaY_phase2 = invCenterY - sourceCenterY;
+
+                                // Phase 3: Move up to pipe center (Y only)
+                                const deltaY_phase3 = pipeCenterY - sourceCenterY;
+
+                                // Phase 4: Move to W1 center (X and Y)
+                                const deltaX_phase4 = week1CenterX - sourceCenterX;
+                                const deltaY_phase4 = week1CenterY - sourceCenterY;
 
                                 const phase2Anim = clone.animate([
                                     { transform: 'translate(0, 0)' },
@@ -727,14 +744,9 @@
                                     // Short delay before Phase 3
                                     setTimeout(() => {
                                         // Phase 3: Move up to pipe center
-                                        const currentRect = clone.getBoundingClientRect();
-                                        const pipeRect = pipeEl.getBoundingClientRect();
-                                        const pipeCenterY = pipeRect.top + pipeRect.height / 2;
-                                        const deltaY_phase3 = pipeCenterY - (currentRect.top + currentRect.height / 2);
-
                                         const phase3Anim = clone.animate([
                                             { transform: `translate(0, ${deltaY_phase2}px)` },
-                                            { transform: `translate(0, ${deltaY_phase2 + deltaY_phase3}px)` }
+                                            { transform: `translate(0, ${deltaY_phase3}px)` }
                                         ], {
                                             duration: 600,
                                             easing: 'ease-in-out',
@@ -742,14 +754,10 @@
                                         });
 
                                         phase3Anim.onfinish = () => {
-                                            // Phase 4: Move horizontally into W1
-                                            const week1Rect = week1El.getBoundingClientRect();
-                                            const currentRect2 = clone.getBoundingClientRect();
-                                            const deltaX_phase4 = (week1Rect.left + week1Rect.width / 2) - (currentRect2.left + currentRect2.width / 2);
-
+                                            // Phase 4: Move horizontally and vertically into W1 center
                                             const phase4Anim = clone.animate([
-                                                { transform: `translate(0, ${deltaY_phase2 + deltaY_phase3}px)` },
-                                                { transform: `translate(${deltaX_phase4}px, ${deltaY_phase2 + deltaY_phase3}px)` }
+                                                { transform: `translate(0, ${deltaY_phase3}px)` },
+                                                { transform: `translate(${deltaX_phase4}px, ${deltaY_phase4}px)` }
                                             ], {
                                                 duration: 800,
                                                 easing: 'ease-in-out',
