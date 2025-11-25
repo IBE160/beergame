@@ -523,7 +523,7 @@
 
                         // 1. Deliveries move downstream (Week 2 → Inventory)
                         // Production Week 2 → Factory Inventory
-                        animateClone(els.productionWeek2, els.factoryInventory, null, 'via-pipe', els.pipeProdFactory, () => {
+                        animateClone(els.productionWeek2, els.factoryInventory, null, 'horizontal-then-vertical', null, () => {
                             const invNum = els.factoryInventory.querySelector('.text-3xl');
                             if (invNum) {
                                 const current = parseInt(invNum.innerText) || 0;
@@ -534,7 +534,7 @@
                         els.productionWeek2.style.opacity = '0';
 
                         // Factory Week 2 → Distributor Inventory
-                        animateClone(els.factoryDeliveryWeek2, els.distributorInventory, null, 'via-pipe', els.pipeFactoryDist, () => {
+                        animateClone(els.factoryDeliveryWeek2, els.distributorInventory, null, 'horizontal-then-vertical', null, () => {
                             const invNum = els.distributorInventory.querySelector('.text-3xl');
                             if (invNum) {
                                 const current = parseInt(invNum.innerText) || 0;
@@ -545,7 +545,7 @@
                         els.factoryDeliveryWeek2.style.opacity = '0';
 
                         // Distributor Week 2 → Wholesaler Inventory
-                        animateClone(els.distributorDeliveryWeek2, els.wholesalerInventory, null, 'via-pipe', els.pipeDistWhole, () => {
+                        animateClone(els.distributorDeliveryWeek2, els.wholesalerInventory, null, 'horizontal-then-vertical', null, () => {
                             const invNum = els.wholesalerInventory.querySelector('.text-3xl');
                             if (invNum) {
                                 const current = parseInt(invNum.innerText) || 0;
@@ -556,7 +556,7 @@
                         els.distributorDeliveryWeek2.style.opacity = '0';
 
                         // Wholesaler Week 2 → Retailer Inventory
-                        animateClone(els.wholesalerDeliveryWeek2, els.retailerInventory, null, 'via-pipe', els.pipeWholeRetail, () => {
+                        animateClone(els.wholesalerDeliveryWeek2, els.retailerInventory, null, 'horizontal-then-vertical', null, () => {
                             const invNum = els.retailerInventory.querySelector('.text-3xl');
                             if (invNum) {
                                 const current = parseInt(invNum.innerText) || 0;
@@ -567,7 +567,7 @@
                         els.wholesalerDeliveryWeek2.style.opacity = '0';
 
                         // Retailer Week 2 → Customers (just disappears)
-                        animateClone(els.retailerDeliveryWeek2, els.customerDemand, null, 'via-pipe', els.pipeRetailCust);
+                        animateClone(els.retailerDeliveryWeek2, els.customerDemand, null, 'horizontal-then-vertical', null);
                         els.retailerDeliveryWeek2.style.opacity = '0';
 
                         // 2. Pipeline advances (Week 1 → Week 2)
