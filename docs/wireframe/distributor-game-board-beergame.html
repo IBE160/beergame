@@ -679,7 +679,7 @@
                                     <Tooltip content={<CustomTooltip />} />
                                     <Legend verticalAlign="top" height={36} />
                                     <Line type="monotone" dataKey="orders" name="Orders" stroke="#E0E0E0" strokeWidth={2} dot={{r: 3, fill: '#E0E0E0'}} activeDot={{r: 5}} />
-                                    <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#FFD700" strokeWidth={3} dot={{r: 3, fill: '#FFD700'}} activeDot={{r: 6}} />
+                                    <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#8B5CF6" strokeWidth={3} dot={{r: 3, fill: '#8B5CF6'}} activeDot={{r: 6}} />
                                 </LineChart>
                             </ResponsiveContainer>
                         </div>
@@ -693,15 +693,15 @@
                                 <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorCostRetailer" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#FFD700" stopOpacity={0.8}/>
-                                            <stop offset="95%" stopColor="#FFD700" stopOpacity={0}/>
+                                            <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                                            <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
                                         </linearGradient>
                                     </defs>
                                     <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
                                     <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                     <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                     <Tooltip content={<CustomTooltip />} />
-                                    <Area type="monotone" dataKey="cost" name="Total Cost ($)" stroke="#FFD700" fillOpacity={1} fill="url(#colorCostRetailer)" />
+                                    <Area type="monotone" dataKey="cost" name="Total Cost ($)" stroke="#8B5CF6" fillOpacity={1} fill="url(#colorCostRetailer)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </div>
