@@ -221,7 +221,7 @@
                                     retailerDemand: document.getElementById('retailer-demand'),
                                     retailerDemandInner: document.getElementById('retailer-demand-value'),
                                     customerDemand: document.getElementById('customer-demand'),
-                                    customerIcons: document.getElementById('customer-icons'),
+                                    downstreamInventory: document.getElementById('downstream-inventory'),
                                     wholesalerInventory: document.getElementById('wholesaler-inventory')
                                 };
 
@@ -435,9 +435,9 @@
                                         els.greenWeek1.style.opacity = '0';
                                     }
 
-                                    // 4. Yellow Week 2 -> Customer (Market Demand area)
-                                    if (els.yellowWeek2 && els.customerIcons) {
-                                        animateClone(els.yellowWeek2, els.customerIcons, null, 'dogleg');
+                                    // 4. Yellow Week 2 -> Downstream Inventory
+                                    if (els.yellowWeek2 && els.downstreamInventory) {
+                                        animateClone(els.yellowWeek2, els.downstreamInventory, null, 'dogleg');
                                         // Hide source number immediately
                                         els.yellowWeek2.style.opacity = '0';
                                     }
@@ -591,14 +591,12 @@
                     <div class="p-4 border-b  border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
                         <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
                     </div>
-                    <div class="flex-1 flex flex-col items-center justify-center p-4 space-y-2">
-                        <!-- Stick Figures (Icons) -->
-                        <div id="customer-icons" class="flex -space-x-2">
-                            <span class="material-symbols-outlined text-4xl text-mono-light">person</span>
-                            <span class="material-symbols-outlined text-4xl text-mono-light/80">person</span>
-                            <span class="material-symbols-outlined text-4xl text-mono-light/60">person</span>
+                    <!-- Downstream Inventory Display -->
+                    <div class="flex-1 flex items-center justify-center pt-[34px] p-6">
+                        <div id="downstream-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
+                            <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
+                            <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
-                        <span class="text-xs text-mono-light">Market Demand</span>
                     </div>
                     <!-- Order Box (Bottom) - from Wholesaler (green) -->
                     <div class="p-4 bg-mono-surface rounded-b-xl flex justify-start">
