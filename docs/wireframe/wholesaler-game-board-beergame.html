@@ -144,14 +144,14 @@
                         <!-- Delay Boxes (Sitting on pipe) -->
                         <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
                              <!-- Week 1 -->
-                             <div class="bg-mono-surface border border-green-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                             <div class="bg-mono-surface border border-violet-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                                <div id="delivery-week-1" class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]">20</div>
+                                <div id="delivery-week-1" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">20</div>
                             </div>
                              <!-- Week 2 -->
-                             <div class="bg-mono-surface border border-green-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                             <div class="bg-mono-surface border border-violet-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                                <div id="delivery-week-2" class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                                <div id="delivery-week-2" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">30</div>
                             </div>
                         </div>
                     </div>
@@ -472,10 +472,10 @@
                                                         setTimeout(() => {
                                                             if (!persistedClone) return;
 
-                                                            // 1. Morph into Yellow Delivery Order
-                                                            // Remove red demand styles
-                                                            persistedClone.classList.remove('bg-red-500/10', 'border-red-500/20', 'text-red-400');
-                                                            // Add yellow accent styles
+                                                            // 1. Morph into Green Delivery Order
+                                                            // Remove amber order styles (from Retailer)
+                                                            persistedClone.classList.remove('bg-amber-400/10', 'border-amber-400/20', 'text-amber-400');
+                                                            // Add green accent styles (Wholesaler's color)
                                                             persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
 
                                                             // Calculate & Update Value: Min(CurrentInv, Demand)
@@ -550,10 +550,10 @@
                             });
                         </script>
 
-                        <!-- Demand Box (Right, Dashed) -->
-                         <div id="retailer-demand" class="bg-mono-surface border border-dashed border-red-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform cursor-pointer">
-                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Demand</div>
-                            <div id="retailer-demand-value" class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                        <!-- Order Box (Right, Dashed) - from Retailer -->
+                         <div id="retailer-demand" class="bg-mono-surface border border-dashed border-amber-400/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform cursor-pointer">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div id="retailer-demand-value" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>                                                      
                 </div>
@@ -602,9 +602,9 @@
                     </div>
                     <!-- Demand Box (Bottom) -->
                     <div class="p-4 bg-mono-surface rounded-b-xl flex justify-start">
-                        <div class="bg-mono-surface border border-red-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
-                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Demand</div>
-                            <div id="customer-demand" class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center min-w-[55px]">?</div>                        </div>
+                        <div class="bg-mono-surface border border-amber-400/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div id="customer-demand" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>                        </div>
                     </div>
                 </div>
 
