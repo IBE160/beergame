@@ -634,34 +634,18 @@
                         });
                         els.distributorOrderInput.value = '';
 
-                        // Wholesaler Order → Distributor Week 1
+                        // Wholesaler Order → Distributor incoming-order (Phase 1: horizontal left)
                         const wholeOrderVal = els.wholesalerOrderInput.value || '0';
-                        animateClone(els.wholesalerOrderInput.parentElement, els.distributorDeliveryWeek1, wholeOrderVal, 'horizontal-then-vertical', null, (clone) => {
-                            if (clone) {
-                                clone.style.transition = 'all 0.3s ease-out';
-                                clone.style.backgroundColor = 'rgba(139, 92, 246, 0.1)';
-                                clone.style.borderColor = 'rgba(139, 92, 246, 0.2)';
-                                clone.style.color = '#8B5CF6';
-                                setTimeout(() => clone.remove(), 300);
-                            }
-                            els.distributorDeliveryWeek1.innerText = wholeOrderVal;
-                            els.distributorDeliveryWeek1.style.opacity = '1';
-                        }, true);
+                        animateClone(els.wholesalerOrderInput.parentElement, els.distributorIncomingOrder, wholeOrderVal, 'horizontal', null, () => {
+                            els.distributorIncomingOrder.innerText = wholeOrderVal;
+                        });
                         els.wholesalerOrderInput.value = '';
 
-                        // Retailer Order → Wholesaler Week 1
+                        // Retailer Order → Wholesaler incoming-order (Phase 1: horizontal left)
                         const retailOrderVal = els.retailerOrderInput.value || '0';
-                        animateClone(els.retailerOrderInput.parentElement, els.wholesalerDeliveryWeek1, retailOrderVal, 'horizontal-then-vertical', null, (clone) => {
-                            if (clone) {
-                                clone.style.transition = 'all 0.3s ease-out';
-                                clone.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
-                                clone.style.borderColor = 'rgba(16, 185, 129, 0.2)';
-                                clone.style.color = '#10B981';
-                                setTimeout(() => clone.remove(), 300);
-                            }
-                            els.wholesalerDeliveryWeek1.innerText = retailOrderVal;
-                            els.wholesalerDeliveryWeek1.style.opacity = '1';
-                        }, true);
+                        animateClone(els.retailerOrderInput.parentElement, els.wholesalerIncomingOrder, retailOrderVal, 'horizontal', null, () => {
+                            els.wholesalerIncomingOrder.innerText = retailOrderVal;
+                        });
                         els.retailerOrderInput.value = '';
 
                         // Customer Demand → Retailer incoming order
