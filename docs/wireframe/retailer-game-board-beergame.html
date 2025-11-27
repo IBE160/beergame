@@ -863,7 +863,7 @@
             };
 
             return (
-                <div className="flex flex-col h-full w-full overflow-hidden">
+                <div className="flex flex-col w-full">
                     {/* Header with title and sample size */}
                     <div className="flex items-center justify-between mb-3 flex-shrink-0 gap-2">
                         <h3 className="font-semibold text-mono-text text-sm sm:text-base truncate">Statistics</h3>
@@ -1101,7 +1101,7 @@
                             <MetricsPanel gameData={data} />
                         </div>
                         {/* Statistics Panel - Half Width */}
-                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1 min-w-0 overflow-hidden">
+                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1 min-w-0">
                             <StatisticsPanel gameData={data} />
                         </div>
                     </div>
