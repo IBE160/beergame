@@ -990,47 +990,47 @@
             const [showBackorderCost, setShowBackorderCost] = React.useState(true);
 
             return (
-                <div className="grid grid-cols-2 gap-6 w-full h-full">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full h-full">
                     {/* LEFT COLUMN - Charts stacked vertically */}
                     <div className="flex flex-col gap-6">
                         {/* Orders vs Inventory Chart */}
-                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1">
+                        <div className="bg-mono-surface p-2 sm:p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1">
                             {/* Header with title and toggles */}
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-semibold text-mono-text">Orders vs. Inventory</h3>
-                                <div className="flex items-center gap-3">
-                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2 sm:mb-4">
+                                <h3 className="font-semibold text-mono-text text-sm sm:text-base">Orders vs. Inventory</h3>
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={showInventory}
                                             onChange={(e) => setShowInventory(e.target.checked)}
-                                            className="w-3 h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-xs" style={{color: '#FFCC66'}}>Inventory</span>
+                                        <span className="text-[10px] sm:text-xs" style={{color: '#FFCC66'}}>Inventory</span>
                                     </label>
-                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={showBackorders}
                                             onChange={(e) => setShowBackorders(e.target.checked)}
-                                            className="w-3 h-3 rounded border-accent/90 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/90 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-xs text-accent/90">Backorders</span>
+                                        <span className="text-[10px] sm:text-xs text-accent/90">Backorders</span>
                                     </label>
-                                    <label className="flex items-center gap-1.5 cursor-pointer ml-auto">
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer sm:ml-auto">
                                         <input
                                             type="checkbox"
                                             checked={showOrders}
                                             onChange={(e) => setShowOrders(e.target.checked)}
-                                            className="w-3 h-3 rounded border-accent/10 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/10 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-xs text-accent/30">Orders</span>
+                                        <span className="text-[10px] sm:text-xs text-accent/30">Orders</span>
                                     </label>
                                 </div>
                             </div>
-                            <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
+                            <div className="flex-1 w-full min-h-[180px] sm:min-h-[200px] bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <ComposedChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <ComposedChart data={data} margin={{ top: 5, right: 15, left: -10, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
@@ -1044,34 +1044,34 @@
                         </div>
 
                         {/* Cost Accumulation Chart - Stacked */}
-                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1">
+                        <div className="bg-mono-surface p-2 sm:p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1">
                             {/* Header with title and toggles */}
-                            <div className="flex items-center justify-between mb-4">
-                                <h3 className="font-semibold text-mono-text">Cost Accumulation</h3>
-                                <div className="flex items-center gap-4">
-                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2 sm:mb-4">
+                                <h3 className="font-semibold text-mono-text text-sm sm:text-base">Cost Accumulation</h3>
+                                <div className="flex items-center gap-2 sm:gap-4">
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={showHoldingCost}
                                             onChange={(e) => setShowHoldingCost(e.target.checked)}
-                                            className="w-3 h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-xs" style={{color: '#FFCC66'}}>Holding</span>
+                                        <span className="text-[10px] sm:text-xs" style={{color: '#FFCC66'}}>Holding</span>
                                     </label>
-                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
                                         <input
                                             type="checkbox"
                                             checked={showBackorderCost}
                                             onChange={(e) => setShowBackorderCost(e.target.checked)}
-                                            className="w-3 h-3 rounded border-accent/90 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/90 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-xs text-accent/90">Backorder</span>
+                                        <span className="text-[10px] sm:text-xs text-accent/90">Backorder</span>
                                     </label>
                                 </div>
                             </div>
-                            <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
+                            <div className="flex-1 w-full min-h-[180px] sm:min-h-[200px] bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <AreaChart data={data} margin={{ top: 5, right: 15, left: -10, bottom: 0 }}>
                                         <defs>
                                             <linearGradient id="colorHoldingCost" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="5%" stopColor="#FFCC66" stopOpacity={0.8}/>
@@ -1095,7 +1095,7 @@
                     </div>
 
                     {/* RIGHT COLUMN - Metrics and Statistics Panels side-by-side */}
-                    <div className="flex gap-4">
+                    <div className="flex flex-col md:flex-row gap-4">
                         {/* Metrics Panel - Half Width */}
                         <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1 min-w-0 overflow-hidden">
                             <MetricsPanel gameData={data} />
