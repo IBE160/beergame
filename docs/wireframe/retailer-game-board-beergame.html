@@ -231,7 +231,7 @@
 
                         <!-- Order Section with Send Button (tablet/desktop) -->
                         <div class="flex flex-col items-center gap-2">
-                            <button class="w-full bg-transparent border border-accent hover:bg-accent/10 text-white rounded py-1 shadow-md transition-colors flex items-center justify-center">
+                            <button id="btnSend" class="w-full bg-transparent border border-accent hover:bg-accent/10 text-white rounded py-1 shadow-md transition-colors flex items-center justify-center">
                                 <span class="text-[10px] font-bold uppercase">Send</span>
                             </button>
 
@@ -255,7 +255,7 @@
                                 const orderInput = document.getElementById('orderInput');
                                 const btnUp = document.getElementById('btnUp');
                                 const btnDown = document.getElementById('btnDown');
-                                const btnSend = document.querySelector('.hidden.sm\\:flex button.w-full.bg-transparent.border-accent');
+                                const btnSend = document.getElementById('btnSend');
 
                                 // Mobile elements
                                 const mobileOrderInput = document.querySelector('.mobile-order-input');
