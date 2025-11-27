@@ -1032,8 +1032,8 @@
                                 <ResponsiveContainer width="100%" height="100%">
                                     <ComposedChart data={data} margin={{ top: 5, right: 15, left: -10, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                        <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <Tooltip content={<CustomTooltip />} />
                                         {showOrders && <Bar dataKey="outgoingOrders" name="Orders" fill="rgba(255, 215, 0, 0.1)" barSize={12} radius={[2, 2, 0, 0]} />}
                                         {showInventory && <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#FFCC66" strokeWidth={3} dot={{r: 3, fill: '#FFCC66'}} activeDot={{r: 6}} />}
@@ -1083,8 +1083,8 @@
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                        <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <Tooltip content={<CustomTooltip />} />
                                         {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#FFCC66" fillOpacity={1} fill="url(#colorHoldingCost)" />}
                                         {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(255, 215, 0, 0.9)" fillOpacity={1} fill="url(#colorBackorderCost)" />}
