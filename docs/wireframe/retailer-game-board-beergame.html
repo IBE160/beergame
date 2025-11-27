@@ -107,25 +107,28 @@
         <div class="flex-1 flex flex-col w-full max-w-[1600px] mx-auto relative z-10 space-y-6 px-6">
             
             <!-- MAIN GAME BOARD (Sketch Implementation) -->
-            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-8 shadow-2xl flex items-stretch justify-between gap-0 relative overflow-hidden">
+            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl flex flex-col sm:flex-row items-stretch sm:justify-between gap-4 sm:gap-0 relative overflow-hidden">
                 
                 <!-- 1. LEFT NODE: WHOLESALER -->
-                <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
-                    <div class="p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                <div class="w-full sm:w-40 lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
+                    <!-- Header - hidden on mobile -->
+                    <div class="hidden sm:block p-3 lg:p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-xs lg:text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
                     </div>
-                    <div class="flex-1 flex items-center justify-start pt-[34px] p-4 relative flex-col">
+                    <div class="flex-1 flex items-center justify-start pt-4 sm:pt-[34px] p-3 sm:p-4 relative flex-col">
+                         <!-- Inline title - visible only on mobile -->
+                         <h3 class="sm:hidden text-mono-text text-xs uppercase tracking-widest font-bold text-center mb-2">Wholesaler</h3>
                          <!-- Faint background icon -->
-                         <span class="material-symbols-outlined text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">warehouse</span>
-                         
+                         <span class="material-symbols-outlined text-7xl sm:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">warehouse</span>
+
                          <!-- Hidden Inventory Box (Wholesaler) -->
-                         <div id="wholesaler-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
+                         <div id="wholesaler-inventory" class="bg-mono-bg/30 p-3 lg:p-4 mt-2 sm:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] sm:min-w-[120px] min-h-[80px] sm:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
-                            <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
+                            <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
                     </div>
                     <!-- Incoming Order Box (Bottom) -->
-                    <div class="p-4 bg-mono-surface rounded-b-xl flex justify-end">
+                    <div class="p-3 sm:p-4 bg-mono-surface rounded-b-xl flex justify-end">
                          <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
                                 <div id="wholesaler-order-value" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
@@ -133,54 +136,77 @@
                     </div>
                 </div>
 
-                <!-- PIPE SECTION 1: Wholesaler -> Retailer -->
-                <div class="flex-1 flex flex-col justify-between py-4 relative min-w-[200px]">
-                    
+                <!-- PIPE SECTION 1: Wholesaler -> Retailer (Hidden on mobile) -->
+                <div class="hidden sm:flex flex-1 flex-col justify-between py-4 relative min-w-[100px] lg:min-w-[200px]">
+
                     <!-- Top Pipe: Deliveries (Rightward) -->
-                    <div class="relative h-16 top-[40px] w-full flex items-center">
+                    <div class="relative h-12 lg:h-16 top-[30px] lg:top-[40px] w-full flex items-center">
                         <!-- Pipe Background -->
-                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[30px] lg:h-[40px] bg-mono-surface rounded-none"></div>
 
                         <!-- Delay Boxes (Sitting on pipe) -->
-                        <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
+                        <div class="absolute w-full flex justify-evenly px-2 lg:px-4 z-10 top-0 -mt-[11px]">
                              <!-- Week 1 -->
-                             <div class="bg-mono-surface border border-green-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
-                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                                <div id="delivery-week-1" class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]">20</div>
+                             <div class="bg-mono-surface border border-green-500/30 p-1 lg:p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[8px] lg:text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                                <div id="delivery-week-1" class="bg-green-500/10 px-2 lg:px-3 py-0.5 lg:py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center text-xs min-w-[40px] lg:min-w-[55px]">20</div>
                             </div>
                              <!-- Week 2 -->
-                             <div class="bg-mono-surface border border-green-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
-                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                                <div id="delivery-week-2" class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                             <div class="bg-mono-surface border border-green-500/30 p-1 lg:p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[8px] lg:text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                                <div id="delivery-week-2" class="bg-green-500/10 px-2 lg:px-3 py-0.5 lg:py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center text-xs min-w-[40px] lg:min-w-[55px]">30</div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Bottom Pipe: Orders (Leftward) -->
-                    <div class="relative h-16 w-full flex items-center top-[5px]">
+                    <div class="relative h-12 lg:h-16 w-full flex items-center top-[5px]">
                         <!-- Pipe Background -->
-                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[40px] bg-mono-surface rounded-none"></div>
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] lg:h-[40px] bg-mono-surface rounded-none"></div>
                     </div>
                 </div>
 
+                <!-- MOBILE VERTICAL CONNECTOR 1: Wholesaler -> Retailer -->
+                <div class="flex sm:hidden flex-col items-center py-2 relative">
+                    <!-- Vertical pipe line (top) -->
+                    <div class="w-[40px] h-6 bg-mono-surface rounded-sm"></div>
+                    <!-- Delivery boxes stacked vertically -->
+                    <div class="flex flex-row gap-2 my-2">
+                        <div class="bg-mono-surface border border-green-500/30 p-1.5 rounded shadow-lg">
+                            <div class="text-[9px] text-mono-text uppercase text-center mb-1">W1</div>
+                            <div class="bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center text-xs min-w-[35px]">20</div>
+                        </div>
+                        <div class="bg-mono-surface border border-green-500/30 p-1.5 rounded shadow-lg">
+                            <div class="text-[9px] text-mono-text uppercase text-center mb-1">W2</div>
+                            <div class="bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center text-xs min-w-[35px]">30</div>
+                        </div>
+                    </div>
+                    <!-- Vertical pipe line (bottom) -->
+                    <div class="w-[40px] h-6 bg-mono-surface rounded-sm"></div>
+                </div>
+
                 <!-- 2. CENTER NODE: INVENTORY (RETAILER) -->
-                <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
-                    
-                    <!-- Header -->
-                    <div class="p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Retailer</h3>
+                <div class="w-full sm:w-40 lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
+
+                    <!-- Header - hidden on mobile -->
+                    <div class="hidden sm:block p-3 lg:p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-xs lg:text-sm uppercase tracking-widest font-bold text-center">Retailer</h3>
                     </div>
 
                     <!-- Inventory Display (Wrapped Box) -->
-                    <div class="flex-1 flex items-center justify-center pt-[34px] p-6">
-                         <div id="retailer-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
+                    <div class="flex-1 flex items-center justify-center pt-4 sm:pt-[34px] p-3 sm:p-4 lg:p-6">
+                         <!-- Inline title - visible only on mobile -->
+                         <div class="sm:hidden absolute top-3 left-0 right-0 text-center">
+                             <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold">Retailer</h3>
+                         </div>
+                         <div id="retailer-inventory" class="bg-mono-bg/30 p-3 lg:p-4 mt-6 sm:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] sm:min-w-[120px] min-h-[80px] sm:min-h-[100px]">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
-                            <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                            <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
                         </div>
                     </div>
 
                     <!-- Bottom Section: Order (Left) & Demand (Right) -->
-                    <div class="p-4 bg-mono-surface rounded-b-xl flex justify-between items-end gap-2 relative">
+                    <div class="p-3 sm:p-4 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1 sm:gap-2 relative">
                         
                         <!-- Order Section with Send Button -->
                         <div class="flex flex-col items-center gap-2">
@@ -225,6 +251,9 @@
                                     wholesalerInventory: document.getElementById('wholesaler-inventory')
                                 };
 
+                                // --- Mobile Detection ---
+                                const isMobile = () => window.innerWidth < 640;
+
                                 // --- Input Logic ---
                                 const validateInput = () => {
                                     const val = orderInput.value;
@@ -253,6 +282,47 @@
                                 // --- Animation Logic ---
                                 window.startState3Animation = () => {
                                     console.log("Starting State 3 Animations (Order + Green Week 2)...");
+
+                                    // Skip animations on mobile - just update values directly
+                                    if (isMobile()) {
+                                        console.log("Mobile detected - skipping animations, updating values directly");
+                                        // Update values without animation
+                                        const orderVal = orderInput.value || '0';
+                                        els.wholesalerOrderInner.innerText = orderVal;
+                                        orderInput.value = '';
+
+                                        // Shift delivery pipeline
+                                        const week1Val = els.greenWeek1.innerText;
+                                        const week2Val = els.greenWeek2.innerText;
+                                        els.greenWeek1.innerText = '0';
+                                        els.greenWeek2.innerText = week1Val;
+
+                                        // Update inventory (add week2 delivery)
+                                        const invEl = els.retailerInventory.querySelector('.text-3xl, .lg\\:text-5xl');
+                                        if (invEl) {
+                                            const currentInv = parseInt(invEl.innerText) || 0;
+                                            invEl.innerText = currentInv + parseInt(week2Val || 0);
+                                        }
+
+                                        // Shift outgoing pipeline
+                                        const outWeek1Val = els.yellowWeek1.innerText;
+                                        els.yellowWeek1.innerText = '0';
+                                        els.yellowWeek2.innerText = outWeek1Val;
+
+                                        // Generate random demand
+                                        const randomDemand = Math.floor(Math.random() * 11) + 10;
+                                        els.retailerDemandInner.innerText = randomDemand;
+
+                                        // Re-enable interface
+                                        orderInput.disabled = false;
+                                        btnUp.disabled = false;
+                                        btnDown.disabled = false;
+                                        if (btnSend) {
+                                            btnSend.querySelector('span').innerText = "Send";
+                                            validateInput();
+                                        }
+                                        return;
+                                    }
 
                                     // Helper to clone and animate
                                     const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null, persist = false, overwrite = false) => {
@@ -531,20 +601,22 @@
                                         btnUp.disabled = true;
                                         btnDown.disabled = true;
                                         btnSend.disabled = true;
-                                        
+
                                         btnSend.querySelector('span').innerText = "WAIT";
                                         btnSend.classList.add('opacity-50', 'cursor-not-allowed');
                                         btnSend.classList.remove('hover:bg-accent/10');
 
-                                        // Simulate 5 second delay
+                                        // Use shorter delay on mobile (no animations), longer on desktop
+                                        const delay = isMobile() ? 500 : 5000;
+
                                         setTimeout(() => {
                                             // State 2: Sent/Waiting
                                             btnSend.querySelector('span').innerText = "SENT";
                                             console.log("Transition to State 2 complete. Order locked.");
-                                            
+
                                             // Trigger State 3
                                             startState3Animation();
-                                        }, 5000);
+                                        }, delay);
                                     });
                                 }
                             });
@@ -557,54 +629,77 @@
                         </div>
                     </div>                                                      
                 </div>
-                <!-- PIPE SECTION 2: Retailer -> Customer -->
-                <div class="flex-1 flex flex-col justify-between py-4 relative min-w-[200px]">
+                <!-- PIPE SECTION 2: Retailer -> Customer (Hidden on mobile) -->
+                <div class="hidden sm:flex flex-1 flex-col justify-between py-4 relative min-w-[100px] lg:min-w-[200px]">
                      <!-- Top Pipe: Deliveries (Rightward) -->
-                     <div class="relative h-16 top-[40px] w-full flex items-center">
+                     <div class="relative h-12 lg:h-16 top-[30px] lg:top-[40px] w-full flex items-center">
                         <!-- Pipe Background -->
-                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[30px] lg:h-[40px] bg-mono-surface rounded-none"></div>
 
                         <!-- Delay Boxes (Deliveries to Customer) -->
-                        <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
+                        <div class="absolute w-full flex justify-evenly px-2 lg:px-4 z-10 top-0 -mt-[11px]">
                             <!-- Week 1 -->
-                             <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
-                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                                <div id="outgoing-week-1" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">25</div>
+                             <div class="bg-mono-surface border border-accent/30 p-1 lg:p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[8px] lg:text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                                <div id="outgoing-week-1" class="bg-accent/10 px-2 lg:px-3 py-0.5 lg:py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[40px] lg:min-w-[55px]">25</div>
                             </div>
                             <!-- Week 2 -->
-                             <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
-                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                                <div id="outgoing-week-2" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">20</div>
+                             <div class="bg-mono-surface border border-accent/30 p-1 lg:p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[8px] lg:text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                                <div id="outgoing-week-2" class="bg-accent/10 px-2 lg:px-3 py-0.5 lg:py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[40px] lg:min-w-[55px]">20</div>
                             </div>
                        </div>
                     </div>
 
                     <!-- Bottom Pipe: Demand (Leftward) -->
-                    <div class="relative h-16 w-full flex items-center top-[5px]">
+                    <div class="relative h-12 lg:h-16 w-full flex items-center top-[5px]">
                          <!-- Pipe Background -->
-                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[40px] bg-mono-surface rounded-none"></div>
+                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[30px] lg:h-[40px] bg-mono-surface rounded-none"></div>
                     </div>
                 </div>
 
-                <!-- 3. RIGHT NODE: CUSTOMERS -->
-                <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
-                    <div class="p-4 border-b  border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Customers</h3>
+                <!-- MOBILE VERTICAL CONNECTOR 2: Retailer -> Customer -->
+                <div class="flex sm:hidden flex-col items-center py-2 relative">
+                    <!-- Vertical pipe line (top) -->
+                    <div class="w-[40px] h-6 bg-mono-surface rounded-sm"></div>
+                    <!-- Outgoing delivery boxes stacked horizontally -->
+                    <div class="flex flex-row gap-2 my-2">
+                        <div class="bg-mono-surface border border-accent/30 p-1.5 rounded shadow-lg">
+                            <div class="text-[9px] text-mono-text uppercase text-center mb-1">W1</div>
+                            <div class="bg-accent/10 px-2 py-0.5 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[35px]">25</div>
+                        </div>
+                        <div class="bg-mono-surface border border-accent/30 p-1.5 rounded shadow-lg">
+                            <div class="text-[9px] text-mono-text uppercase text-center mb-1">W2</div>
+                            <div class="bg-accent/10 px-2 py-0.5 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[35px]">20</div>
+                        </div>
                     </div>
-                    <div class="flex-1 flex flex-col items-center justify-center p-4 space-y-2">
+                    <!-- Vertical pipe line (bottom) -->
+                    <div class="w-[40px] h-6 bg-mono-surface rounded-sm"></div>
+                </div>
+
+                <!-- 3. RIGHT NODE: CUSTOMERS -->
+                <div class="w-full sm:w-40 lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
+                    <!-- Header - hidden on mobile -->
+                    <div class="hidden sm:block p-3 lg:p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-xs lg:text-sm uppercase tracking-widest font-bold text-center">Customers</h3>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 space-y-2 relative">
+                        <!-- Inline title - visible only on mobile -->
+                        <h3 class="sm:hidden text-mono-text text-xs uppercase tracking-widest font-bold text-center">Customers</h3>
                         <!-- Stick Figures (Icons) -->
                         <div id="customer-icons" class="flex -space-x-2">
-                            <span class="material-symbols-outlined text-4xl text-mono-light">person</span>
-                            <span class="material-symbols-outlined text-4xl text-mono-light/80">person</span>
-                            <span class="material-symbols-outlined text-4xl text-mono-light/60">person</span>
+                            <span class="material-symbols-outlined text-3xl sm:text-4xl text-mono-light">person</span>
+                            <span class="material-symbols-outlined text-3xl sm:text-4xl text-mono-light/80">person</span>
+                            <span class="material-symbols-outlined text-3xl sm:text-4xl text-mono-light/60">person</span>
                         </div>
-                        <span class="text-xs text-mono-light">Market Demand</span>
+                        <span class="text-[10px] sm:text-xs text-mono-light">Market Demand</span>
                     </div>
                     <!-- Demand Box (Bottom) -->
-                    <div class="p-4 bg-mono-surface rounded-b-xl flex justify-start">
+                    <div class="p-3 sm:p-4 bg-mono-surface rounded-b-xl flex justify-start">
                         <div class="bg-mono-surface border border-red-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Demand</div>
-                            <div id="customer-demand" class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center min-w-[55px]">?</div>                        </div>
+                            <div id="customer-demand" class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                        </div>
                     </div>
                 </div>
 
