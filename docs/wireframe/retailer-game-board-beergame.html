@@ -865,13 +865,13 @@
             return (
                 <div className="flex flex-col h-full w-full overflow-hidden">
                     {/* Header with title and sample size */}
-                    <div className="flex items-center justify-between mb-3">
-                        <h3 className="font-semibold text-mono-text">Statistics</h3>
-                        <span className="text-[10px] text-mono-light uppercase tracking-wider">n = {gameData.length} weeks</span>
+                    <div className="flex items-center justify-between mb-3 flex-shrink-0 gap-2">
+                        <h3 className="font-semibold text-mono-text text-sm sm:text-base truncate">Statistics</h3>
+                        <span className="text-[10px] text-mono-light uppercase tracking-wider whitespace-nowrap">n={gameData.length}</span>
                     </div>
 
                     {/* Metric Tabs - Single Row with Arrow Navigation */}
-                    <div className="flex items-center gap-1 mb-4 pb-2 border-b border-mono-light/10 overflow-hidden">
+                    <div className="flex items-center gap-1 mb-4 pb-2 border-b border-mono-light/10 overflow-hidden flex-shrink-0">
                         <button onClick={() => scrollTabs('left')} className="p-0.5 text-mono-light hover:text-mono-text hover:bg-mono-bg/30 rounded transition-all flex-shrink-0">
                             <span className="material-symbols-outlined text-base">chevron_left</span>
                         </button>
