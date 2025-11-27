@@ -820,7 +820,7 @@
         // StatGroup - grouped statistics with header
         const StatGroup = ({ title, children }) => (
             <div className="bg-mono-bg/30 rounded-xl p-3 border border-mono-light/10">
-                <h4 className="text-[10px] uppercase tracking-wider text-mono-light mb-2 font-medium">{title}</h4>
+                <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">{title}</h4>
                 <div className="space-y-1.5">{children}</div>
             </div>
         );
@@ -853,7 +853,11 @@
 
             return (
                 <div className="flex flex-col h-full">
-                    <h3 className="font-semibold mb-3 text-mono-text">Statistics</h3>
+                    {/* Header with title and sample size */}
+                    <div className="flex items-center justify-between mb-3">
+                        <h3 className="font-semibold text-mono-text">Statistics</h3>
+                        <span className="text-[10px] text-mono-light uppercase tracking-wider">n = {gameData.length} weeks</span>
+                    </div>
 
                     {/* Metric Tabs */}
                     <div className="flex flex-wrap gap-1 mb-4 pb-2 border-b border-mono-light/10">
@@ -868,8 +872,8 @@
                         ))}
                     </div>
 
-                    {/* Statistics Grid - 2x2 */}
-                    <div className="grid grid-cols-2 gap-3 flex-1 overflow-y-auto">
+                    {/* Statistics Grid - Single Column */}
+                    <div className="grid grid-cols-1 gap-3 flex-1 overflow-y-auto">
                         <StatGroup title="Central Tendency">
                             <StatItem label="Mean" value={fmt(stats.mean)} />
                             <StatItem label="Median" value={fmt(stats.median)} />
@@ -897,10 +901,61 @@
                             <StatItem label="CI Upper" value={fmt(stats.ci95Upper)} />
                         </StatGroup>
                     </div>
+                </div>
+            );
+        };
 
-                    {/* Sample Size */}
-                    <div className="mt-3 pt-2 border-t border-mono-light/10 text-center">
-                        <span className="text-[10px] text-mono-light uppercase tracking-wider">n = {gameData.length} weeks</span>
+        // MetricsPanel - KPI component showing key performance indicators
+        const MetricsPanel = ({ gameData }) => {
+            // Calculate metrics
+            const metrics = React.useMemo(() => {
+                if (!gameData || gameData.length === 0) return { totalCost: 0, serviceLevel: 0, fillRate: 0 };
+
+                // Total Cost: final cumulative cost
+                const totalCost = gameData[gameData.length - 1].totalCost;
+
+                // Service Level: ratio of fully delivered orders to total orders
+                // A fully delivered order is when outgoingOrders >= incomingOrders (demand)
+                const fullyDeliveredOrders = gameData.filter(w => w.outgoingOrders >= w.incomingOrders).length;
+                const serviceLevel = (fullyDeliveredOrders / gameData.length) * 100;
+
+                // Fill Rate: ratio of total delivered to total demanded
+                const totalDelivered = gameData.reduce((sum, w) => sum + w.outgoingOrders, 0);
+                const totalDemanded = gameData.reduce((sum, w) => sum + w.incomingOrders, 0);
+                const fillRate = totalDemanded > 0 ? (totalDelivered / totalDemanded) * 100 : 0;
+
+                return { totalCost, serviceLevel, fillRate };
+            }, [gameData]);
+
+            return (
+                <div className="flex flex-col h-full">
+                    <h3 className="font-semibold mb-3 text-mono-text">Metrics</h3>
+
+                    <div className="flex flex-col gap-4 flex-1">
+                        {/* Total Cost */}
+                        <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
+                            <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Total Cost</h4>
+                            <div className="text-3xl font-bold text-accent">${metrics.totalCost.toLocaleString()}</div>
+                            <p className="text-[10px] text-mono-light mt-1">Cumulative holding + backorder costs</p>
+                        </div>
+
+                        {/* Service Level */}
+                        <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
+                            <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Service Level</h4>
+                            <div className="text-3xl font-bold" style={{color: metrics.serviceLevel >= 80 ? '#4ade80' : metrics.serviceLevel >= 50 ? '#FFCC66' : '#f87171'}}>
+                                {metrics.serviceLevel.toFixed(1)}%
+                            </div>
+                            <p className="text-[10px] text-mono-light mt-1">Fully delivered orders / total orders</p>
+                        </div>
+
+                        {/* Fill Rate */}
+                        <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
+                            <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Fill Rate</h4>
+                            <div className="text-3xl font-bold" style={{color: metrics.fillRate >= 90 ? '#4ade80' : metrics.fillRate >= 70 ? '#FFCC66' : '#f87171'}}>
+                                {metrics.fillRate.toFixed(1)}%
+                            </div>
+                            <p className="text-[10px] text-mono-light mt-1">Delivered quantity / ordered quantity</p>
+                        </div>
                     </div>
                 </div>
             );
@@ -1020,9 +1075,16 @@
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN - Statistics Panel (h-80 × 2 + gap-6 = 664px) */}
-                    <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col h-[664px]">
-                        <StatisticsPanel gameData={data} />
+                    {/* RIGHT COLUMN - Statistics and Metrics Panels side-by-side */}
+                    <div className="flex gap-4 h-[664px]">
+                        {/* Statistics Panel - Half Width */}
+                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1">
+                            <StatisticsPanel gameData={data} />
+                        </div>
+                        {/* Metrics Panel - Half Width */}
+                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1">
+                            <MetricsPanel gameData={data} />
+                        </div>
                     </div>
                 </div>
             );

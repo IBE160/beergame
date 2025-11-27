@@ -52,27 +52,27 @@
         </div>
         <nav class="flex-1 p-4 space-y-2 overflow-y-auto main-menu">
             <h2 class="px-3 pt-2 pb-1 text-xs font-semibold text-mono-light uppercase tracking-wider">Game Boards</h2>
-            <a href="./wireframe/common-layout.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+            <a href="./wireframe/common-layout.html" data-hash="common-layout" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
                 <span class="material-symbols-outlined mr-3 text-blue-400">dashboard_customize</span>
                 Common Game Layout
             </a>
-            <a href="./wireframe/retailer-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+            <a href="./wireframe/retailer-game-board-beergame.html" data-hash="retailer-dashboard" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
                 <span class="material-symbols-outlined mr-3 text-yellow-400">storefront</span>
                 Retailer Dashboard
             </a>
-            <a href="./wireframe/wholesaler-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+            <a href="./wireframe/wholesaler-game-board-beergame.html" data-hash="wholesaler-dashboard" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
                 <span class="material-symbols-outlined mr-3 text-green-400">warehouse</span>
                 Wholesaler Dashboard
             </a>
-            <a href="./wireframe/distributor-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+            <a href="./wireframe/distributor-game-board-beergame.html" data-hash="distributor-dashboard" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
                 <span class="material-symbols-outlined mr-3 text-purple-400">local_shipping</span>
                 Distributor Dashboard
             </a>
-            <a href="./wireframe/factory-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+            <a href="./wireframe/factory-game-board-beergame.html" data-hash="factory-dashboard" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
                 <span class="material-symbols-outlined mr-3 text-orange-400">factory</span>
                 Factory Dashboard
             </a>
-            <a href="./wireframe/All-game-board-beergame.html" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
+            <a href="./wireframe/All-game-board-beergame.html" data-hash="all-game-boards" target="mockup-frame" class="flex items-center p-3 rounded-md text-mono-text hover:bg-mono-light/10 transition-colors">
                 <span class="material-symbols-outlined mr-3 text-cyan-400">grid_view</span>
                 All Game Boards
             </a>
@@ -105,45 +105,65 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const menuLinks = document.querySelectorAll('.main-menu a');
+            const menuLinks = document.querySelectorAll('.main-menu a[data-hash]');
             const iframe = document.querySelector('iframe[name="mockup-frame"]');
 
-            // Set the first link as active by default
-            if (menuLinks.length > 0) {
-                menuLinks[0].classList.add('active');
+            // Function to load page based on hash
+            function loadPageFromHash(hash) {
+                const targetLink = document.querySelector(`.main-menu a[data-hash="${hash}"]`);
+                if (targetLink) {
+                    const href = targetLink.getAttribute('href');
+                    iframe.src = href;
+
+                    // Update active state
+                    menuLinks.forEach(l => l.classList.remove('active'));
+                    targetLink.classList.add('active');
+                }
             }
 
+            // Function to get current hash without the # symbol
+            function getCurrentHash() {
+                return window.location.hash.slice(1);
+            }
+
+            // Handle click on menu links
             menuLinks.forEach(link => {
                 link.addEventListener('click', (event) => {
-                    // Don't prevent default for links with href="#"
-                    if (link.getAttribute('href') === '#') {
-                        event.preventDefault();
-                        return;
+                    event.preventDefault();
+                    const hash = link.getAttribute('data-hash');
+                    if (hash) {
+                        window.location.hash = hash;
                     }
-
-                    // Remove active class from all links
-                    menuLinks.forEach(l => l.classList.remove('active'));
-                    // Add active class to the clicked link
-                    event.currentTarget.classList.add('active');
                 });
             });
 
-            // Optional: Update active state if iframe location changes (e.g., via back/forward)
-            iframe.addEventListener('load', () => {
-                try {
-                    const currentSrc = iframe.contentWindow.location.href.split('/').pop();
-                    menuLinks.forEach(link => {
-                        const href = link.getAttribute('href');
-                         if (href && href !== '#' && href.includes(currentSrc)) {
-                            link.classList.add('active');
-                        } else {
-                            link.classList.remove('active');
-                        }
-                    });
-                } catch (e) {
-                    console.log("Cross-origin access blocked - skipping active state sync from iframe.");
+            // Handle disabled links (no data-hash)
+            document.querySelectorAll('.main-menu a:not([data-hash])').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                });
+            });
+
+            // Handle hash change (back/forward navigation)
+            window.addEventListener('hashchange', () => {
+                const hash = getCurrentHash();
+                if (hash) {
+                    loadPageFromHash(hash);
                 }
             });
+
+            // Initial load: check for existing hash or set default
+            const initialHash = getCurrentHash();
+            if (initialHash) {
+                loadPageFromHash(initialHash);
+            } else {
+                // Set default hash to first available page
+                const firstLink = menuLinks[0];
+                if (firstLink) {
+                    const defaultHash = firstLink.getAttribute('data-hash');
+                    window.location.hash = defaultHash;
+                }
+            }
         });
     </script>
 
