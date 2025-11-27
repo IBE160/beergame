@@ -193,22 +193,39 @@
                         <h3 class="text-mono-text text-xs lg:text-sm uppercase tracking-widest font-bold text-center">Retailer</h3>
                     </div>
 
+                    <!-- Mobile: Title (left) + Order slot (right) in top row -->
+                    <div class="sm:hidden flex justify-between items-start p-3 pb-0">
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold">Retailer</h3>
+                        <!-- Mobile Order Section (upper right) -->
+                        <div class="flex flex-col items-center gap-1">
+                            <div class="bg-mono-surface border border-dashed border-accent/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                                <div class="bg-accent/10 px-1 py-0 rounded border border-accent/20 flex items-center justify-center min-w-[40px] h-6">
+                                    <input type="number" value="30" min="0" class="mobile-order-input w-5 bg-transparent text-center font-sans font-bold text-accent text-xs border-0 p-0 focus:ring-0 appearance-none" />
+                                    <div class="flex flex-col ml-0.5">
+                                        <button class="mobile-btn-up text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                        <button class="mobile-btn-down text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="mobile-btn-send w-full bg-transparent border border-accent hover:bg-accent/10 text-white rounded py-0.5 shadow-md transition-colors flex items-center justify-center">
+                                <span class="text-[8px] font-bold uppercase">Send</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- Inventory Display (Wrapped Box) -->
-                    <div class="flex-1 flex items-center justify-center pt-4 sm:pt-[34px] p-3 sm:p-4 lg:p-6">
-                         <!-- Inline title - visible only on mobile -->
-                         <div class="sm:hidden absolute top-3 left-0 right-0 text-center">
-                             <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold">Retailer</h3>
-                         </div>
-                         <div id="retailer-inventory" class="bg-mono-bg/30 p-3 lg:p-4 mt-6 sm:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] sm:min-w-[120px] min-h-[80px] sm:min-h-[100px]">
+                    <div class="flex-1 flex items-center justify-center pt-2 sm:pt-[34px] p-3 sm:p-4 lg:p-6">
+                         <div id="retailer-inventory" class="bg-mono-bg/30 p-3 lg:p-4 mt-0 sm:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] sm:min-w-[120px] min-h-[80px] sm:min-h-[100px]">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
                         </div>
                     </div>
 
-                    <!-- Bottom Section: Order (Left) & Demand (Right) -->
-                    <div class="p-3 sm:p-4 bg-mono-surface rounded-b-xl flex justify-between items-end gap-1 sm:gap-2 relative">
-                        
-                        <!-- Order Section with Send Button -->
+                    <!-- Bottom Section: Order (Left) & Demand (Right) - Hidden on mobile -->
+                    <div class="hidden sm:flex p-3 sm:p-4 bg-mono-surface rounded-b-xl justify-between items-end gap-1 sm:gap-2 relative">
+
+                        <!-- Order Section with Send Button (tablet/desktop) -->
                         <div class="flex flex-col items-center gap-1">
                             <button class="w-full bg-transparent border border-accent hover:bg-accent/10 text-white rounded py-0.5 shadow-md transition-colors flex items-center justify-center">
                                 <span class="text-[8px] font-bold uppercase">Send</span>
@@ -230,10 +247,19 @@
                         <!-- Script for Order Input Logic & Animations -->
                         <script>
                             document.addEventListener('DOMContentLoaded', () => {
+                                // Desktop elements
                                 const orderInput = document.getElementById('orderInput');
                                 const btnUp = document.getElementById('btnUp');
                                 const btnDown = document.getElementById('btnDown');
-                                const btnSend = document.querySelector('button.w-full.bg-transparent.border-accent');
+                                const btnSend = document.querySelector('.hidden.sm\\:flex button.w-full.bg-transparent.border-accent');
+
+                                // Mobile elements
+                                const mobileOrderInput = document.querySelector('.mobile-order-input');
+                                const mobileBtnUp = document.querySelector('.mobile-btn-up');
+                                const mobileBtnDown = document.querySelector('.mobile-btn-down');
+                                const mobileBtnSend = document.querySelector('.mobile-btn-send');
+                                const mobileRetailerDemand = document.querySelector('.mobile-retailer-demand-value');
+                                const mobileCustomerDemand = document.querySelector('.mobile-customer-demand');
 
                                 // --- Get Elements by ID ---
                                 const els = {
@@ -254,29 +280,52 @@
                                 // --- Mobile Detection ---
                                 const isMobile = () => window.innerWidth < 640;
 
+                                // --- Get current order input based on screen size ---
+                                const getCurrentOrderInput = () => isMobile() ? mobileOrderInput : orderInput;
+                                const getCurrentBtnSend = () => isMobile() ? mobileBtnSend : btnSend;
+
                                 // --- Input Logic ---
                                 const validateInput = () => {
-                                    const val = orderInput.value;
+                                    const currentInput = getCurrentOrderInput();
+                                    const currentBtn = getCurrentBtnSend();
+                                    const val = currentInput?.value;
                                     const isEmpty = val === '' || val === null;
-                                    
-                                    if (isEmpty) {
-                                        btnSend.disabled = true;
-                                        btnSend.classList.add('opacity-50', 'cursor-not-allowed');
-                                        btnSend.classList.remove('hover:bg-accent/10');
-                                    } else {
-                                        btnSend.disabled = false;
-                                        btnSend.classList.remove('opacity-50', 'cursor-not-allowed');
-                                        btnSend.classList.add('hover:bg-accent/10');
+
+                                    if (currentBtn) {
+                                        if (isEmpty) {
+                                            currentBtn.disabled = true;
+                                            currentBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                                            currentBtn.classList.remove('hover:bg-accent/10');
+                                        } else {
+                                            currentBtn.disabled = false;
+                                            currentBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                                            currentBtn.classList.add('hover:bg-accent/10');
+                                        }
                                     }
                                 };
 
-                                btnUp.addEventListener('click', () => { orderInput.stepUp(); validateInput(); });
-                                btnDown.addEventListener('click', () => { orderInput.stepDown(); validateInput(); });
-                                orderInput.addEventListener('input', validateInput);
-                                orderInput.addEventListener('change', () => { 
-                                    if (orderInput.value < 0) orderInput.value = 0;
-                                    validateInput(); 
-                                });
+                                // Desktop input handlers
+                                if (btnUp) btnUp.addEventListener('click', () => { orderInput.stepUp(); validateInput(); });
+                                if (btnDown) btnDown.addEventListener('click', () => { orderInput.stepDown(); validateInput(); });
+                                if (orderInput) {
+                                    orderInput.addEventListener('input', validateInput);
+                                    orderInput.addEventListener('change', () => {
+                                        if (orderInput.value < 0) orderInput.value = 0;
+                                        validateInput();
+                                    });
+                                }
+
+                                // Mobile input handlers
+                                if (mobileBtnUp) mobileBtnUp.addEventListener('click', () => { mobileOrderInput.stepUp(); validateInput(); });
+                                if (mobileBtnDown) mobileBtnDown.addEventListener('click', () => { mobileOrderInput.stepDown(); validateInput(); });
+                                if (mobileOrderInput) {
+                                    mobileOrderInput.addEventListener('input', validateInput);
+                                    mobileOrderInput.addEventListener('change', () => {
+                                        if (mobileOrderInput.value < 0) mobileOrderInput.value = 0;
+                                        validateInput();
+                                    });
+                                }
+
                                 validateInput();
 
                                 // --- Animation Logic ---
@@ -286,39 +335,44 @@
                                     // Skip animations on mobile - just update values directly
                                     if (isMobile()) {
                                         console.log("Mobile detected - skipping animations, updating values directly");
-                                        // Update values without animation
-                                        const orderVal = orderInput.value || '0';
+                                        // Update values without animation using mobile input
+                                        const orderVal = mobileOrderInput?.value || '0';
                                         els.wholesalerOrderInner.innerText = orderVal;
-                                        orderInput.value = '';
+                                        if (mobileOrderInput) mobileOrderInput.value = '';
 
-                                        // Shift delivery pipeline
-                                        const week1Val = els.greenWeek1.innerText;
-                                        const week2Val = els.greenWeek2.innerText;
-                                        els.greenWeek1.innerText = '0';
-                                        els.greenWeek2.innerText = week1Val;
+                                        // Shift delivery pipeline (mobile connector boxes don't have IDs, just display)
+                                        const week1Val = els.greenWeek1?.innerText || '0';
+                                        const week2Val = els.greenWeek2?.innerText || '0';
+                                        if (els.greenWeek1) els.greenWeek1.innerText = '0';
+                                        if (els.greenWeek2) els.greenWeek2.innerText = week1Val;
 
                                         // Update inventory (add week2 delivery)
-                                        const invEl = els.retailerInventory.querySelector('.text-3xl, .lg\\:text-5xl');
+                                        const invEl = els.retailerInventory?.querySelector('.text-3xl, .lg\\:text-5xl');
                                         if (invEl) {
                                             const currentInv = parseInt(invEl.innerText) || 0;
                                             invEl.innerText = currentInv + parseInt(week2Val || 0);
                                         }
 
                                         // Shift outgoing pipeline
-                                        const outWeek1Val = els.yellowWeek1.innerText;
-                                        els.yellowWeek1.innerText = '0';
-                                        els.yellowWeek2.innerText = outWeek1Val;
+                                        const outWeek1Val = els.yellowWeek1?.innerText || '0';
+                                        if (els.yellowWeek1) els.yellowWeek1.innerText = '0';
+                                        if (els.yellowWeek2) els.yellowWeek2.innerText = outWeek1Val;
 
-                                        // Generate random demand
+                                        // Generate random demand and update both mobile and desktop elements
                                         const randomDemand = Math.floor(Math.random() * 11) + 10;
-                                        els.retailerDemandInner.innerText = randomDemand;
+                                        if (els.retailerDemandInner) els.retailerDemandInner.innerText = randomDemand;
+                                        if (mobileRetailerDemand) mobileRetailerDemand.innerText = randomDemand;
+                                        if (els.customerDemand) els.customerDemand.innerText = randomDemand;
+                                        if (mobileCustomerDemand) mobileCustomerDemand.innerText = randomDemand;
 
-                                        // Re-enable interface
-                                        orderInput.disabled = false;
-                                        btnUp.disabled = false;
-                                        btnDown.disabled = false;
-                                        if (btnSend) {
-                                            btnSend.querySelector('span').innerText = "Send";
+                                        // Re-enable mobile interface
+                                        if (mobileOrderInput) mobileOrderInput.disabled = false;
+                                        if (mobileBtnUp) mobileBtnUp.disabled = false;
+                                        if (mobileBtnDown) mobileBtnDown.disabled = false;
+                                        if (mobileBtnSend) {
+                                            mobileBtnSend.querySelector('span').innerText = "Send";
+                                            mobileBtnSend.disabled = false;
+                                            mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
                                             validateInput();
                                         }
                                         return;
@@ -594,6 +648,7 @@
                                 };
 
                                 // --- Send Button Logic ---
+                                // Desktop send button handler
                                 if (btnSend) {
                                     btnSend.addEventListener('click', () => {
                                         // State 1 -> Transition
@@ -606,9 +661,6 @@
                                         btnSend.classList.add('opacity-50', 'cursor-not-allowed');
                                         btnSend.classList.remove('hover:bg-accent/10');
 
-                                        // Use shorter delay on mobile (no animations), longer on desktop
-                                        const delay = isMobile() ? 500 : 5000;
-
                                         setTimeout(() => {
                                             // State 2: Sent/Waiting
                                             btnSend.querySelector('span').innerText = "SENT";
@@ -616,18 +668,51 @@
 
                                             // Trigger State 3
                                             startState3Animation();
-                                        }, delay);
+                                        }, 5000);
+                                    });
+                                }
+
+                                // Mobile send button handler
+                                if (mobileBtnSend) {
+                                    mobileBtnSend.addEventListener('click', () => {
+                                        // State 1 -> Transition
+                                        mobileOrderInput.disabled = true;
+                                        mobileBtnUp.disabled = true;
+                                        mobileBtnDown.disabled = true;
+                                        mobileBtnSend.disabled = true;
+
+                                        mobileBtnSend.querySelector('span').innerText = "WAIT";
+                                        mobileBtnSend.classList.add('opacity-50', 'cursor-not-allowed');
+                                        mobileBtnSend.classList.remove('hover:bg-accent/10');
+
+                                        // Shorter delay on mobile (no animations)
+                                        setTimeout(() => {
+                                            // State 2: Sent/Waiting
+                                            mobileBtnSend.querySelector('span').innerText = "SENT";
+                                            console.log("Mobile: Transition to State 2 complete. Order locked.");
+
+                                            // Trigger State 3
+                                            startState3Animation();
+                                        }, 500);
                                     });
                                 }
                             });
                         </script>
 
-                        <!-- Demand Box (Right, Dashed) -->
+                        <!-- Demand Box (Right, Dashed) - tablet/desktop -->
                          <div id="retailer-demand" class="bg-mono-surface border border-dashed border-red-500/30 p-1 rounded shadow-lg">
                             <div class="text-[8px] text-mono-text uppercase text-center mb-1">Demand</div>
                             <div id="retailer-demand-value" class="bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center text-xs min-w-[40px] h-6">&nbsp;</div>
                         </div>
-                    </div>                                                      
+                    </div>
+
+                    <!-- Mobile: Demand Box at bottom -->
+                    <div class="sm:hidden p-3 pt-0 bg-mono-surface rounded-b-xl flex justify-end">
+                        <div class="bg-mono-surface border border-dashed border-red-500/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Demand</div>
+                            <div class="mobile-retailer-demand-value bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center text-xs min-w-[40px] h-6">&nbsp;</div>
+                        </div>
+                    </div>
                 </div>
                 <!-- PIPE SECTION 2: Retailer -> Customer (Hidden on mobile) -->
                 <div class="hidden sm:flex flex-1 flex-col justify-between py-4 relative min-w-[100px] lg:min-w-[200px]">
@@ -683,9 +768,18 @@
                     <div class="hidden sm:block p-3 lg:p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
                         <h3 class="text-mono-text text-xs lg:text-sm uppercase tracking-widest font-bold text-center">Customers</h3>
                     </div>
+
+                    <!-- Mobile: Title (left) + Demand slot (right) in top row -->
+                    <div class="sm:hidden flex justify-between items-start p-3 pb-0">
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold">Customers</h3>
+                        <!-- Mobile Demand Box (upper right) -->
+                        <div class="bg-mono-surface border border-red-500/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Demand</div>
+                            <div class="mobile-customer-demand bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center text-xs min-w-[40px] h-6">?</div>
+                        </div>
+                    </div>
+
                     <div class="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 space-y-2 relative">
-                        <!-- Inline title - visible only on mobile -->
-                        <h3 class="sm:hidden text-mono-text text-xs uppercase tracking-widest font-bold text-center">Customers</h3>
                         <!-- Stick Figures (Icons) -->
                         <div id="customer-icons" class="flex -space-x-2">
                             <span class="material-symbols-outlined text-3xl sm:text-4xl text-mono-light">person</span>
@@ -694,8 +788,8 @@
                         </div>
                         <span class="text-[10px] sm:text-xs text-mono-light">Market Demand</span>
                     </div>
-                    <!-- Demand Box (Bottom) -->
-                    <div class="p-3 bg-mono-surface rounded-b-xl flex justify-start">
+                    <!-- Demand Box (Bottom) - tablet/desktop only -->
+                    <div class="hidden sm:flex p-3 bg-mono-surface rounded-b-xl justify-start">
                         <div class="bg-mono-surface border border-red-500/30 p-1 rounded shadow-lg">
                             <div class="text-[8px] text-mono-text uppercase text-center mb-1">Demand</div>
                             <div id="customer-demand" class="bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center text-xs min-w-[40px] h-6">?</div>
