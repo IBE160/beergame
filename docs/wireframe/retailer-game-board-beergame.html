@@ -944,16 +944,16 @@
 
         // External inputs: demand (from customers) and deliveries (from wholesaler)
         const weeklyInputs = [
-            { week: 'W1', demand: 10, deliveries: 0 },
-            { week: 'W2', demand: 12, deliveries: 10 },
-            { week: 'W3', demand: 15, deliveries: 10 },
-            { week: 'W4', demand: 25, deliveries: 12 },
-            { week: 'W5', demand: 40, deliveries: 15 },
-            { week: 'W6', demand: 35, deliveries: 20 },
-            { week: 'W7', demand: 30, deliveries: 25 },
-            { week: 'W8', demand: 20, deliveries: 30 },
-            { week: 'W9', demand: 15, deliveries: 25 },
-            { week: 'W10', demand: 12, deliveries: 20 },
+            { week: '1', demand: 10, deliveries: 0 },
+            { week: '2', demand: 12, deliveries: 10 },
+            { week: '3', demand: 15, deliveries: 10 },
+            { week: '4', demand: 25, deliveries: 12 },
+            { week: '5', demand: 40, deliveries: 15 },
+            { week: '6', demand: 35, deliveries: 20 },
+            { week: '7', demand: 30, deliveries: 25 },
+            { week: '8', demand: 20, deliveries: 30 },
+            { week: '9', demand: 15, deliveries: 25 },
+            { week: '10', demand: 12, deliveries: 20 },
         ];
 
         // Simulate the game: compute inventory, backorders, outgoing orders
@@ -1242,10 +1242,10 @@
                             </div>
                             <div className="flex-1 w-full min-h-[180px] sm:min-h-[200px] bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <ComposedChart data={data} margin={{ top: 5, right: 15, left: -10, bottom: 0 }}>
+                                    <ComposedChart data={data} margin={{ top: 5, right: 15, left: 5, bottom: 20 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                        <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
+                                        <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Units', angle: -90, position: 'insideLeft', fill: '#808080', fontSize: 10, dx: -5 }} />
                                         <Tooltip content={<CustomTooltip />} />
                                         {showOrders && <Bar dataKey="outgoingOrders" name="Orders" fill="rgba(255, 215, 0, 0.1)" barSize={12} radius={[2, 2, 0, 0]} />}
                                         {showInventory && <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#FFCC66" strokeWidth={3} dot={{r: 3, fill: '#FFCC66'}} activeDot={{r: 6}} />}
@@ -1283,7 +1283,7 @@
                             </div>
                             <div className="flex-1 w-full min-h-[180px] sm:min-h-[200px] bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={data} margin={{ top: 5, right: 15, left: -10, bottom: 0 }}>
+                                    <AreaChart data={data} margin={{ top: 5, right: 15, left: 5, bottom: 20 }}>
                                         <defs>
                                             <linearGradient id="colorHoldingCost" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="5%" stopColor="#FFCC66" stopOpacity={0.8}/>
@@ -1295,8 +1295,8 @@
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                        <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
+                                        <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Cost ($)', angle: -90, position: 'insideLeft', fill: '#808080', fontSize: 10, dx: -5 }} />
                                         <Tooltip content={<CustomTooltip />} />
                                         {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#FFCC66" fillOpacity={1} fill="url(#colorHoldingCost)" />}
                                         {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(255, 215, 0, 0.9)" fillOpacity={1} fill="url(#colorBackorderCost)" />}
