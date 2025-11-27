@@ -634,7 +634,7 @@
     </div>
 
     <script type="text/babel">
-        const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
+        const { LineChart, Line, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
 
         // Statistics Calculator Utility
         const StatisticsCalculator = {
@@ -723,20 +723,75 @@
             }
         };
 
-        // Mock Data for Beer Game (Retailer Perspective - with all metrics)
-        // Cumulative costs for stacked area chart
-        const data = [
-            { week: 'W1', inventory: 40, backorders: 0, incomingOrders: 12, outgoingOrders: 12, holdingCost: 40, backorderCost: 0, cumHoldingCost: 40, cumBackorderCost: 0, totalCost: 40 },
-            { week: 'W2', inventory: 35, backorders: 0, incomingOrders: 15, outgoingOrders: 15, holdingCost: 35, backorderCost: 0, cumHoldingCost: 75, cumBackorderCost: 0, totalCost: 75 },
-            { week: 'W3', inventory: 25, backorders: 0, incomingOrders: 25, outgoingOrders: 20, holdingCost: 25, backorderCost: 0, cumHoldingCost: 100, cumBackorderCost: 0, totalCost: 100 },
-            { week: 'W4', inventory: 5, backorders: 0, incomingOrders: 40, outgoingOrders: 30, holdingCost: 5, backorderCost: 0, cumHoldingCost: 105, cumBackorderCost: 0, totalCost: 105 },
-            { week: 'W5', inventory: 0, backorders: 10, incomingOrders: 35, outgoingOrders: 25, holdingCost: 0, backorderCost: 100, cumHoldingCost: 105, cumBackorderCost: 100, totalCost: 205 },
-            { week: 'W6', inventory: 0, backorders: 25, incomingOrders: 30, outgoingOrders: 15, holdingCost: 0, backorderCost: 250, cumHoldingCost: 105, cumBackorderCost: 350, totalCost: 455 },
-            { week: 'W7', inventory: 0, backorders: 15, incomingOrders: 20, outgoingOrders: 30, holdingCost: 0, backorderCost: 150, cumHoldingCost: 105, cumBackorderCost: 500, totalCost: 605 },
-            { week: 'W8', inventory: 0, backorders: 5, incomingOrders: 15, outgoingOrders: 15, holdingCost: 0, backorderCost: 50, cumHoldingCost: 105, cumBackorderCost: 550, totalCost: 655 },
-            { week: 'W9', inventory: 10, backorders: 0, incomingOrders: 12, outgoingOrders: 12, holdingCost: 10, backorderCost: 0, cumHoldingCost: 115, cumBackorderCost: 550, totalCost: 665 },
-            { week: 'W10', inventory: 15, backorders: 0, incomingOrders: 12, outgoingOrders: 10, holdingCost: 15, backorderCost: 0, cumHoldingCost: 130, cumBackorderCost: 550, totalCost: 680 },
+        // Cost rates
+        const HOLDING_COST_RATE = 10;   // $ per unit of inventory per week
+        const BACKORDER_COST_RATE = 20; // $ per unit of backorder per week
+
+        // Initial conditions
+        const INITIAL_INVENTORY = 50;
+
+        // External inputs: demand (from customers) and deliveries (from wholesaler)
+        const weeklyInputs = [
+            { week: 'W1', demand: 10, deliveries: 0 },
+            { week: 'W2', demand: 12, deliveries: 10 },
+            { week: 'W3', demand: 15, deliveries: 10 },
+            { week: 'W4', demand: 25, deliveries: 12 },
+            { week: 'W5', demand: 40, deliveries: 15 },
+            { week: 'W6', demand: 35, deliveries: 20 },
+            { week: 'W7', demand: 30, deliveries: 25 },
+            { week: 'W8', demand: 20, deliveries: 30 },
+            { week: 'W9', demand: 15, deliveries: 25 },
+            { week: 'W10', demand: 12, deliveries: 20 },
         ];
+
+        // Simulate the game: compute inventory, backorders, outgoing orders
+        let inventory = INITIAL_INVENTORY;
+        let backorders = 0;
+        let cumHolding = 0;
+        let cumBackorder = 0;
+
+        const data = weeklyInputs.map(input => {
+            // Available stock = current inventory + incoming deliveries
+            const available = inventory + input.deliveries;
+
+            // Total demand = new demand + any backorders from previous weeks
+            const totalDemand = input.demand + backorders;
+
+            // Outgoing orders (what we actually ship) = min(available, totalDemand)
+            const outgoingOrders = Math.min(available, totalDemand);
+
+            // New inventory = max(0, available - totalDemand)
+            const newInventory = Math.max(0, available - totalDemand);
+
+            // New backorders = max(0, totalDemand - available)
+            const newBackorders = Math.max(0, totalDemand - available);
+
+            // Costs based on END-of-period inventory/backorders
+            const holdingCost = newInventory * HOLDING_COST_RATE;
+            const backorderCost = newBackorders * BACKORDER_COST_RATE;
+            cumHolding += holdingCost;
+            cumBackorder += backorderCost;
+
+            const row = {
+                week: input.week,
+                incomingOrders: input.demand,      // Demand from customers
+                deliveries: input.deliveries,      // Deliveries from wholesaler
+                outgoingOrders,                    // What we ship = min(available, demand)
+                inventory: newInventory,           // End-of-period inventory
+                backorders: newBackorders,         // End-of-period backorders
+                holdingCost,
+                backorderCost,
+                cumHoldingCost: cumHolding,
+                cumBackorderCost: cumBackorder,
+                totalCost: cumHolding + cumBackorder
+            };
+
+            // Update state for next week
+            inventory = newInventory;
+            backorders = newBackorders;
+
+            return row;
+        });
 
         const CustomTooltip = ({ active, payload, label }) => {
             if (active && payload && payload.length) {
@@ -852,51 +907,113 @@
         };
 
         const DashboardCharts = () => {
+            // Orders vs Inventory chart toggles
+            const [showOrders, setShowOrders] = React.useState(true);
+            const [showInventory, setShowInventory] = React.useState(true);
+            const [showBackorders, setShowBackorders] = React.useState(true);
+            // Cost chart toggles
+            const [showHoldingCost, setShowHoldingCost] = React.useState(true);
+            const [showBackorderCost, setShowBackorderCost] = React.useState(true);
+
             return (
                 <div className="grid grid-cols-2 gap-6 w-full h-full">
                     {/* LEFT COLUMN - Charts stacked vertically */}
                     <div className="flex flex-col gap-6">
                         {/* Orders vs Inventory Chart */}
                         <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col h-80">
-                            <h3 className="font-semibold mb-4 text-mono-text">Orders vs. Inventory</h3>
+                            {/* Header with title and toggles */}
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-semibold text-mono-text">Orders vs. Inventory</h3>
+                                <div className="flex items-center gap-3">
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showInventory}
+                                            onChange={(e) => setShowInventory(e.target.checked)}
+                                            className="w-3 h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-xs text-white">Inventory</span>
+                                    </label>
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showBackorders}
+                                            onChange={(e) => setShowBackorders(e.target.checked)}
+                                            className="w-3 h-3 rounded border-accent/90 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-xs text-accent/90">Backorders</span>
+                                    </label>
+                                    <label className="flex items-center gap-1.5 cursor-pointer ml-auto">
+                                        <input
+                                            type="checkbox"
+                                            checked={showOrders}
+                                            onChange={(e) => setShowOrders(e.target.checked)}
+                                            className="w-3 h-3 rounded border-accent/10 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-xs text-accent/30">Orders</span>
+                                    </label>
+                                </div>
+                            </div>
                             <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
                                 <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <ComposedChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        <Legend verticalAlign="top" height={36} />
-                                        <Line type="monotone" dataKey="outgoingOrders" name="Orders" stroke="#E0E0E0" strokeWidth={2} dot={{r: 3, fill: '#E0E0E0'}} activeDot={{r: 5}} />
-                                        <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#FFD700" strokeWidth={3} dot={{r: 3, fill: '#FFD700'}} activeDot={{r: 6}} />
-                                    </LineChart>
+                                        {showOrders && <Bar dataKey="outgoingOrders" name="Orders" fill="rgba(255, 215, 0, 0.1)" barSize={12} radius={[2, 2, 0, 0]} />}
+                                        {showInventory && <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#FFFFFF" strokeWidth={3} dot={{r: 3, fill: '#FFFFFF'}} activeDot={{r: 6}} />}
+                                        {showBackorders && <Line type="monotone" dataKey="backorders" name="Backorders" stroke="rgba(255, 215, 0, 0.9)" strokeWidth={2} dot={{r: 3, fill: 'rgba(255, 215, 0, 0.9)'}} activeDot={{r: 5}} />}
+                                    </ComposedChart>
                                 </ResponsiveContainer>
                             </div>
                         </div>
 
                         {/* Cost Accumulation Chart - Stacked */}
                         <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col h-80">
-                            <h3 className="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
+                            {/* Header with title and toggles */}
+                            <div className="flex items-center justify-between mb-4">
+                                <h3 className="font-semibold text-mono-text">Cost Accumulation</h3>
+                                <div className="flex items-center gap-4">
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showHoldingCost}
+                                            onChange={(e) => setShowHoldingCost(e.target.checked)}
+                                            className="w-3 h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-xs text-white">Holding</span>
+                                    </label>
+                                    <label className="flex items-center gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showBackorderCost}
+                                            onChange={(e) => setShowBackorderCost(e.target.checked)}
+                                            className="w-3 h-3 rounded border-accent/90 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-xs text-accent/90">Backorder</span>
+                                    </label>
+                                </div>
+                            </div>
                             <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                         <defs>
                                             <linearGradient id="colorHoldingCost" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#FFD700" stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor="#FFD700" stopOpacity={0.2}/>
+                                                <stop offset="5%" stopColor="#FFFFFF" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="#FFFFFF" stopOpacity={0.2}/>
                                             </linearGradient>
                                             <linearGradient id="colorBackorderCost" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#EF4444" stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor="#EF4444" stopOpacity={0.2}/>
+                                                <stop offset="5%" stopColor="rgba(255, 215, 0, 0.9)" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="rgba(255, 215, 0, 0.9)" stopOpacity={0.2}/>
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        <Legend verticalAlign="top" height={36} />
-                                        <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#FFD700" fillOpacity={1} fill="url(#colorHoldingCost)" />
-                                        <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="#EF4444" fillOpacity={1} fill="url(#colorBackorderCost)" />
+                                        {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#FFFFFF" fillOpacity={1} fill="url(#colorHoldingCost)" />}
+                                        {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(255, 215, 0, 0.9)" fillOpacity={1} fill="url(#colorBackorderCost)" />}
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
