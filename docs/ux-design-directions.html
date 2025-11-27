@@ -43,10 +43,22 @@
         }
     </style>
 </head>
-<body class="flex h-screen antialiased font-sans">
+<body class="flex flex-col h-screen antialiased font-sans">
 
-    <!-- Sidebar Menu -->
-    <aside class="w-72 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20">
+    <!-- Top Menu Bar - visible only on tablet/mobile -->
+    <header class="h-16 bg-mono-surface border-b border-mono-light/20 flex items-center px-4 lg:hidden flex-shrink-0">
+        <button id="sidebar-toggle" class="p-2 rounded-md hover:bg-mono-light/10 text-mono-text">
+            <span class="material-symbols-outlined">menu</span>
+        </button>
+    </header>
+
+    <!-- Main container -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Backdrop for mobile -->
+        <div id="sidebar-backdrop" class="hidden fixed inset-0 bg-black/50 z-40 lg:hidden"></div>
+
+        <!-- Sidebar Menu -->
+        <aside class="fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto w-72 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
         <div class="h-16 flex items-center justify-center border-b border-mono-light/20 px-4">
             <h1 class="text-xl font-bold text-accent">Application Pages</h1>
         </div>
@@ -96,17 +108,45 @@
         </nav>
     </aside>
 
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col">
-        <div class="flex-1 bg-mono-bg">
-            <iframe name="mockup-frame" class="w-full h-full border-0" src="./wireframe/common-layout.html"></iframe>
-        </div>
-    </main>
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col">
+            <div class="flex-1 bg-mono-bg">
+                <iframe name="mockup-frame" class="w-full h-full border-0" src="./wireframe/common-layout.html"></iframe>
+            </div>
+        </main>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuLinks = document.querySelectorAll('.main-menu a[data-hash]');
             const iframe = document.querySelector('iframe[name="mockup-frame"]');
+
+            // Sidebar toggle functionality
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebar = document.querySelector('aside');
+            const backdrop = document.getElementById('sidebar-backdrop');
+
+            function openSidebar() {
+                sidebar.classList.remove('-translate-x-full');
+                sidebar.classList.add('translate-x-0');
+                backdrop.classList.remove('hidden');
+            }
+
+            function closeSidebar() {
+                sidebar.classList.add('-translate-x-full');
+                sidebar.classList.remove('translate-x-0');
+                backdrop.classList.add('hidden');
+            }
+
+            sidebarToggle.addEventListener('click', () => {
+                if (sidebar.classList.contains('-translate-x-full')) {
+                    openSidebar();
+                } else {
+                    closeSidebar();
+                }
+            });
+
+            backdrop.addEventListener('click', closeSidebar);
 
             // Function to load page based on hash
             function loadPageFromHash(hash) {
