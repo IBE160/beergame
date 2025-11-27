@@ -107,7 +107,7 @@
         <div class="flex-1 flex flex-col w-full max-w-[1600px] mx-auto relative z-10 space-y-6 px-6">
             
             <!-- MAIN GAME BOARD (Sketch Implementation) -->
-            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl flex flex-col sm:flex-row items-stretch sm:justify-between gap-4 sm:gap-0 relative overflow-hidden">
+            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-4 sm:p-6 lg:p-8 shadow-2xl flex flex-col-reverse sm:flex-row items-stretch sm:justify-between gap-4 sm:gap-0 relative overflow-hidden">
                 
                 <!-- 1. LEFT NODE: WHOLESALER -->
                 <div class="w-full sm:w-40 lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
@@ -115,20 +115,29 @@
                     <div class="hidden sm:block p-3 lg:p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
                         <h3 class="text-mono-text text-xs lg:text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
                     </div>
-                    <div class="flex-1 flex items-center justify-start pt-4 sm:pt-[34px] p-3 sm:p-4 relative flex-col">
-                         <!-- Inline title - visible only on mobile -->
-                         <h3 class="sm:hidden text-mono-text text-xs uppercase tracking-widest font-bold text-center mb-2">Wholesaler</h3>
+
+                    <!-- Mobile: Title (centered) + Order slot (absolute right) in top row -->
+                    <div class="sm:hidden relative p-3 pb-0">
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                        <!-- Mobile Order Box (upper right, absolute) -->
+                        <div class="absolute top-3 right-3 bg-mono-surface border border-dashed border-accent/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div class="mobile-wholesaler-order-value bg-accent/10 px-2 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[40px] h-6">&nbsp;</div>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 flex items-center justify-center pt-2 sm:pt-[34px] p-3 sm:p-4 relative flex-col">
                          <!-- Faint background icon -->
                          <span class="material-symbols-outlined text-7xl sm:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">warehouse</span>
 
                          <!-- Hidden Inventory Box (Wholesaler) -->
-                         <div id="wholesaler-inventory" class="bg-mono-bg/30 p-3 lg:p-4 mt-2 sm:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] sm:min-w-[120px] min-h-[80px] sm:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
+                         <div id="wholesaler-inventory" class="bg-mono-bg/30 p-3 lg:p-4 mt-0 sm:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] sm:min-w-[120px] min-h-[80px] sm:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
                     </div>
-                    <!-- Incoming Order Box (Bottom) -->
-                    <div class="p-3 bg-mono-surface rounded-b-xl flex justify-end">
+                    <!-- Incoming Order Box (Bottom) - tablet/desktop only -->
+                    <div class="hidden sm:flex p-3 bg-mono-surface rounded-b-xl justify-end">
                          <div class="bg-mono-surface border border-dashed border-accent/30 p-1 rounded shadow-lg">
                                 <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
                                 <div id="wholesaler-order-value" class="bg-accent/10 px-2 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[40px] h-6">&nbsp;</div>
@@ -193,24 +202,13 @@
                         <h3 class="text-mono-text text-xs lg:text-sm uppercase tracking-widest font-bold text-center">Retailer</h3>
                     </div>
 
-                    <!-- Mobile: Title (centered) + Order slot (absolute right) in top row -->
+                    <!-- Mobile: Title (centered) + Demand slot (absolute right) in top row -->
                     <div class="sm:hidden relative p-3 pb-0">
                         <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Retailer</h3>
-                        <!-- Mobile Order Section (upper right, absolute) -->
-                        <div class="absolute top-3 right-3 flex flex-col items-center gap-1">
-                            <div class="bg-mono-surface border border-dashed border-accent/30 p-1 rounded shadow-lg">
-                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div class="bg-accent/10 px-1 py-0 rounded border border-accent/20 flex items-center justify-center min-w-[40px] h-6">
-                                    <input type="number" value="30" min="0" class="mobile-order-input w-5 bg-transparent text-center font-sans font-bold text-accent text-xs border-0 p-0 focus:ring-0 appearance-none" />
-                                    <div class="flex flex-col ml-0.5">
-                                        <button class="mobile-btn-up text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
-                                        <button class="mobile-btn-down text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="mobile-btn-send w-full bg-transparent border border-accent hover:bg-accent/10 text-white rounded py-0.5 shadow-md transition-colors flex items-center justify-center">
-                                <span class="text-[8px] font-bold uppercase">Send</span>
-                            </button>
+                        <!-- Mobile Demand Box (upper right, absolute) -->
+                        <div class="absolute top-3 right-3 bg-mono-surface border border-dashed border-red-500/30 p-1 rounded shadow-lg">
+                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Demand</div>
+                            <div class="mobile-retailer-demand-value bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center text-xs min-w-[40px] h-6">&nbsp;</div>
                         </div>
                     </div>
 
@@ -260,6 +258,7 @@
                                 const mobileBtnSend = document.querySelector('.mobile-btn-send');
                                 const mobileRetailerDemand = document.querySelector('.mobile-retailer-demand-value');
                                 const mobileCustomerDemand = document.querySelector('.mobile-customer-demand');
+                                const mobileWholesalerOrder = document.querySelector('.mobile-wholesaler-order-value');
 
                                 // --- Get Elements by ID ---
                                 const els = {
@@ -337,7 +336,8 @@
                                         console.log("Mobile detected - skipping animations, updating values directly");
                                         // Update values without animation using mobile input
                                         const orderVal = mobileOrderInput?.value || '0';
-                                        els.wholesalerOrderInner.innerText = orderVal;
+                                        if (els.wholesalerOrderInner) els.wholesalerOrderInner.innerText = orderVal;
+                                        if (mobileWholesalerOrder) mobileWholesalerOrder.innerText = orderVal;
                                         if (mobileOrderInput) mobileOrderInput.value = '';
 
                                         // Shift delivery pipeline (mobile connector boxes don't have IDs, just display)
@@ -706,11 +706,22 @@
                         </div>
                     </div>
 
-                    <!-- Mobile: Demand Box at bottom -->
+                    <!-- Mobile: Order Box at bottom -->
                     <div class="sm:hidden p-3 pt-0 bg-mono-surface rounded-b-xl flex justify-end">
-                        <div class="bg-mono-surface border border-dashed border-red-500/30 p-1 rounded shadow-lg">
-                            <div class="text-[8px] text-mono-text uppercase text-center mb-1">Demand</div>
-                            <div class="mobile-retailer-demand-value bg-red-500/10 px-2 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center text-xs min-w-[40px] h-6">&nbsp;</div>
+                        <div class="flex flex-col items-center gap-1">
+                            <div class="bg-mono-surface border border-dashed border-accent/30 p-1 rounded shadow-lg">
+                                <div class="text-[8px] text-mono-text uppercase text-center mb-1">Order</div>
+                                <div class="bg-accent/10 px-1 py-0 rounded border border-accent/20 flex items-center justify-center min-w-[40px] h-6">
+                                    <input type="number" value="30" min="0" class="mobile-order-input w-5 bg-transparent text-center font-sans font-bold text-accent text-xs border-0 p-0 focus:ring-0 appearance-none" />
+                                    <div class="flex flex-col ml-0.5">
+                                        <button class="mobile-btn-up text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                        <button class="mobile-btn-down text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="mobile-btn-send w-full bg-transparent border border-accent hover:bg-accent/10 text-white rounded py-0.5 shadow-md transition-colors flex items-center justify-center">
+                                <span class="text-[8px] font-bold uppercase">Send</span>
+                            </button>
                         </div>
                     </div>
                 </div>
