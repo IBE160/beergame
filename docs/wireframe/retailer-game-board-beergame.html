@@ -1094,15 +1094,15 @@
                         </div>
                     </div>
 
-                    {/* RIGHT COLUMN - Statistics and Metrics Panels side-by-side */}
+                    {/* RIGHT COLUMN - Metrics and Statistics Panels side-by-side */}
                     <div className="flex gap-4">
-                        {/* Statistics Panel - Half Width */}
-                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1 min-w-0 overflow-hidden">
-                            <StatisticsPanel gameData={data} />
-                        </div>
                         {/* Metrics Panel - Half Width */}
                         <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1 min-w-0 overflow-hidden">
                             <MetricsPanel gameData={data} />
+                        </div>
+                        {/* Statistics Panel - Half Width */}
+                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1 min-w-0 overflow-hidden">
+                            <StatisticsPanel gameData={data} />
                         </div>
                     </div>
                 </div>
