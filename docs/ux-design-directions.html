@@ -45,8 +45,8 @@
 </head>
 <body class="flex flex-col h-screen antialiased font-sans">
 
-    <!-- Top Menu Bar - visible only on tablet/mobile -->
-    <header class="h-16 bg-mono-surface border-b border-mono-light/20 flex items-center px-4 lg:hidden flex-shrink-0">
+    <!-- Top Menu Bar - always visible -->
+    <header class="h-16 bg-mono-surface border-b border-mono-light/20 flex items-center px-4 flex-shrink-0">
         <button id="sidebar-toggle" class="p-2 rounded-md hover:bg-mono-light/10 text-mono-text">
             <span class="material-symbols-outlined">menu</span>
         </button>
@@ -58,7 +58,7 @@
         <div id="sidebar-backdrop" class="hidden fixed inset-0 bg-black/50 z-40 lg:hidden"></div>
 
         <!-- Sidebar Menu -->
-        <aside class="fixed lg:relative inset-y-0 left-0 z-50 lg:z-auto w-72 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20 transform -translate-x-full lg:translate-x-0 transition-transform duration-300 ease-in-out">
+        <aside id="sidebar" class="fixed lg:static inset-y-0 left-0 z-50 lg:z-auto w-72 bg-mono-surface flex-shrink-0 flex flex-col border-r border-mono-light/20 transform -translate-x-full lg:translate-x-0 lg:transform-none transition-all duration-300 ease-in-out">
         <div class="h-16 flex items-center justify-center border-b border-mono-light/20 px-4">
             <h1 class="text-xl font-bold text-accent">Application Pages</h1>
         </div>
@@ -123,30 +123,65 @@
 
             // Sidebar toggle functionality
             const sidebarToggle = document.getElementById('sidebar-toggle');
-            const sidebar = document.querySelector('aside');
+            const sidebar = document.getElementById('sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
+            const lgBreakpoint = 1024;
+
+            function isDesktop() {
+                return window.innerWidth >= lgBreakpoint;
+            }
 
             function openSidebar() {
-                sidebar.classList.remove('-translate-x-full');
-                sidebar.classList.add('translate-x-0');
-                backdrop.classList.remove('hidden');
+                if (isDesktop()) {
+                    // Desktop: show sidebar by resetting width
+                    sidebar.classList.remove('lg:w-0', 'lg:overflow-hidden');
+                    sidebar.classList.add('lg:w-72');
+                } else {
+                    // Mobile: slide in overlay
+                    sidebar.classList.remove('-translate-x-full');
+                    sidebar.classList.add('translate-x-0');
+                    backdrop.classList.remove('hidden');
+                }
             }
 
             function closeSidebar() {
-                sidebar.classList.add('-translate-x-full');
-                sidebar.classList.remove('translate-x-0');
-                backdrop.classList.add('hidden');
+                if (isDesktop()) {
+                    // Desktop: hide sidebar by collapsing width
+                    sidebar.classList.remove('lg:w-72');
+                    sidebar.classList.add('lg:w-0', 'lg:overflow-hidden');
+                } else {
+                    // Mobile: slide out overlay
+                    sidebar.classList.add('-translate-x-full');
+                    sidebar.classList.remove('translate-x-0');
+                    backdrop.classList.add('hidden');
+                }
+            }
+
+            function isSidebarOpen() {
+                if (isDesktop()) {
+                    return !sidebar.classList.contains('lg:w-0');
+                } else {
+                    return !sidebar.classList.contains('-translate-x-full');
+                }
             }
 
             sidebarToggle.addEventListener('click', () => {
-                if (sidebar.classList.contains('-translate-x-full')) {
-                    openSidebar();
-                } else {
+                if (isSidebarOpen()) {
                     closeSidebar();
+                } else {
+                    openSidebar();
                 }
             });
 
             backdrop.addEventListener('click', closeSidebar);
+
+            // Handle resize: sync state between mobile/desktop modes
+            window.addEventListener('resize', () => {
+                if (isDesktop()) {
+                    // On desktop, hide backdrop and reset mobile translate
+                    backdrop.classList.add('hidden');
+                }
+            });
 
             // Function to load page based on hash
             function loadPageFromHash(hash) {
