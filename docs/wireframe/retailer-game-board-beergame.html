@@ -735,9 +735,9 @@
                                                     const relativeLeft = cloneRect.left - inventoryRect2.left;
                                                     const relativeTop = cloneRect.top - inventoryRect2.top;
 
-                                                    // Create a new green delivery element inside inventory
+                                                    // Create a new green delivery element inside inventory (mobile only)
                                                     const greenSlot = document.createElement('div');
-                                                    greenSlot.className = 'bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px] absolute';
+                                                    greenSlot.className = 'lg:hidden bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px] absolute';
                                                     greenSlot.innerText = deliveryValue;
                                                     greenSlot.style.left = `${relativeLeft}px`;
                                                     greenSlot.style.top = `${relativeTop}px`;
