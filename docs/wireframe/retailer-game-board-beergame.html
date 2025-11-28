@@ -208,18 +208,18 @@
                         <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Retailer</h3>
                     </div>
 
-                    <!-- Mobile: Title (centered) in top row -->
-                    <div class="lg:hidden p-3 pb-0">
+                    <!-- Mobile: Title (centered) + Demand slot at top right -->
+                    <div class="lg:hidden p-3 pb-0 relative">
                         <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Retailer</h3>
-                    </div>
-
-                    <!-- Inventory Display (Wrapped Box) -->
-                    <div class="flex-1 flex items-center justify-center pt-1 lg:pt-[34px] p-2 lg:p-6 relative">
-                         <!-- Mobile Demand Box - aligned with right pipe, centered with inventory -->
-                         <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-red-500/30 p-2 rounded shadow-lg z-10">
+                        <!-- Mobile Demand Box - aligned with right pipe at top -->
+                        <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-red-500/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Demand</div>
                             <div class="mobile-retailer-demand-value bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
+                    </div>
+
+                    <!-- Inventory Display (Wrapped Box) -->
+                    <div class="flex-1 flex items-center justify-center pt-1 lg:pt-[34px] p-2 lg:p-6">
                          <div id="retailer-inventory" class="bg-mono-bg/30 p-2 lg:p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[60px] lg:min-h-[100px]">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
