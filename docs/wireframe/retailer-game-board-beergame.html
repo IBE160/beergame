@@ -666,13 +666,16 @@
 
                                     // ========================================
                                     // PHASE 2: After 1 sec pause
-                                    // Order in Wholesaler -> LEFT into Inventory -> Morph to green
+                                    // 1. Order in Wholesaler -> LEFT into Inventory -> Morph to green
+                                    // 2. Demand in Retailer -> LEFT to center, DOWN into Inventory -> Morph to outgoing (yellow)
                                     // ========================================
                                     setTimeout(() => {
                                         console.log("Starting Phase 2...");
 
                                         const wholesalerInventoryEl = document.getElementById('wholesaler-inventory');
+                                        const retailerInventoryMobileEl = document.getElementById('retailer-inventory-mobile');
 
+                                        // --- Phase 2a: Wholesaler Order -> Inventory ---
                                         if (mobileWholesalerOrder && wholesalerInventoryEl) {
                                             // Calculate distances - Order moves LEFT horizontally only (align with inventory center X)
                                             const orderRect = mobileWholesalerOrder.getBoundingClientRect();
@@ -747,11 +750,96 @@
                                                     // Add green slot to inventory
                                                     wholesalerInventoryEl.appendChild(greenSlot);
 
-                                                    console.log(`Phase 2 complete: Order morphed to green delivery (${deliveryValue})`);
+                                                    console.log(`Phase 2a complete: Order morphed to green delivery (${deliveryValue})`);
                                                     // Store reference for Phase 3
                                                     window.phase2DeliveryClone = greenSlot;
                                                     window.phase2DeliveryValue = deliveryValue;
                                                 }, 500); // After morph transition completes
+                                            };
+                                        }
+
+                                        // --- Phase 2b: Retailer Demand -> Inventory (LEFT then DOWN) ---
+                                        if (mobileRetailerDemand && retailerInventoryMobileEl) {
+                                            const demandRect = mobileRetailerDemand.getBoundingClientRect();
+                                            const invRect = retailerInventoryMobileEl.getBoundingClientRect();
+
+                                            // Calculate horizontal distance to center of inventory
+                                            const horizDist = invRect.left + (invRect.width / 2) - demandRect.left - (demandRect.width / 2);
+                                            // Calculate vertical distance to between title and value (approx 40% from top of inventory)
+                                            const targetY = invRect.top + (invRect.height * 0.40);
+                                            const vertDist = targetY - demandRect.top - (demandRect.height / 2);
+
+                                            // Get demand value and calculate delivery
+                                            const demandValue = parseInt(mobileRetailerDemand.innerText) || 0;
+                                            const retailerInvEl = retailerInventoryMobileEl.querySelector('.text-3xl');
+                                            const currentRetailerInv = parseInt(retailerInvEl?.innerText) || 0;
+                                            const outgoingDelivery = Math.min(currentRetailerInv, demandValue);
+                                            const newRetailerInv = Math.max(0, currentRetailerInv - demandValue);
+
+                                            // Clone the demand element (copy moves, original stays)
+                                            const demandClone = mobileRetailerDemand.cloneNode(true);
+                                            demandClone.id = '';
+                                            demandClone.innerText = demandValue;
+                                            demandClone.style.position = 'fixed';
+                                            demandClone.style.left = `${demandRect.left}px`;
+                                            demandClone.style.top = `${demandRect.top}px`;
+                                            demandClone.style.width = `${demandRect.width}px`;
+                                            demandClone.style.height = `${demandRect.height}px`;
+                                            demandClone.style.margin = '0';
+                                            demandClone.style.zIndex = '9999';
+                                            demandClone.style.pointerEvents = 'none';
+                                            document.body.appendChild(demandClone);
+
+                                            // Keep original demand slot visible with the value
+                                            mobileRetailerDemand.innerText = demandValue;
+
+                                            // Animation: LEFT horizontally to center, then DOWN into inventory
+                                            const demandAnimation = demandClone.animate([
+                                                { transform: 'translate(0, 0)', opacity: 1 },
+                                                { transform: `translate(${horizDist}px, 0)`, opacity: 1, offset: 0.5 },
+                                                { transform: `translate(${horizDist}px, ${vertDist}px)`, opacity: 1 }
+                                            ], {
+                                                duration: 2000,
+                                                easing: 'linear',
+                                                fill: 'forwards'
+                                            });
+
+                                            demandAnimation.onfinish = () => {
+                                                // Morph to yellow/accent (outgoing delivery)
+                                                demandClone.style.transition = 'all 0.5s ease-in-out';
+                                                demandClone.style.backgroundColor = 'rgba(234, 179, 8, 0.1)'; // yellow-500/10
+                                                demandClone.style.borderColor = 'rgba(234, 179, 8, 0.2)'; // yellow-500/20
+                                                demandClone.style.color = 'rgb(250, 204, 21)'; // yellow-400
+                                                demandClone.innerText = outgoingDelivery;
+
+                                                // Update retailer inventory
+                                                if (retailerInvEl) {
+                                                    retailerInvEl.innerText = newRetailerInv;
+                                                }
+
+                                                // After morph, create element inside inventory
+                                                setTimeout(() => {
+                                                    const cloneRect = demandClone.getBoundingClientRect();
+                                                    const invRect2 = retailerInventoryMobileEl.getBoundingClientRect();
+
+                                                    const relLeft = cloneRect.left - invRect2.left;
+                                                    const relTop = cloneRect.top - invRect2.top;
+
+                                                    const yellowSlot = document.createElement('div');
+                                                    yellowSlot.className = 'bg-yellow-500/10 px-3 py-1 rounded border border-yellow-500/20 text-yellow-400 font-sans font-bold text-center min-w-[55px] absolute';
+                                                    yellowSlot.innerText = outgoingDelivery;
+                                                    yellowSlot.style.left = `${relLeft}px`;
+                                                    yellowSlot.style.top = `${relTop}px`;
+                                                    yellowSlot.style.width = `${cloneRect.width}px`;
+                                                    yellowSlot.style.zIndex = '50';
+
+                                                    demandClone.remove();
+                                                    retailerInventoryMobileEl.appendChild(yellowSlot);
+
+                                                    console.log(`Phase 2b complete: Demand morphed to outgoing delivery (${outgoingDelivery}), Inventory: ${newRetailerInv}`);
+                                                    window.phase2OutgoingClone = yellowSlot;
+                                                    window.phase2OutgoingValue = outgoingDelivery;
+                                                }, 500);
                                             };
                                         }
                                     }, 3000); // 2s for Phase 1 animations + 1s pause
