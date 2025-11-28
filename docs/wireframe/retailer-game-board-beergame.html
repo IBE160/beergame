@@ -664,7 +664,74 @@
                                         els.mobileDeliveryWeek1.style.opacity = '0';
                                     }
 
-                                    // Re-enable interface after Phase 1 animations complete
+                                    // ========================================
+                                    // PHASE 2: After 1 sec pause
+                                    // Order in Wholesaler -> LEFT into Inventory -> Morph to green
+                                    // ========================================
+                                    setTimeout(() => {
+                                        console.log("Starting Phase 2...");
+
+                                        const wholesalerInventoryEl = document.getElementById('wholesaler-inventory');
+
+                                        if (mobileWholesalerOrder && wholesalerInventoryEl) {
+                                            // Calculate distances - Order moves LEFT into Inventory
+                                            const orderRect = mobileWholesalerOrder.getBoundingClientRect();
+                                            const inventoryRect = wholesalerInventoryEl.getBoundingClientRect();
+                                            const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - orderRect.left - (orderRect.width / 2);
+                                            const verticalDistance = inventoryRect.top + (inventoryRect.height / 2) - orderRect.top - (orderRect.height / 2);
+
+                                            // Simulate hidden wholesaler inventory (random value for demo)
+                                            const wholesalerInv = 100; // Hidden inventory value
+                                            const orderValue = parseInt(mobileWholesalerOrder.innerText) || 0;
+                                            const deliveryValue = Math.min(wholesalerInv, orderValue);
+                                            const newWholesalerInv = Math.max(0, wholesalerInv - orderValue);
+
+                                            // Clone the order element (copy moves, original stays with last turn's value)
+                                            const clone = mobileWholesalerOrder.cloneNode(true);
+                                            clone.id = '';
+                                            clone.innerText = orderValue; // Current order value
+                                            clone.style.position = 'fixed';
+                                            clone.style.left = `${orderRect.left}px`;
+                                            clone.style.top = `${orderRect.top}px`;
+                                            clone.style.width = `${orderRect.width}px`;
+                                            clone.style.height = `${orderRect.height}px`;
+                                            clone.style.margin = '0';
+                                            clone.style.zIndex = '9999';
+                                            clone.style.pointerEvents = 'none';
+                                            document.body.appendChild(clone);
+
+                                            // Keep original order slot visible with last turn's value (for demo, show the same value)
+                                            // In a real game, this would be the previous turn's order
+                                            mobileWholesalerOrder.innerText = orderValue;
+
+                                            // Animation: Move LEFT into inventory center
+                                            const moveAnimation = clone.animate([
+                                                { transform: 'translate(0, 0)', opacity: 1 },
+                                                { transform: `translate(${horizontalDistance}px, ${verticalDistance}px)`, opacity: 1 }
+                                            ], {
+                                                duration: 1000,
+                                                easing: 'ease-in-out',
+                                                fill: 'forwards'
+                                            });
+
+                                            moveAnimation.onfinish = () => {
+                                                // Morph to green: change colors and update value
+                                                clone.style.transition = 'all 0.5s ease-in-out';
+                                                clone.style.backgroundColor = 'rgba(34, 197, 94, 0.1)'; // green-500/10
+                                                clone.style.borderColor = 'rgba(34, 197, 94, 0.2)'; // green-500/20
+                                                clone.style.color = 'rgb(74, 222, 128)'; // green-400
+                                                clone.innerText = deliveryValue;
+
+                                                console.log(`Phase 2 complete: Order morphed to green delivery (${deliveryValue})`);
+                                                // Clone stays in inventory for Phase 3
+                                                // Store reference for Phase 3
+                                                window.phase2DeliveryClone = clone;
+                                                window.phase2DeliveryValue = deliveryValue;
+                                            };
+                                        }
+                                    }, 3000); // 2s for Phase 1 animations + 1s pause
+
+                                    // Re-enable interface after all phases complete
                                     setTimeout(() => {
                                         if (mobileOrderInput) mobileOrderInput.disabled = false;
                                         if (mobileBtnUp) mobileBtnUp.disabled = false;
@@ -675,7 +742,7 @@
                                             mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
                                             validateInput();
                                         }
-                                    }, 2500); // Wait for both animations to complete (2s animation + buffer)
+                                    }, 5000); // Wait for Phase 1 (2s) + pause (1s) + Phase 2 (1.5s) + buffer
                                 };
 
                                 // --- Desktop Animation Function ---
