@@ -536,6 +536,64 @@
                                         }, false, true);
                                     }
 
+                                    // --- Animation 3: Outgoing Week 2 inner -> Customer (UP along pipe, then RIGHT into customer icons) ---
+                                    const customerIconsEl = document.getElementById('customer-icons');
+
+                                    if (els.mobileOutgoingWeek2 && mobileCustomerDemand && customerIconsEl) {
+                                        // Calculate distances
+                                        const week2Rect = els.mobileOutgoingWeek2.getBoundingClientRect();
+                                        const demandRect = mobileCustomerDemand.getBoundingClientRect();
+                                        const customerIconsRect = customerIconsEl.getBoundingClientRect();
+                                        const verticalDistance = week2Rect.top - demandRect.top;
+                                        const horizontalDistance = customerIconsRect.left + (customerIconsRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
+
+                                        // Clone the element
+                                        const clone = els.mobileOutgoingWeek2.cloneNode(true);
+                                        clone.id = '';
+                                        clone.innerText = outgoingWeek2Val;
+                                        clone.style.position = 'fixed';
+                                        clone.style.left = `${week2Rect.left}px`;
+                                        clone.style.top = `${week2Rect.top}px`;
+                                        clone.style.width = `${week2Rect.width}px`;
+                                        clone.style.height = `${week2Rect.height}px`;
+                                        clone.style.margin = '0';
+                                        clone.style.zIndex = '9999';
+                                        clone.style.pointerEvents = 'none';
+                                        document.body.appendChild(clone);
+
+                                        // Single smooth animation: UP then RIGHT, with fade at end
+                                        const animation = clone.animate([
+                                            { transform: 'translate(0, 0)', opacity: 1 },
+                                            { transform: `translate(0, -${verticalDistance}px)`, opacity: 1, offset: 0.5 },
+                                            { transform: `translate(${horizontalDistance}px, -${verticalDistance}px)`, opacity: 0 }
+                                        ], {
+                                            duration: 2000,
+                                            easing: 'linear',
+                                            fill: 'forwards'
+                                        });
+
+                                        animation.onfinish = () => {
+                                            clone.remove();
+                                            console.log("Phase 1c complete: Week 2 delivered to customer");
+                                        };
+
+                                        // Clear Week 2 slot
+                                        els.mobileOutgoingWeek2.style.opacity = '0';
+                                    }
+
+                                    // --- Animation 4: Outgoing Week 1 inner -> Week 2 slot (UP) ---
+                                    if (els.mobileOutgoingWeek1 && els.mobileOutgoingWeek2) {
+                                        animateClone(els.mobileOutgoingWeek1, els.mobileOutgoingWeek2, outgoingWeek1Val, 'vertical-up', () => {
+                                            els.mobileOutgoingWeek2.innerText = outgoingWeek1Val;
+                                            els.mobileOutgoingWeek2.style.opacity = '1';
+                                            if (els.yellowWeek2) els.yellowWeek2.innerText = outgoingWeek1Val;
+                                            console.log("Phase 1d complete: Week 1 moved to Week 2 slot");
+                                        }, false, true);
+
+                                        // Clear Week 1 slot
+                                        els.mobileOutgoingWeek1.style.opacity = '0';
+                                    }
+
                                     // Re-enable interface after Phase 1 animations complete
                                     setTimeout(() => {
                                         if (mobileOrderInput) mobileOrderInput.disabled = false;
