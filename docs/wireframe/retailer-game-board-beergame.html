@@ -298,6 +298,99 @@
                                     mobileOutgoingWeek2Box: document.getElementById('mobile-outgoing-week-2-box')
                                 };
 
+                                // ========================================
+                                // SHARED GAME STATE
+                                // ========================================
+                                const gameState = {
+                                    // Configuration
+                                    config: {
+                                        wholesalerInventory: 100,
+                                        demandRange: { min: 10, max: 20 }
+                                    },
+
+                                    // Current values (shared between mobile/desktop)
+                                    demand: 0,
+                                    orderValue: 0,
+                                    retailerInventory: 50,
+
+                                    // Calculated delivery values
+                                    wholesalerDelivery: 0,
+                                    retailerOutgoing: 0,
+
+                                    // Week slot values
+                                    greenWeek1: 20,
+                                    greenWeek2: 30,
+                                    yellowWeek1: 25,
+                                    yellowWeek2: 20,
+
+                                    // Phase 2 clone references (for Phase 3)
+                                    phase2: {
+                                        deliveryClone: null,
+                                        outgoingClone: null
+                                    },
+
+                                    // Helper methods
+                                    generateDemand() {
+                                        const { min, max } = this.config.demandRange;
+                                        this.demand = Math.floor(Math.random() * (max - min + 1)) + min;
+                                        return this.demand;
+                                    },
+
+                                    calculateDelivery(available, requested) {
+                                        return Math.min(Math.max(0, available), Math.max(0, requested));
+                                    },
+
+                                    processWholesalerOrder(orderValue) {
+                                        this.orderValue = orderValue;
+                                        this.wholesalerDelivery = this.calculateDelivery(this.config.wholesalerInventory, orderValue);
+                                        return this.wholesalerDelivery;
+                                    },
+
+                                    processRetailerDemand(demandValue) {
+                                        this.retailerOutgoing = this.calculateDelivery(this.retailerInventory, demandValue);
+                                        this.retailerInventory = Math.max(0, this.retailerInventory - demandValue);
+                                        return { outgoing: this.retailerOutgoing, newInventory: this.retailerInventory };
+                                    },
+
+                                    receiveDelivery(amount) {
+                                        this.retailerInventory += amount;
+                                        return this.retailerInventory;
+                                    },
+
+                                    advanceWeeks() {
+                                        // Green weeks (incoming deliveries)
+                                        this.greenWeek2 = this.greenWeek1;
+                                        this.greenWeek1 = this.wholesalerDelivery;
+                                        // Yellow weeks (outgoing deliveries)
+                                        this.yellowWeek2 = this.yellowWeek1;
+                                        this.yellowWeek1 = this.retailerOutgoing;
+                                    }
+                                };
+
+                                // Sync gameState to all DOM elements
+                                function syncStateToDOM() {
+                                    // Retailer inventory (both mobile and desktop)
+                                    const desktopInv = els.retailerInventory?.querySelector('.text-5xl');
+                                    const mobileInv = document.getElementById('retailer-inventory-mobile')?.querySelector('.text-3xl');
+                                    if (desktopInv) desktopInv.innerText = gameState.retailerInventory;
+                                    if (mobileInv) mobileInv.innerText = gameState.retailerInventory;
+
+                                    // Week slots (desktop)
+                                    if (els.greenWeek1) els.greenWeek1.innerText = gameState.greenWeek1;
+                                    if (els.greenWeek2) els.greenWeek2.innerText = gameState.greenWeek2;
+                                    if (els.yellowWeek1) els.yellowWeek1.innerText = gameState.yellowWeek1;
+                                    if (els.yellowWeek2) els.yellowWeek2.innerText = gameState.yellowWeek2;
+
+                                    // Week slots (mobile)
+                                    if (els.mobileDeliveryWeek1) els.mobileDeliveryWeek1.innerText = gameState.greenWeek1;
+                                    if (els.mobileDeliveryWeek2) els.mobileDeliveryWeek2.innerText = gameState.greenWeek2;
+                                    if (els.mobileOutgoingWeek1) els.mobileOutgoingWeek1.innerText = gameState.yellowWeek1;
+                                    if (els.mobileOutgoingWeek2) els.mobileOutgoingWeek2.innerText = gameState.yellowWeek2;
+                                }
+
+                                // Initialize DOM from gameState on page load
+                                syncStateToDOM();
+
                                 // --- Mobile Detection ---
                                 const isMobile = () => window.innerWidth < 1024;
 
@@ -496,13 +589,13 @@
                                     console.log("Starting Mobile Animations (Vertical)...");
 
                                     const orderVal = mobileOrderInput?.value || '0';
-                                    const randomDemand = Math.floor(Math.random() * 11) + 10;
+                                    const randomDemand = gameState.generateDemand();
 
-                                    // Get current values before animation
-                                    const deliveryWeek1Val = els.mobileDeliveryWeek1?.innerText || '0';
-                                    const deliveryWeek2Val = els.mobileDeliveryWeek2?.innerText || '0';
-                                    const outgoingWeek1Val = els.mobileOutgoingWeek1?.innerText || '0';
-                                    const outgoingWeek2Val = els.mobileOutgoingWeek2?.innerText || '0';
+                                    // Get current values from gameState
+                                    const deliveryWeek1Val = gameState.greenWeek1.toString();
+                                    const deliveryWeek2Val = gameState.greenWeek2.toString();
+                                    const outgoingWeek1Val = gameState.yellowWeek1.toString();
+                                    const outgoingWeek2Val = gameState.yellowWeek2.toString();
 
                                     // ========================================
                                     // PHASE 1: Two parallel animations (both DOWNWARD)
@@ -591,9 +684,11 @@
                                     // --- Animation 4: Outgoing Week 1 inner -> Week 2 slot (UP) ---
                                     if (els.mobileOutgoingWeek1 && els.mobileOutgoingWeek2) {
                                         animateClone(els.mobileOutgoingWeek1, els.mobileOutgoingWeek2, outgoingWeek1Val, 'vertical-up', () => {
+                                            // Update gameState and sync
+                                            gameState.yellowWeek2 = parseInt(outgoingWeek1Val);
                                             els.mobileOutgoingWeek2.innerText = outgoingWeek1Val;
                                             els.mobileOutgoingWeek2.style.opacity = '1';
-                                            if (els.yellowWeek2) els.yellowWeek2.innerText = outgoingWeek1Val;
+                                            syncStateToDOM();
                                             console.log("Phase 1d complete: Week 1 moved to Week 2 slot");
                                         }, false, true);
 
@@ -638,12 +733,9 @@
 
                                         animation.onfinish = () => {
                                             clone.remove();
-                                            // Update inventory value
-                                            const invEl = retailerInventoryMobile.querySelector('.text-3xl');
-                                            if (invEl) {
-                                                const currentInv = parseInt(invEl.innerText) || 0;
-                                                invEl.innerText = currentInv + parseInt(deliveryWeek2Val || 0);
-                                            }
+                                            // Update inventory value using gameState
+                                            gameState.receiveDelivery(parseInt(deliveryWeek2Val || 0));
+                                            syncStateToDOM();
                                             console.log("Phase 1e complete: Green Week 2 delivered to inventory");
                                         };
 
@@ -654,9 +746,11 @@
                                     // --- Animation 6: Green Delivery Week 1 inner -> Week 2 slot (DOWN) ---
                                     if (els.mobileDeliveryWeek1 && els.mobileDeliveryWeek2) {
                                         animateClone(els.mobileDeliveryWeek1, els.mobileDeliveryWeek2, deliveryWeek1Val, 'vertical-down', () => {
+                                            // Update gameState and sync
+                                            gameState.greenWeek2 = parseInt(deliveryWeek1Val);
                                             els.mobileDeliveryWeek2.innerText = deliveryWeek1Val;
                                             els.mobileDeliveryWeek2.style.opacity = '1';
-                                            if (els.greenWeek2) els.greenWeek2.innerText = deliveryWeek1Val;
+                                            syncStateToDOM();
                                             console.log("Phase 1f complete: Green Week 1 moved to Week 2 slot");
                                         }, false, true);
 
@@ -683,11 +777,9 @@
                                             const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - orderRect.left - (orderRect.width / 2);
                                             // No vertical movement - stays at same Y position
 
-                                            // Simulate hidden wholesaler inventory (random value for demo)
-                                            const wholesalerInv = 100; // Hidden inventory value
+                                            // Use gameState for wholesaler processing
                                             const orderValue = parseInt(mobileWholesalerOrder.innerText) || 0;
-                                            const deliveryValue = Math.min(wholesalerInv, orderValue);
-                                            const newWholesalerInv = Math.max(0, wholesalerInv - orderValue);
+                                            const deliveryValue = gameState.processWholesalerOrder(orderValue);
 
                                             // Clone the order element (copy moves, original stays with last turn's value)
                                             const clone = mobileWholesalerOrder.cloneNode(true);
@@ -751,9 +843,8 @@
                                                     wholesalerInventoryEl.appendChild(greenSlot);
 
                                                     console.log(`Phase 2a complete: Order morphed to green delivery (${deliveryValue})`);
-                                                    // Store reference for Phase 3
-                                                    window.phase2DeliveryClone = greenSlot;
-                                                    window.phase2DeliveryValue = deliveryValue;
+                                                    // Store reference for Phase 3 in gameState
+                                                    gameState.phase2.deliveryClone = greenSlot;
                                                 }, 500); // After morph transition completes
                                             };
                                         }
@@ -769,12 +860,9 @@
                                             const targetY = invRect.top + (invRect.height * 0.40);
                                             const vertDist = targetY - demandRect.top - (demandRect.height / 2);
 
-                                            // Get demand value and calculate delivery
-                                            const demandValue = parseInt(mobileRetailerDemand.innerText) || 0;
-                                            const retailerInvEl = retailerInventoryMobileEl.querySelector('.text-3xl');
-                                            const currentRetailerInv = parseInt(retailerInvEl?.innerText) || 0;
-                                            const outgoingDelivery = Math.min(currentRetailerInv, demandValue);
-                                            const newRetailerInv = Math.max(0, currentRetailerInv - demandValue);
+                                            // Use gameState for demand processing
+                                            const demandValue = gameState.demand;
+                                            const { outgoing: outgoingDelivery, newInventory: newRetailerInv } = gameState.processRetailerDemand(demandValue);
 
                                             // Clone the demand element (copy moves, original stays)
                                             const demandClone = mobileRetailerDemand.cloneNode(true);
@@ -812,10 +900,8 @@
                                                 demandClone.style.color = 'rgb(250, 204, 21)'; // yellow-400
                                                 demandClone.innerText = outgoingDelivery;
 
-                                                // Update retailer inventory
-                                                if (retailerInvEl) {
-                                                    retailerInvEl.innerText = newRetailerInv;
-                                                }
+                                                // Update retailer inventory via DOM sync
+                                                syncStateToDOM();
 
                                                 // After morph, create element inside inventory
                                                 setTimeout(() => {
@@ -837,8 +923,8 @@
                                                     retailerInventoryMobileEl.appendChild(yellowSlot);
 
                                                     console.log(`Phase 2b complete: Demand morphed to outgoing delivery (${outgoingDelivery}), Inventory: ${newRetailerInv}`);
-                                                    window.phase2OutgoingClone = yellowSlot;
-                                                    window.phase2OutgoingValue = outgoingDelivery;
+                                                    // Store reference for Phase 3 in gameState
+                                                    gameState.phase2.outgoingClone = yellowSlot;
                                                 }, 500);
                                             };
                                         }
@@ -848,7 +934,7 @@
                                     setTimeout(() => {
                                         console.log("Starting Phase 3...");
 
-                                        const greenSlot = window.phase2DeliveryClone;
+                                        const greenSlot = gameState.phase2.deliveryClone;
                                         const week1Target = els.mobileDeliveryWeek1;
 
                                         if (greenSlot && week1Target) {
@@ -895,17 +981,20 @@
 
                                             animation.onfinish = () => {
                                                 animClone.remove();
-                                                // Update Week 1 slot with the delivery value
-                                                week1Target.innerText = window.phase2DeliveryValue || greenSlot.innerText;
+                                                // Update Week 1 slot with the delivery value from gameState
+                                                gameState.greenWeek1 = gameState.wholesalerDelivery;
+                                                week1Target.innerText = gameState.greenWeek1;
                                                 week1Target.style.opacity = '1';
                                                 // Remove the original green slot from inventory
                                                 greenSlot.remove();
+                                                // Sync to desktop
+                                                syncStateToDOM();
                                                 console.log("Phase 3a complete: Green delivery moved to Week 1 slot");
                                             };
                                         }
 
                                         // --- Phase 3b: Yellow outgoing slot -> Retailer Week 1 (RIGHT then UP) ---
-                                        const yellowSlot = window.phase2OutgoingClone;
+                                        const yellowSlot = gameState.phase2.outgoingClone;
                                         const outgoingWeek1Target = els.mobileOutgoingWeek1;
 
                                         if (yellowSlot && outgoingWeek1Target) {
@@ -951,11 +1040,14 @@
 
                                             animationY.onfinish = () => {
                                                 animCloneY.remove();
-                                                // Update Week 1 slot with the outgoing delivery value
-                                                outgoingWeek1Target.innerText = window.phase2OutgoingValue || yellowSlot.innerText;
+                                                // Update Week 1 slot with the outgoing delivery value from gameState
+                                                gameState.yellowWeek1 = gameState.retailerOutgoing;
+                                                outgoingWeek1Target.innerText = gameState.yellowWeek1;
                                                 outgoingWeek1Target.style.opacity = '1';
                                                 // Remove the original yellow slot from inventory
                                                 yellowSlot.remove();
+                                                // Sync to desktop
+                                                syncStateToDOM();
                                                 console.log("Phase 3b complete: Yellow outgoing moved to Week 1 slot");
                                             };
                                         }
@@ -995,13 +1087,16 @@
 
                                                         const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
                                                         const orderVal = parseInt(valSpan.innerText) || 0;
-                                                        const deliverVal = Math.min(25, orderVal);
+                                                        // Use gameState for delivery calculation
+                                                        const deliverVal = gameState.processWholesalerOrder(orderVal);
                                                         valSpan.innerText = deliverVal;
 
                                                         if (els.greenWeek1) {
                                                             animateClone(persistedClone, els.greenWeek1, deliverVal, 'vertical-dogleg', () => {
-                                                                els.greenWeek1.innerText = deliverVal;
+                                                                gameState.greenWeek1 = deliverVal;
+                                                                els.greenWeek1.innerText = gameState.greenWeek1;
                                                                 els.greenWeek1.style.opacity = '1';
+                                                                syncStateToDOM();
                                                             });
                                                             persistedClone.remove();
                                                         }
@@ -1017,16 +1112,18 @@
 
                                     // 2. Green Week 2 -> Retailer Inventory
                                     animateClone(els.greenWeek2, els.retailerInventory, null, 'dogleg', () => {
-                                        const invNumber = els.retailerInventory.querySelector('.text-3xl');
-                                        if (invNumber) invNumber.innerText = '80';
+                                        // Use gameState to receive delivery
+                                        gameState.receiveDelivery(gameState.greenWeek2);
+                                        syncStateToDOM();
                                     });
                                     els.greenWeek2.style.opacity = '0';
 
                                     // 3. Green Week 1 -> Green Week 2
                                     if (els.greenWeek1 && els.greenWeek2) {
-                                        const val = els.greenWeek1.innerText;
+                                        const val = gameState.greenWeek1;
                                         animateClone(els.greenWeek1, els.greenWeek2, null, 'direct', () => {
-                                            els.greenWeek2.innerText = val;
+                                            gameState.greenWeek2 = val;
+                                            els.greenWeek2.innerText = gameState.greenWeek2;
                                             els.greenWeek2.style.opacity = '1';
                                         });
                                         els.greenWeek1.style.opacity = '0';
@@ -1040,9 +1137,10 @@
 
                                     // 5. Yellow Week 1 -> Yellow Week 2
                                     if (els.yellowWeek1 && els.yellowWeek2) {
-                                        const val = els.yellowWeek1.innerText;
+                                        const val = gameState.yellowWeek1;
                                         animateClone(els.yellowWeek1, els.yellowWeek2, null, 'direct', () => {
-                                            els.yellowWeek2.innerText = val;
+                                            gameState.yellowWeek2 = val;
+                                            els.yellowWeek2.innerText = gameState.yellowWeek2;
                                             els.yellowWeek2.style.opacity = '1';
                                         });
                                         els.yellowWeek1.style.opacity = '0';
@@ -1050,7 +1148,8 @@
 
                                     // 6. Customer Demand -> Retailer Demand
                                     if (els.customerDemand && els.retailerDemand) {
-                                        const randomDemand = Math.floor(Math.random() * 11) + 10;
+                                        // Use gameState for demand generation (shared with mobile)
+                                        const randomDemand = gameState.generateDemand();
 
                                         animateClone(els.customerDemand, els.retailerDemand, randomDemand.toString(), 'horizontal', () => {
                                             const targetNum = els.retailerDemand.querySelector('.font-bold');
@@ -1066,23 +1165,20 @@
                                                             persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
 
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
-                                                            const demandVal = randomDemand;
 
-                                                            const invNumber = els.retailerInventory.querySelector('.text-3xl');
-                                                            let currentInv = 0;
-                                                            if (invNumber) currentInv = parseInt(invNumber.innerText) || 0;
-
-                                                            const deliverVal = Math.min(currentInv, demandVal);
+                                                            // Use gameState for demand processing
+                                                            const { outgoing: deliverVal, newInventory } = gameState.processRetailerDemand(gameState.demand);
                                                             valSpan.innerText = deliverVal;
 
-                                                            if (invNumber) {
-                                                                invNumber.innerText = Math.max(0, currentInv - deliverVal);
-                                                            }
+                                                            // Sync DOM with gameState
+                                                            syncStateToDOM();
 
                                                             if (els.yellowWeek1) {
                                                                 animateClone(persistedClone, els.yellowWeek1, deliverVal, 'vertical-dogleg', () => {
-                                                                    els.yellowWeek1.innerText = deliverVal;
+                                                                    gameState.yellowWeek1 = deliverVal;
+                                                                    els.yellowWeek1.innerText = gameState.yellowWeek1;
                                                                     els.yellowWeek1.style.opacity = '1';
+                                                                    syncStateToDOM();
 
                                                                     if (orderInput) orderInput.disabled = false;
                                                                     if (btnUp) btnUp.disabled = false;
