@@ -844,6 +844,67 @@
                                         }
                                     }, 3000); // 2s for Phase 1 animations + 1s pause
 
+                                    // --- Phase 3: Green delivery slot -> Week 1 slot (RIGHT then UP) ---
+                                    setTimeout(() => {
+                                        console.log("Starting Phase 3...");
+
+                                        const greenSlot = window.phase2DeliveryClone;
+                                        const week1Target = els.mobileDeliveryWeek1;
+
+                                        if (greenSlot && week1Target) {
+                                            // Get current position of green slot (inside wholesaler inventory)
+                                            const greenRect = greenSlot.getBoundingClientRect();
+                                            // Get target Week 1 slot position
+                                            const week1Rect = week1Target.getBoundingClientRect();
+
+                                            // Calculate pipe center (horizontal center between wholesaler inventory and week boxes)
+                                            // The pipe is roughly at the same X as the week boxes
+                                            const pipeCenterX = week1Rect.left + (week1Rect.width / 2);
+
+                                            // Horizontal distance to pipe center
+                                            const horizDist = pipeCenterX - greenRect.left - (greenRect.width / 2);
+                                            // Vertical distance up to Week 1
+                                            const vertDist = week1Rect.top - greenRect.top;
+
+                                            // Create a fixed-position clone for animation
+                                            const animClone = document.createElement('div');
+                                            animClone.className = 'lg:hidden bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]';
+                                            animClone.innerText = greenSlot.innerText;
+                                            animClone.style.position = 'fixed';
+                                            animClone.style.left = `${greenRect.left}px`;
+                                            animClone.style.top = `${greenRect.top}px`;
+                                            animClone.style.width = `${greenRect.width}px`;
+                                            animClone.style.height = `${greenRect.height}px`;
+                                            animClone.style.zIndex = '9999';
+                                            animClone.style.pointerEvents = 'none';
+                                            document.body.appendChild(animClone);
+
+                                            // Hide original green slot
+                                            greenSlot.style.opacity = '0';
+
+                                            // Animate: RIGHT to pipe center, then UP to Week 1
+                                            const animation = animClone.animate([
+                                                { transform: 'translate(0, 0)', opacity: 1 },
+                                                { transform: `translate(${horizDist}px, 0)`, opacity: 1, offset: 0.4 },
+                                                { transform: `translate(${horizDist}px, ${vertDist}px)`, opacity: 1 }
+                                            ], {
+                                                duration: 2000,
+                                                easing: 'linear',
+                                                fill: 'forwards'
+                                            });
+
+                                            animation.onfinish = () => {
+                                                animClone.remove();
+                                                // Update Week 1 slot with the delivery value
+                                                week1Target.innerText = window.phase2DeliveryValue || greenSlot.innerText;
+                                                week1Target.style.opacity = '1';
+                                                // Remove the original green slot from inventory
+                                                greenSlot.remove();
+                                                console.log("Phase 3a complete: Green delivery moved to Week 1 slot");
+                                            };
+                                        }
+                                    }, 6000); // 2s Phase 1 + 1s pause + 2s Phase 2 + 1s pause
+
                                     // Re-enable interface after all phases complete
                                     setTimeout(() => {
                                         if (mobileOrderInput) mobileOrderInput.disabled = false;
@@ -855,7 +916,7 @@
                                             mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
                                             validateInput();
                                         }
-                                    }, 5000); // Wait for Phase 1 (2s) + pause (1s) + Phase 2 (1.5s) + buffer
+                                    }, 9000); // Wait for Phase 1 (2s) + pause (1s) + Phase 2 (2s) + pause (1s) + Phase 3 (2s) + buffer
                                 };
 
                                 // --- Desktop Animation Function ---
