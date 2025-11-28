@@ -107,17 +107,17 @@
         <div class="flex-1 flex flex-col w-full max-w-[1600px] mx-auto relative z-10 space-y-6 px-6">
             
             <!-- MAIN GAME BOARD (Sketch Implementation) -->
-            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-4 min-[780px]:p-6 lg:p-8 shadow-2xl flex flex-col-reverse min-[780px]:flex-row items-stretch min-[780px]:justify-between gap-4 min-[780px]:gap-0 relative overflow-hidden">
+            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-4 lg:p-6 lg:p-8 shadow-2xl flex flex-col-reverse lg:flex-row items-stretch lg:justify-between gap-4 lg:gap-0 relative overflow-hidden">
                 
                 <!-- 1. LEFT NODE: WHOLESALER -->
-                <div class="w-full min-[780px]:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
+                <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
                     <!-- Header - hidden on mobile -->
-                    <div class="hidden min-[780px]:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                    <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
                         <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) + Order slot (absolute right) in top row -->
-                    <div class="min-[780px]:hidden relative p-3 pb-0">
+                    <div class="lg:hidden relative p-3 pb-0">
                         <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Wholesaler</h3>
                         <!-- Mobile Order Box - aligned with right pipe -->
                         <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-accent/30 p-1 rounded shadow-lg">
@@ -126,18 +126,18 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 flex items-center justify-start pt-2 min-[780px]:pt-[34px] p-3 min-[780px]:p-4 relative flex-col">
+                    <div class="flex-1 flex items-center justify-start pt-2 lg:pt-[34px] p-3 lg:p-4 relative flex-col">
                          <!-- Faint background icon -->
-                         <span class="material-symbols-outlined text-7xl min-[780px]:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">warehouse</span>
+                         <span class="material-symbols-outlined text-7xl lg:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">warehouse</span>
 
                          <!-- Hidden Inventory Box (Wholesaler) -->
-                         <div id="wholesaler-inventory" class="bg-mono-bg/30 p-4 mt-0 min-[780px]:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] min-[780px]:min-w-[120px] min-h-[80px] min-[780px]:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
+                         <div id="wholesaler-inventory" class="bg-mono-bg/30 p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
-                            <div class="text-3xl min-[780px]:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
+                            <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
                     </div>
                     <!-- Incoming Order Box (Bottom) - tablet/desktop only -->
-                    <div class="hidden min-[780px]:flex p-4 bg-mono-surface rounded-b-xl justify-end">
+                    <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-end">
                          <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
                                 <div id="wholesaler-order-value" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
@@ -146,7 +146,7 @@
                 </div>
 
                 <!-- PIPE SECTION 1: Wholesaler -> Retailer (Hidden on mobile) -->
-                <div class="hidden min-[780px]:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
+                <div class="hidden lg:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
 
                     <!-- Top Pipe: Deliveries (Rightward) -->
                     <div class="relative h-16 top-[40px] w-full flex items-center">
@@ -176,7 +176,7 @@
                 </div>
 
                 <!-- MOBILE VERTICAL CONNECTOR 1: Wholesaler -> Retailer -->
-                <div class="flex min-[780px]:hidden flex-row items-stretch justify-between w-full px-[calc(25%-51px)] -my-5">
+                <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-51px)] -my-5">
                     <!-- Left pipe with W1/W2 boxes (deliveries flowing down) -->
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
@@ -201,15 +201,15 @@
                 </div>
 
                 <!-- 2. CENTER NODE: INVENTORY (RETAILER) -->
-                <div class="w-full min-[780px]:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
+                <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
 
                     <!-- Header - hidden on mobile -->
-                    <div class="hidden min-[780px]:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                    <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
                         <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Retailer</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) + Demand slot (absolute right) in top row -->
-                    <div class="min-[780px]:hidden relative p-3 pb-0">
+                    <div class="lg:hidden relative p-3 pb-0">
                         <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Retailer</h3>
                         <!-- Mobile Demand Box (upper right, absolute) -->
                         <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-red-500/30 p-1 rounded shadow-lg">
@@ -219,15 +219,15 @@
                     </div>
 
                     <!-- Inventory Display (Wrapped Box) -->
-                    <div class="flex-1 flex items-center justify-center pt-1 min-[780px]:pt-[34px] p-2 min-[780px]:p-6">
-                         <div id="retailer-inventory" class="bg-mono-bg/30 p-2 min-[780px]:p-4 mt-0 min-[780px]:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] min-[780px]:min-w-[120px] min-h-[60px] min-[780px]:min-h-[100px]">
+                    <div class="flex-1 flex items-center justify-center pt-1 lg:pt-[34px] p-2 lg:p-6">
+                         <div id="retailer-inventory" class="bg-mono-bg/30 p-2 lg:p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[60px] lg:min-h-[100px]">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
-                            <div class="text-3xl min-[780px]:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                            <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
                         </div>
                     </div>
 
                     <!-- Bottom Section: Order (Left) & Demand (Right) - Hidden on mobile -->
-                    <div class="hidden min-[780px]:flex p-4 bg-mono-surface rounded-b-xl justify-between items-end gap-2 relative">
+                    <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-between items-end gap-2 relative">
 
                         <!-- Order Section with Send Button (tablet/desktop) -->
                         <div class="flex flex-col items-center gap-2">
@@ -292,7 +292,7 @@
                                 };
 
                                 // --- Mobile Detection ---
-                                const isMobile = () => window.innerWidth < 780;
+                                const isMobile = () => window.innerWidth < 1024;
 
                                 // --- Get current order input based on screen size ---
                                 const getCurrentOrderInput = () => isMobile() ? mobileOrderInput : orderInput;
@@ -795,7 +795,7 @@
                     </div>
 
                     <!-- Mobile: Order Box at bottom - aligned with right pipe -->
-                    <div class="min-[780px]:hidden p-2 pt-0 bg-mono-surface rounded-b-xl flex justify-end pr-[calc(25%-28px)]">
+                    <div class="lg:hidden p-2 pt-0 bg-mono-surface rounded-b-xl flex justify-end pr-[calc(25%-28px)]">
                         <div class="flex flex-col items-center gap-1 translate-x-1/2">
                             <button class="mobile-btn-send w-full bg-transparent border border-accent hover:bg-accent/10 text-white rounded py-0.5 shadow-md transition-colors flex items-center justify-center">
                                 <span class="text-[8px] font-bold uppercase">Send</span>
@@ -814,7 +814,7 @@
                     </div>
                 </div>
                 <!-- PIPE SECTION 2: Retailer -> Customer (Hidden on mobile) -->
-                <div class="hidden min-[780px]:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
+                <div class="hidden lg:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
                      <!-- Top Pipe: Deliveries (Rightward) -->
                      <div class="relative h-16 top-[40px] w-full flex items-center">
                         <!-- Pipe Background -->
@@ -843,7 +843,7 @@
                 </div>
 
                 <!-- MOBILE VERTICAL CONNECTOR 2: Retailer -> Customer -->
-                <div class="flex min-[780px]:hidden flex-row items-stretch justify-between w-full px-[calc(25%-51px)] -my-5">
+                <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-51px)] -my-5">
                     <!-- Left pipe with W1/W2 boxes (outgoing deliveries flowing down) -->
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
@@ -868,14 +868,14 @@
                 </div>
 
                 <!-- 3. RIGHT NODE: CUSTOMERS -->
-                <div class="w-full min-[780px]:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
+                <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
                     <!-- Header - hidden on mobile -->
-                    <div class="hidden min-[780px]:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                    <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
                         <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Customers</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) + Demand slot (absolute right) in top row -->
-                    <div class="min-[780px]:hidden relative p-3 pb-0">
+                    <div class="lg:hidden relative p-3 pb-0">
                         <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Customers</h3>
                         <!-- Mobile Demand Box - aligned with right pipe -->
                         <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-red-500/30 p-1 rounded shadow-lg">
@@ -884,17 +884,17 @@
                         </div>
                     </div>
 
-                    <div class="flex-1 flex flex-col items-center justify-center p-3 min-[780px]:p-4 space-y-2 relative">
+                    <div class="flex-1 flex flex-col items-center justify-center p-3 lg:p-4 space-y-2 relative">
                         <!-- Stick Figures (Icons) -->
                         <div id="customer-icons" class="flex -space-x-2">
-                            <span class="material-symbols-outlined text-3xl min-[780px]:text-4xl text-mono-light">person</span>
-                            <span class="material-symbols-outlined text-3xl min-[780px]:text-4xl text-mono-light/80">person</span>
-                            <span class="material-symbols-outlined text-3xl min-[780px]:text-4xl text-mono-light/60">person</span>
+                            <span class="material-symbols-outlined text-3xl lg:text-4xl text-mono-light">person</span>
+                            <span class="material-symbols-outlined text-3xl lg:text-4xl text-mono-light/80">person</span>
+                            <span class="material-symbols-outlined text-3xl lg:text-4xl text-mono-light/60">person</span>
                         </div>
-                        <span class="text-[10px] min-[780px]:text-xs text-mono-light">Market Demand</span>
+                        <span class="text-[10px] lg:text-xs text-mono-light">Market Demand</span>
                     </div>
                     <!-- Demand Box (Bottom) - tablet/desktop only -->
-                    <div class="hidden min-[780px]:flex p-4 bg-mono-surface rounded-b-xl justify-start">
+                    <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-start">
                         <div class="bg-mono-surface border border-red-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Demand</div>
                             <div id="customer-demand" class="bg-red-500/10 px-3 py-1 rounded border border-red-500/20 text-red-400 font-sans font-bold text-center min-w-[55px]">?</div>
