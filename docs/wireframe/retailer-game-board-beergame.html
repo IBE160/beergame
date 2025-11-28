@@ -512,9 +512,8 @@
                                     // ========================================
 
                                     // --- Animation 1: Customer Demand -> Retailer Demand ---
-                                    // Set the customer demand value first
-                                    mobileCustomerDemand.innerText = randomDemand;
-                                    if (els.customerDemand) els.customerDemand.innerText = randomDemand;
+                                    // Keep customer demand as "?" - only the animated clone shows the number
+                                    // The clone will display randomDemand while original stays as "?"
 
                                     // Animate ONLY the inner value box (mobileCustomerDemand) to retailer demand inner box
                                     // Direction: vertical-down (customer is at top, retailer is below)
@@ -522,6 +521,7 @@
                                         // Update retailer demand slot - value stays visible here
                                         mobileRetailerDemand.innerText = randomDemand;
                                         if (els.retailerDemandInner) els.retailerDemandInner.innerText = randomDemand;
+                                        // Customer demand stays as "?" (original was never changed)
                                         console.log("Phase 1a complete: Demand arrived at retailer demand slot");
                                     }, false, true);
 
