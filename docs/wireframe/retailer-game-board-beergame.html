@@ -903,6 +903,62 @@
                                                 console.log("Phase 3a complete: Green delivery moved to Week 1 slot");
                                             };
                                         }
+
+                                        // --- Phase 3b: Yellow outgoing slot -> Retailer Week 1 (RIGHT then UP) ---
+                                        const yellowSlot = window.phase2OutgoingClone;
+                                        const outgoingWeek1Target = els.mobileOutgoingWeek1;
+
+                                        if (yellowSlot && outgoingWeek1Target) {
+                                            // Get current position of yellow slot (inside retailer inventory)
+                                            const yellowRect = yellowSlot.getBoundingClientRect();
+                                            // Get target Week 1 slot position
+                                            const outWeek1Rect = outgoingWeek1Target.getBoundingClientRect();
+
+                                            // Calculate pipe center (horizontal center of week boxes)
+                                            const pipeCenterX = outWeek1Rect.left + (outWeek1Rect.width / 2);
+
+                                            // Horizontal distance to pipe center
+                                            const horizDistY = pipeCenterX - yellowRect.left - (yellowRect.width / 2);
+                                            // Vertical distance up to Week 1
+                                            const vertDistY = outWeek1Rect.top - yellowRect.top;
+
+                                            // Create a fixed-position clone for animation
+                                            const animCloneY = document.createElement('div');
+                                            animCloneY.className = 'lg:hidden bg-yellow-500/10 px-3 py-1 rounded border border-yellow-500/20 text-yellow-400 font-sans font-bold text-center min-w-[55px]';
+                                            animCloneY.innerText = yellowSlot.innerText;
+                                            animCloneY.style.position = 'fixed';
+                                            animCloneY.style.left = `${yellowRect.left}px`;
+                                            animCloneY.style.top = `${yellowRect.top}px`;
+                                            animCloneY.style.width = `${yellowRect.width}px`;
+                                            animCloneY.style.height = `${yellowRect.height}px`;
+                                            animCloneY.style.zIndex = '9999';
+                                            animCloneY.style.pointerEvents = 'none';
+                                            document.body.appendChild(animCloneY);
+
+                                            // Hide original yellow slot
+                                            yellowSlot.style.opacity = '0';
+
+                                            // Animate: RIGHT to pipe center, then UP to Week 1
+                                            const animationY = animCloneY.animate([
+                                                { transform: 'translate(0, 0)', opacity: 1 },
+                                                { transform: `translate(${horizDistY}px, 0)`, opacity: 1, offset: 0.4 },
+                                                { transform: `translate(${horizDistY}px, ${vertDistY}px)`, opacity: 1 }
+                                            ], {
+                                                duration: 2000,
+                                                easing: 'linear',
+                                                fill: 'forwards'
+                                            });
+
+                                            animationY.onfinish = () => {
+                                                animCloneY.remove();
+                                                // Update Week 1 slot with the outgoing delivery value
+                                                outgoingWeek1Target.innerText = window.phase2OutgoingValue || yellowSlot.innerText;
+                                                outgoingWeek1Target.style.opacity = '1';
+                                                // Remove the original yellow slot from inventory
+                                                yellowSlot.remove();
+                                                console.log("Phase 3b complete: Yellow outgoing moved to Week 1 slot");
+                                            };
+                                        }
                                     }, 6000); // 2s Phase 1 + 1s pause + 2s Phase 2 + 1s pause
 
                                     // Re-enable interface after all phases complete
