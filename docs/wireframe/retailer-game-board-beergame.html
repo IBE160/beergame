@@ -177,27 +177,27 @@
 
                 <!-- MOBILE VERTICAL CONNECTOR 1: Wholesaler -> Retailer -->
                 <div class="flex min-[780px]:hidden flex-row items-stretch justify-between w-full px-[calc(25%-51px)] -my-5">
-                    <!-- Left pipe with W1/W2 boxes -->
+                    <!-- Left pipe with W1/W2 boxes (deliveries flowing down) -->
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
                         <div class="w-[46px] h-5 bg-mono-surface"></div>
                         <!-- W1 box -->
-                        <div class="w-[52px] bg-mono-surface border border-green-500/30 rounded p-1">
+                        <div id="mobile-delivery-week-1-box" class="w-[52px] bg-mono-surface border border-green-500/30 rounded p-1">
                             <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
-                            <div class="bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center text-xs min-w-[30px]">20</div>
+                            <div id="mobile-delivery-week-1" class="bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center text-xs min-w-[30px]">20</div>
                         </div>
                         <!-- Pipe between W1 and W2 -->
                         <div class="w-[46px] flex-1 min-h-[8px] bg-mono-surface"></div>
                         <!-- W2 box -->
-                        <div class="w-[52px] bg-mono-surface border border-green-500/30 rounded p-1">
+                        <div id="mobile-delivery-week-2-box" class="w-[52px] bg-mono-surface border border-green-500/30 rounded p-1">
                             <div class="text-[8px] text-mono-text uppercase text-center">W2</div>
-                            <div class="bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center text-xs min-w-[30px]">30</div>
+                            <div id="mobile-delivery-week-2" class="bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center text-xs min-w-[30px]">30</div>
                         </div>
                         <!-- Vertical pipe line (bottom) - reaches role box -->
                         <div class="w-[46px] h-5 bg-mono-surface"></div>
                     </div>
-                    <!-- Right pipe - continuous, no slots -->
-                    <div class="w-[46px] self-stretch bg-mono-surface"></div>
+                    <!-- Right pipe - continuous (orders flowing up) -->
+                    <div id="mobile-order-pipe-1" class="w-[46px] self-stretch bg-mono-surface"></div>
                 </div>
 
                 <!-- 2. CENTER NODE: INVENTORY (RETAILER) -->
@@ -279,7 +279,16 @@
                                     retailerDemandInner: document.getElementById('retailer-demand-value'),
                                     customerDemand: document.getElementById('customer-demand'),
                                     customerIcons: document.getElementById('customer-icons'),
-                                    wholesalerInventory: document.getElementById('wholesaler-inventory')
+                                    wholesalerInventory: document.getElementById('wholesaler-inventory'),
+                                    // Mobile elements
+                                    mobileDeliveryWeek1: document.getElementById('mobile-delivery-week-1'),
+                                    mobileDeliveryWeek2: document.getElementById('mobile-delivery-week-2'),
+                                    mobileDeliveryWeek1Box: document.getElementById('mobile-delivery-week-1-box'),
+                                    mobileDeliveryWeek2Box: document.getElementById('mobile-delivery-week-2-box'),
+                                    mobileOutgoingWeek1: document.getElementById('mobile-outgoing-week-1'),
+                                    mobileOutgoingWeek2: document.getElementById('mobile-outgoing-week-2'),
+                                    mobileOutgoingWeek1Box: document.getElementById('mobile-outgoing-week-1-box'),
+                                    mobileOutgoingWeek2Box: document.getElementById('mobile-outgoing-week-2-box')
                                 };
 
                                 // --- Mobile Detection ---
@@ -334,57 +343,8 @@
                                 validateInput();
 
                                 // --- Animation Logic ---
-                                window.startState3Animation = () => {
-                                    console.log("Starting State 3 Animations (Order + Green Week 2)...");
 
-                                    // Skip animations on mobile - just update values directly
-                                    if (isMobile()) {
-                                        console.log("Mobile detected - skipping animations, updating values directly");
-                                        // Update values without animation using mobile input
-                                        const orderVal = mobileOrderInput?.value || '0';
-                                        if (els.wholesalerOrderInner) els.wholesalerOrderInner.innerText = orderVal;
-                                        if (mobileWholesalerOrder) mobileWholesalerOrder.innerText = orderVal;
-                                        if (mobileOrderInput) mobileOrderInput.value = '';
-
-                                        // Shift delivery pipeline (mobile connector boxes don't have IDs, just display)
-                                        const week1Val = els.greenWeek1?.innerText || '0';
-                                        const week2Val = els.greenWeek2?.innerText || '0';
-                                        if (els.greenWeek1) els.greenWeek1.innerText = '0';
-                                        if (els.greenWeek2) els.greenWeek2.innerText = week1Val;
-
-                                        // Update inventory (add week2 delivery)
-                                        const invEl = els.retailerInventory?.querySelector('.text-3xl');
-                                        if (invEl) {
-                                            const currentInv = parseInt(invEl.innerText) || 0;
-                                            invEl.innerText = currentInv + parseInt(week2Val || 0);
-                                        }
-
-                                        // Shift outgoing pipeline
-                                        const outWeek1Val = els.yellowWeek1?.innerText || '0';
-                                        if (els.yellowWeek1) els.yellowWeek1.innerText = '0';
-                                        if (els.yellowWeek2) els.yellowWeek2.innerText = outWeek1Val;
-
-                                        // Generate random demand and update both mobile and desktop elements
-                                        const randomDemand = Math.floor(Math.random() * 11) + 10;
-                                        if (els.retailerDemandInner) els.retailerDemandInner.innerText = randomDemand;
-                                        if (mobileRetailerDemand) mobileRetailerDemand.innerText = randomDemand;
-                                        if (els.customerDemand) els.customerDemand.innerText = randomDemand;
-                                        if (mobileCustomerDemand) mobileCustomerDemand.innerText = randomDemand;
-
-                                        // Re-enable mobile interface
-                                        if (mobileOrderInput) mobileOrderInput.disabled = false;
-                                        if (mobileBtnUp) mobileBtnUp.disabled = false;
-                                        if (mobileBtnDown) mobileBtnDown.disabled = false;
-                                        if (mobileBtnSend) {
-                                            mobileBtnSend.querySelector('span').innerText = "Send";
-                                            mobileBtnSend.disabled = false;
-                                            mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
-                                            validateInput();
-                                        }
-                                        return;
-                                    }
-
-                                    // Helper to clone and animate
+                                // Helper to clone and animate (defined outside so both mobile and desktop can use it)
                                     const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null, persist = false, overwrite = false) => {
                                         if (!sourceEl || !targetEl) {
                                             console.error("Animation Source or Target missing", { sourceEl, targetEl });
@@ -479,6 +439,26 @@
                                                 { transform: 'translate(0, 0)' },
                                                 { transform: `translate(${finalX}px, 0)` }
                                             ];
+                                        } else if (pathType === 'vertical-down') {
+                                            // Vertical downward movement (for mobile deliveries)
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
+                                            const finalX = deltaX + centerOffsetX;
+                                            const finalY = deltaY + centerOffsetY;
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)' },
+                                                { transform: `translate(${finalX}px, ${finalY}px)` }
+                                            ];
+                                        } else if (pathType === 'vertical-up') {
+                                            // Vertical upward movement (for mobile orders)
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
+                                            const finalX = deltaX + centerOffsetX;
+                                            const finalY = deltaY + centerOffsetY;
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)' },
+                                                { transform: `translate(${finalX}px, ${finalY}px)` }
+                                            ];
                                         } else {
                                             // Direct path
                                             keyframes = [
@@ -504,71 +484,178 @@
                                         };
                                     };
 
+                                    // --- Mobile Animation Function ---
+                                const startMobileAnimation = () => {
+                                    console.log("Starting Mobile Animations (Vertical)...");
+
+                                    const orderVal = mobileOrderInput?.value || '0';
+                                    const randomDemand = Math.floor(Math.random() * 11) + 10;
+
+                                    // Get current values before animation
+                                    const deliveryWeek1Val = els.mobileDeliveryWeek1?.innerText || '0';
+                                    const deliveryWeek2Val = els.mobileDeliveryWeek2?.innerText || '0';
+                                    const outgoingWeek1Val = els.mobileOutgoingWeek1?.innerText || '0';
+                                    const outgoingWeek2Val = els.mobileOutgoingWeek2?.innerText || '0';
+
+                                    // 1. Order flows UP from Retailer -> Wholesaler (vertical-up)
+                                    const mobileOrderBox = document.querySelector('.min-\\[780px\\]\\:hidden .bg-mono-surface.border-dashed.border-accent\\/30');
+                                    if (mobileOrderBox && mobileWholesalerOrder) {
+                                        animateClone(mobileOrderBox, mobileWholesalerOrder.parentElement, orderVal, 'vertical-up', () => {
+                                            mobileWholesalerOrder.innerText = orderVal;
+                                            if (els.wholesalerOrderInner) els.wholesalerOrderInner.innerText = orderVal;
+                                        });
+                                        if (mobileOrderInput) mobileOrderInput.value = '';
+                                    }
+
+                                    // 2. Delivery Week 2 -> Retailer Inventory (vertical-down)
+                                    if (els.mobileDeliveryWeek2Box && els.retailerInventory) {
+                                        animateClone(els.mobileDeliveryWeek2Box, els.retailerInventory, deliveryWeek2Val, 'vertical-down', () => {
+                                            const invEl = els.retailerInventory?.querySelector('.text-3xl');
+                                            if (invEl) {
+                                                const currentInv = parseInt(invEl.innerText) || 0;
+                                                invEl.innerText = currentInv + parseInt(deliveryWeek2Val || 0);
+                                            }
+                                        });
+                                        els.mobileDeliveryWeek2.style.opacity = '0';
+                                    }
+
+                                    // 3. Delivery Week 1 -> Delivery Week 2 (vertical-down)
+                                    if (els.mobileDeliveryWeek1Box && els.mobileDeliveryWeek2Box) {
+                                        animateClone(els.mobileDeliveryWeek1Box, els.mobileDeliveryWeek2Box, deliveryWeek1Val, 'vertical-down', () => {
+                                            els.mobileDeliveryWeek2.innerText = deliveryWeek1Val;
+                                            els.mobileDeliveryWeek2.style.opacity = '1';
+                                            // Sync with desktop elements
+                                            if (els.greenWeek2) els.greenWeek2.innerText = deliveryWeek1Val;
+                                        });
+                                        els.mobileDeliveryWeek1.style.opacity = '0';
+                                    }
+
+                                    // 4. New delivery enters Week 1 (from wholesaler)
+                                    setTimeout(() => {
+                                        const newDelivery = Math.min(25, parseInt(orderVal) || 0);
+                                        els.mobileDeliveryWeek1.innerText = newDelivery;
+                                        els.mobileDeliveryWeek1.style.opacity = '1';
+                                        if (els.greenWeek1) els.greenWeek1.innerText = newDelivery;
+                                    }, 2000);
+
+                                    // 5. Outgoing Week 2 -> Customer (vertical-down)
+                                    if (els.mobileOutgoingWeek2Box && mobileCustomerDemand) {
+                                        animateClone(els.mobileOutgoingWeek2Box, mobileCustomerDemand.parentElement, outgoingWeek2Val, 'vertical-down', () => {
+                                            // Delivery complete
+                                        });
+                                        els.mobileOutgoingWeek2.style.opacity = '0';
+                                    }
+
+                                    // 6. Outgoing Week 1 -> Outgoing Week 2 (vertical-down)
+                                    if (els.mobileOutgoingWeek1Box && els.mobileOutgoingWeek2Box) {
+                                        animateClone(els.mobileOutgoingWeek1Box, els.mobileOutgoingWeek2Box, outgoingWeek1Val, 'vertical-down', () => {
+                                            els.mobileOutgoingWeek2.innerText = outgoingWeek1Val;
+                                            els.mobileOutgoingWeek2.style.opacity = '1';
+                                            if (els.yellowWeek2) els.yellowWeek2.innerText = outgoingWeek1Val;
+                                        });
+                                        els.mobileOutgoingWeek1.style.opacity = '0';
+                                    }
+
+                                    // 7. Customer Demand -> Retailer Demand (vertical-up)
+                                    setTimeout(() => {
+                                        if (mobileCustomerDemand && mobileRetailerDemand) {
+                                            mobileCustomerDemand.innerText = randomDemand;
+                                            if (els.customerDemand) els.customerDemand.innerText = randomDemand;
+
+                                            animateClone(mobileCustomerDemand.parentElement, mobileRetailerDemand.parentElement, randomDemand.toString(), 'vertical-up', () => {
+                                                mobileRetailerDemand.innerText = randomDemand;
+                                                if (els.retailerDemandInner) els.retailerDemandInner.innerText = randomDemand;
+
+                                                // Calculate outgoing delivery
+                                                const invEl = els.retailerInventory?.querySelector('.text-3xl');
+                                                const currentInv = parseInt(invEl?.innerText) || 0;
+                                                const deliverVal = Math.min(currentInv, randomDemand);
+
+                                                // Update inventory
+                                                if (invEl) invEl.innerText = Math.max(0, currentInv - deliverVal);
+
+                                                // New outgoing enters Week 1
+                                                setTimeout(() => {
+                                                    els.mobileOutgoingWeek1.innerText = deliverVal;
+                                                    els.mobileOutgoingWeek1.style.opacity = '1';
+                                                    if (els.yellowWeek1) els.yellowWeek1.innerText = deliverVal;
+
+                                                    // Re-enable mobile interface
+                                                    if (mobileOrderInput) mobileOrderInput.disabled = false;
+                                                    if (mobileBtnUp) mobileBtnUp.disabled = false;
+                                                    if (mobileBtnDown) mobileBtnDown.disabled = false;
+                                                    if (mobileBtnSend) {
+                                                        mobileBtnSend.querySelector('span').innerText = "Send";
+                                                        mobileBtnSend.disabled = false;
+                                                        mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
+                                                        validateInput();
+                                                    }
+                                                }, 1000);
+                                            });
+                                        }
+                                    }, 1000);
+                                };
+
+                                // --- Desktop Animation Function ---
+                                const startDesktopAnimation = () => {
+                                    console.log("Starting Desktop Animations (Horizontal)...");
+
                                     // 1. Retailer Order -> Wholesaler Order (Direct)
                                     animateClone(els.retailerOrderInner, els.wholesalerOrderInner, null, 'direct', () => {
                                         // PHASE 2: Wholesaler Order -> Middle of Inventory (Vertical Align Y)
-                                        // Clone moves up to align with Inventory Y, but keeps Order X (right side)
                                         setTimeout(() => {
                                             if (els.wholesalerOrderInner && els.wholesalerInventory) {
                                                 animateClone(els.wholesalerOrderInner, els.wholesalerInventory, null, 'vertical-align-y', (persistedClone) => {
                                                     // PHASE 3: Morph & Move to Week 1
                                                     setTimeout(() => {
                                                         if (!persistedClone) return;
-                                                        
-                                                        // 1. Morph into Green Delivery
+
+                                                        // Morph into Green Delivery
                                                         persistedClone.classList.remove('bg-accent/10', 'border-accent/20', 'text-accent');
                                                         persistedClone.classList.add('bg-green-500/10', 'border-green-500/20', 'text-green-400');
-                                                        
-                                                        // Calculate & Update Value
+
                                                         const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
                                                         const orderVal = parseInt(valSpan.innerText) || 0;
                                                         const deliverVal = Math.min(25, orderVal);
                                                         valSpan.innerText = deliverVal;
 
-                                                        // 2. Move to Week 1 (Vertical Dogleg: Up then Right)
                                                         if (els.greenWeek1) {
-                                                            // Start animation from the mutated clone's current position
                                                             animateClone(persistedClone, els.greenWeek1, deliverVal, 'vertical-dogleg', () => {
                                                                 els.greenWeek1.innerText = deliverVal;
                                                                 els.greenWeek1.style.opacity = '1';
                                                             });
-                                                            // Remove the intermediate clone as the new moving clone takes over
                                                             persistedClone.remove();
                                                         }
                                                     }, 1000);
                                                 }, true);
                                             }
                                         }, 1000);
-                                    }, false, true); // persist=false, overwrite=true
-                                    // Clear source Retailer Order immediately as it "moves"
-                                    const orderInput = els.retailerOrderInner.querySelector('input');
-                                    if (orderInput) orderInput.value = ''; 
+                                    }, false, true);
 
-                                    // 2. Green Week 2 -> Retailer Inventory (Dogleg)
+                                    // Clear source Retailer Order
+                                    const desktopOrderInput = els.retailerOrderInner.querySelector('input');
+                                    if (desktopOrderInput) desktopOrderInput.value = '';
+
+                                    // 2. Green Week 2 -> Retailer Inventory
                                     animateClone(els.greenWeek2, els.retailerInventory, null, 'dogleg', () => {
-                                        // Update Inventory to 80 (50 + 30)
                                         const invNumber = els.retailerInventory.querySelector('.text-3xl');
                                         if (invNumber) invNumber.innerText = '80';
                                     });
-                                    // Hide source Green Week 2 number immediately
                                     els.greenWeek2.style.opacity = '0';
 
                                     // 3. Green Week 1 -> Green Week 2
                                     if (els.greenWeek1 && els.greenWeek2) {
                                         const val = els.greenWeek1.innerText;
                                         animateClone(els.greenWeek1, els.greenWeek2, null, 'direct', () => {
-                                            // Update Week 2 with Week 1's value and show it
                                             els.greenWeek2.innerText = val;
                                             els.greenWeek2.style.opacity = '1';
                                         });
-                                        // Hide source Week 1 number immediately
                                         els.greenWeek1.style.opacity = '0';
                                     }
 
-                                    // 4. Yellow Week 2 -> Customer (Market Demand area)
+                                    // 4. Yellow Week 2 -> Customer
                                     if (els.yellowWeek2 && els.customerIcons) {
                                         animateClone(els.yellowWeek2, els.customerIcons, null, 'dogleg');
-                                        // Hide source number immediately
                                         els.yellowWeek2.style.opacity = '0';
                                     }
 
@@ -576,44 +663,32 @@
                                     if (els.yellowWeek1 && els.yellowWeek2) {
                                         const val = els.yellowWeek1.innerText;
                                         animateClone(els.yellowWeek1, els.yellowWeek2, null, 'direct', () => {
-                                            // Update Week 2 with Week 1's value and show it
                                             els.yellowWeek2.innerText = val;
                                             els.yellowWeek2.style.opacity = '1';
                                         });
-                                        // Hide source Week 1 number immediately
                                         els.yellowWeek1.style.opacity = '0';
                                     }
 
                                     // 6. Customer Demand -> Retailer Demand
                                     if (els.customerDemand && els.retailerDemand) {
-                                        // Random Demand 10-20
                                         const randomDemand = Math.floor(Math.random() * 11) + 10;
-                                        
+
                                         animateClone(els.customerDemand, els.retailerDemand, randomDemand.toString(), 'horizontal', () => {
                                             const targetNum = els.retailerDemand.querySelector('.font-bold');
                                             if (targetNum) targetNum.innerText = randomDemand;
 
-                                            // Phase 3: Retailer Demand -> Middle of Inventory (Vertical Align Y)
-                                            // Imitates Wholesaler Order movements
                                             setTimeout(() => {
                                                 if (els.retailerDemandInner && els.retailerInventory) {
                                                     animateClone(els.retailerDemandInner, els.retailerInventory, null, 'vertical-align-y', (persistedClone) => {
-                                                        // Phase 4: Morph & Move to Yellow Week 1
                                                         setTimeout(() => {
                                                             if (!persistedClone) return;
 
-                                                            // 1. Morph into Yellow Delivery Order
-                                                            // Remove red demand styles
                                                             persistedClone.classList.remove('bg-red-500/10', 'border-red-500/20', 'text-red-400');
-                                                            // Add yellow accent styles
                                                             persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
 
-                                                            // Calculate & Update Value: Min(CurrentInv, Demand)
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
-                                                            // Use the randomDemand we generated
                                                             const demandVal = randomDemand;
-                                                            
-                                                            // Get current inventory to calculate delivery cap
+
                                                             const invNumber = els.retailerInventory.querySelector('.text-3xl');
                                                             let currentInv = 0;
                                                             if (invNumber) currentInv = parseInt(invNumber.innerText) || 0;
@@ -621,18 +696,15 @@
                                                             const deliverVal = Math.min(currentInv, demandVal);
                                                             valSpan.innerText = deliverVal;
 
-                                                            // Decrease Inventory Level
                                                             if (invNumber) {
                                                                 invNumber.innerText = Math.max(0, currentInv - deliverVal);
                                                             }
 
-                                                            // 2. Move to Yellow Week 1 (Vertical Dogleg: Up then Right)
                                                             if (els.yellowWeek1) {
                                                                 animateClone(persistedClone, els.yellowWeek1, deliverVal, 'vertical-dogleg', () => {
                                                                     els.yellowWeek1.innerText = deliverVal;
                                                                     els.yellowWeek1.style.opacity = '1';
 
-                                                                    // Reset Interface for Next Round
                                                                     if (orderInput) orderInput.disabled = false;
                                                                     if (btnUp) btnUp.disabled = false;
                                                                     if (btnDown) btnDown.disabled = false;
@@ -642,7 +714,6 @@
                                                                         validateInput();
                                                                     }
                                                                 });
-                                                                // Remove the intermediate clone
                                                                 persistedClone.remove();
                                                             }
                                                         }, 1000);
@@ -650,6 +721,17 @@
                                                 }
                                             }, 1000);
                                         });
+                                    }
+                                };
+
+                                // --- Main Animation Entry Point ---
+                                window.startState3Animation = () => {
+                                    console.log("Starting State 3 Animations...");
+
+                                    if (isMobile()) {
+                                        startMobileAnimation();
+                                    } else {
+                                        startDesktopAnimation();
                                     }
                                 };
 
@@ -762,27 +844,27 @@
 
                 <!-- MOBILE VERTICAL CONNECTOR 2: Retailer -> Customer -->
                 <div class="flex min-[780px]:hidden flex-row items-stretch justify-between w-full px-[calc(25%-51px)] -my-5">
-                    <!-- Left pipe with W1/W2 boxes -->
+                    <!-- Left pipe with W1/W2 boxes (outgoing deliveries flowing down) -->
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
                         <div class="w-[46px] h-5 bg-mono-surface"></div>
                         <!-- W1 box -->
-                        <div class="w-[52px] bg-mono-surface border border-accent/30 rounded p-1">
+                        <div id="mobile-outgoing-week-1-box" class="w-[52px] bg-mono-surface border border-accent/30 rounded p-1">
                             <div class="text-[8px] text-mono-text uppercase text-center">W1</div>
-                            <div class="bg-accent/10 px-2 py-0.5 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[30px]">25</div>
+                            <div id="mobile-outgoing-week-1" class="bg-accent/10 px-2 py-0.5 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[30px]">25</div>
                         </div>
                         <!-- Pipe between W1 and W2 -->
                         <div class="w-[46px] flex-1 min-h-[8px] bg-mono-surface"></div>
                         <!-- W2 box -->
-                        <div class="w-[52px] bg-mono-surface border border-accent/30 rounded p-1">
+                        <div id="mobile-outgoing-week-2-box" class="w-[52px] bg-mono-surface border border-accent/30 rounded p-1">
                             <div class="text-[8px] text-mono-text uppercase text-center">W2</div>
-                            <div class="bg-accent/10 px-2 py-0.5 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[30px]">20</div>
+                            <div id="mobile-outgoing-week-2" class="bg-accent/10 px-2 py-0.5 rounded border border-accent/20 text-accent font-sans font-bold text-center text-xs min-w-[30px]">20</div>
                         </div>
                         <!-- Vertical pipe line (bottom) - reaches role box -->
                         <div class="w-[46px] h-5 bg-mono-surface"></div>
                     </div>
-                    <!-- Right pipe - continuous, no slots -->
-                    <div class="w-[46px] self-stretch bg-mono-surface"></div>
+                    <!-- Right pipe - continuous (demand flowing up) -->
+                    <div id="mobile-demand-pipe" class="w-[46px] self-stretch bg-mono-surface"></div>
                 </div>
 
                 <!-- 3. RIGHT NODE: CUSTOMERS -->
