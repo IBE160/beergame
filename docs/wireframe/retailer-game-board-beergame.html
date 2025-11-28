@@ -674,11 +674,11 @@
                                         const wholesalerInventoryEl = document.getElementById('wholesaler-inventory');
 
                                         if (mobileWholesalerOrder && wholesalerInventoryEl) {
-                                            // Calculate distances - Order moves LEFT into Inventory
+                                            // Calculate distances - Order moves LEFT horizontally only (align with inventory center X)
                                             const orderRect = mobileWholesalerOrder.getBoundingClientRect();
                                             const inventoryRect = wholesalerInventoryEl.getBoundingClientRect();
                                             const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - orderRect.left - (orderRect.width / 2);
-                                            const verticalDistance = inventoryRect.top + (inventoryRect.height / 2) - orderRect.top - (orderRect.height / 2);
+                                            // No vertical movement - stays at same Y position
 
                                             // Simulate hidden wholesaler inventory (random value for demo)
                                             const wholesalerInv = 100; // Hidden inventory value
@@ -704,10 +704,10 @@
                                             // In a real game, this would be the previous turn's order
                                             mobileWholesalerOrder.innerText = orderValue;
 
-                                            // Animation: Move LEFT into inventory center
+                                            // Animation: Move LEFT horizontally only (no vertical movement)
                                             const moveAnimation = clone.animate([
                                                 { transform: 'translate(0, 0)', opacity: 1 },
-                                                { transform: `translate(${horizontalDistance}px, ${verticalDistance}px)`, opacity: 1 }
+                                                { transform: `translate(${horizontalDistance}px, 0)`, opacity: 1 }
                                             ], {
                                                 duration: 1000,
                                                 easing: 'ease-in-out',
