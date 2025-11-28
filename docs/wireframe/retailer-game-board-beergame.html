@@ -181,17 +181,17 @@
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
-                        <!-- Week 1 box -->
-                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-green-500/30 rounded p-2">
-                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                            <div id="mobile-delivery-week-1" class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]">20</div>
-                        </div>
-                        <!-- Pipe between Week 1 and Week 2 -->
-                        <div class="w-[70px] flex-1 min-h-[16px] bg-mono-surface"></div>
                         <!-- Week 2 box -->
                         <div id="mobile-delivery-week-2-box" class="bg-mono-surface border border-green-500/30 rounded p-2">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
                             <div id="mobile-delivery-week-2" class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                        </div>
+                        <!-- Pipe between Week 2 and Week 1 -->
+                        <div class="w-[70px] flex-1 min-h-[16px] bg-mono-surface"></div>
+                        <!-- Week 1 box -->
+                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-green-500/30 rounded p-2">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                            <div id="mobile-delivery-week-1" class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]">20</div>
                         </div>
                         <!-- Vertical pipe line (bottom) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
@@ -599,6 +599,69 @@
 
                                         // Clear Week 1 slot
                                         els.mobileOutgoingWeek1.style.opacity = '0';
+                                    }
+
+                                    // --- Animation 5: Green Delivery Week 2 inner -> Retailer Inventory (DOWN along pipe, then RIGHT into inventory) ---
+                                    const retailerInventoryMobile = document.getElementById('retailer-inventory-mobile');
+
+                                    if (els.mobileDeliveryWeek2 && retailerInventoryMobile) {
+                                        // Calculate distances
+                                        const week2Rect = els.mobileDeliveryWeek2.getBoundingClientRect();
+                                        const inventoryRect = retailerInventoryMobile.getBoundingClientRect();
+                                        const verticalDistance = inventoryRect.top + (inventoryRect.height / 2) - week2Rect.top - (week2Rect.height / 2);
+                                        const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
+
+                                        // Clone the element
+                                        const clone = els.mobileDeliveryWeek2.cloneNode(true);
+                                        clone.id = '';
+                                        clone.innerText = deliveryWeek2Val;
+                                        clone.style.position = 'fixed';
+                                        clone.style.left = `${week2Rect.left}px`;
+                                        clone.style.top = `${week2Rect.top}px`;
+                                        clone.style.width = `${week2Rect.width}px`;
+                                        clone.style.height = `${week2Rect.height}px`;
+                                        clone.style.margin = '0';
+                                        clone.style.zIndex = '9999';
+                                        clone.style.pointerEvents = 'none';
+                                        document.body.appendChild(clone);
+
+                                        // Single smooth animation: DOWN then RIGHT, with fade at end
+                                        const animation = clone.animate([
+                                            { transform: 'translate(0, 0)', opacity: 1 },
+                                            { transform: `translate(0, ${verticalDistance}px)`, opacity: 1, offset: 0.5 },
+                                            { transform: `translate(${horizontalDistance}px, ${verticalDistance}px)`, opacity: 0 }
+                                        ], {
+                                            duration: 2000,
+                                            easing: 'linear',
+                                            fill: 'forwards'
+                                        });
+
+                                        animation.onfinish = () => {
+                                            clone.remove();
+                                            // Update inventory value
+                                            const invEl = retailerInventoryMobile.querySelector('.text-3xl');
+                                            if (invEl) {
+                                                const currentInv = parseInt(invEl.innerText) || 0;
+                                                invEl.innerText = currentInv + parseInt(deliveryWeek2Val || 0);
+                                            }
+                                            console.log("Phase 1e complete: Green Week 2 delivered to inventory");
+                                        };
+
+                                        // Clear Week 2 slot
+                                        els.mobileDeliveryWeek2.style.opacity = '0';
+                                    }
+
+                                    // --- Animation 6: Green Delivery Week 1 inner -> Week 2 slot (DOWN) ---
+                                    if (els.mobileDeliveryWeek1 && els.mobileDeliveryWeek2) {
+                                        animateClone(els.mobileDeliveryWeek1, els.mobileDeliveryWeek2, deliveryWeek1Val, 'vertical-down', () => {
+                                            els.mobileDeliveryWeek2.innerText = deliveryWeek1Val;
+                                            els.mobileDeliveryWeek2.style.opacity = '1';
+                                            if (els.greenWeek2) els.greenWeek2.innerText = deliveryWeek1Val;
+                                            console.log("Phase 1f complete: Green Week 1 moved to Week 2 slot");
+                                        }, false, true);
+
+                                        // Clear Week 1 slot
+                                        els.mobileDeliveryWeek1.style.opacity = '0';
                                     }
 
                                     // Re-enable interface after Phase 1 animations complete
