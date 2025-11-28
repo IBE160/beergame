@@ -202,6 +202,11 @@
 
                 <!-- 2. CENTER NODE: INVENTORY (RETAILER) -->
                 <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
+                    <!-- Mobile: Absolutely centered Inventory -->
+                    <div id="retailer-inventory-mobile" class="lg:hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-mono-bg/30 p-2 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] min-h-[60px] z-20">
+                        <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
+                        <div class="text-3xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                    </div>
 
                     <!-- Header - hidden on mobile -->
                     <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
@@ -218,13 +223,15 @@
                         </div>
                     </div>
 
-                    <!-- Inventory Display (Wrapped Box) -->
-                    <div class="flex-1 flex items-center justify-center pt-1 lg:pt-[34px] p-2 lg:p-6">
-                         <div id="retailer-inventory" class="bg-mono-bg/30 p-2 lg:p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[60px] lg:min-h-[100px]">
+                    <!-- Inventory Display (Wrapped Box) - Desktop only -->
+                    <div class="hidden lg:flex flex-1 items-center justify-center pt-[34px] p-6">
+                         <div id="retailer-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
-                            <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                            <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
                         </div>
                     </div>
+                    <!-- Mobile: Spacer to maintain layout -->
+                    <div class="lg:hidden flex-1"></div>
 
                     <!-- Bottom Section: Order (Left) & Demand (Right) - Hidden on mobile -->
                     <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-between items-end gap-2 relative">
