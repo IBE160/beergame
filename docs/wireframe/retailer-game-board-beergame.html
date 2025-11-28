@@ -497,103 +497,57 @@
                                     const outgoingWeek1Val = els.mobileOutgoingWeek1?.innerText || '0';
                                     const outgoingWeek2Val = els.mobileOutgoingWeek2?.innerText || '0';
 
-                                    // 1. Order flows UP from Retailer -> Wholesaler (vertical-up)
-                                    const mobileOrderBox = document.querySelector('.min-\\[780px\\]\\:hidden .bg-mono-surface.border-dashed.border-accent\\/30');
-                                    if (mobileOrderBox && mobileWholesalerOrder) {
-                                        animateClone(mobileOrderBox, mobileWholesalerOrder.parentElement, orderVal, 'vertical-up', () => {
+                                    // ========================================
+                                    // PHASE 1: Two parallel animations (both DOWNWARD)
+                                    // 1. Customer Demand -> Retailer Demand
+                                    // 2. Retailer Order -> Wholesaler Order
+                                    // Only inner value boxes animate, NOT containers with labels
+                                    // ========================================
+
+                                    // --- Animation 1: Customer Demand -> Retailer Demand ---
+                                    // Set the customer demand value first
+                                    mobileCustomerDemand.innerText = randomDemand;
+                                    if (els.customerDemand) els.customerDemand.innerText = randomDemand;
+
+                                    // Animate ONLY the inner value box (mobileCustomerDemand) to retailer demand inner box
+                                    // Direction: vertical-down (customer is at top, retailer is below)
+                                    animateClone(mobileCustomerDemand, mobileRetailerDemand, randomDemand.toString(), 'vertical-down', () => {
+                                        // Update retailer demand slot - value stays visible here
+                                        mobileRetailerDemand.innerText = randomDemand;
+                                        if (els.retailerDemandInner) els.retailerDemandInner.innerText = randomDemand;
+                                        console.log("Phase 1a complete: Demand arrived at retailer demand slot");
+                                    }, false, true);
+
+                                    // --- Animation 2: Retailer Order -> Wholesaler Order ---
+                                    // Get the retailer order value box (the div containing the input's parent)
+                                    const mobileOrderValueBox = mobileOrderInput?.parentElement;
+
+                                    if (mobileOrderValueBox && mobileWholesalerOrder) {
+                                        // Animate the order value box downward to wholesaler order slot
+                                        // Direction: vertical-down (retailer is above wholesaler in mobile layout)
+                                        animateClone(mobileOrderValueBox, mobileWholesalerOrder, orderVal, 'vertical-down', () => {
+                                            // Update wholesaler order slot - value stays visible here
                                             mobileWholesalerOrder.innerText = orderVal;
                                             if (els.wholesalerOrderInner) els.wholesalerOrderInner.innerText = orderVal;
-                                        });
-                                        if (mobileOrderInput) mobileOrderInput.value = '';
+                                            console.log("Phase 1b complete: Order arrived at wholesaler order slot");
+
+                                            // Clear the retailer order input after animation
+                                            if (mobileOrderInput) mobileOrderInput.value = '';
+                                        }, false, true);
                                     }
 
-                                    // 2. Delivery Week 2 -> Retailer Inventory (vertical-down)
-                                    if (els.mobileDeliveryWeek2Box && els.retailerInventory) {
-                                        animateClone(els.mobileDeliveryWeek2Box, els.retailerInventory, deliveryWeek2Val, 'vertical-down', () => {
-                                            const invEl = els.retailerInventory?.querySelector('.text-3xl');
-                                            if (invEl) {
-                                                const currentInv = parseInt(invEl.innerText) || 0;
-                                                invEl.innerText = currentInv + parseInt(deliveryWeek2Val || 0);
-                                            }
-                                        });
-                                        els.mobileDeliveryWeek2.style.opacity = '0';
-                                    }
-
-                                    // 3. Delivery Week 1 -> Delivery Week 2 (vertical-down)
-                                    if (els.mobileDeliveryWeek1Box && els.mobileDeliveryWeek2Box) {
-                                        animateClone(els.mobileDeliveryWeek1Box, els.mobileDeliveryWeek2Box, deliveryWeek1Val, 'vertical-down', () => {
-                                            els.mobileDeliveryWeek2.innerText = deliveryWeek1Val;
-                                            els.mobileDeliveryWeek2.style.opacity = '1';
-                                            // Sync with desktop elements
-                                            if (els.greenWeek2) els.greenWeek2.innerText = deliveryWeek1Val;
-                                        });
-                                        els.mobileDeliveryWeek1.style.opacity = '0';
-                                    }
-
-                                    // 4. New delivery enters Week 1 (from wholesaler)
+                                    // Re-enable interface after Phase 1 animations complete
                                     setTimeout(() => {
-                                        const newDelivery = Math.min(25, parseInt(orderVal) || 0);
-                                        els.mobileDeliveryWeek1.innerText = newDelivery;
-                                        els.mobileDeliveryWeek1.style.opacity = '1';
-                                        if (els.greenWeek1) els.greenWeek1.innerText = newDelivery;
-                                    }, 2000);
-
-                                    // 5. Outgoing Week 2 -> Customer (vertical-down)
-                                    if (els.mobileOutgoingWeek2Box && mobileCustomerDemand) {
-                                        animateClone(els.mobileOutgoingWeek2Box, mobileCustomerDemand.parentElement, outgoingWeek2Val, 'vertical-down', () => {
-                                            // Delivery complete
-                                        });
-                                        els.mobileOutgoingWeek2.style.opacity = '0';
-                                    }
-
-                                    // 6. Outgoing Week 1 -> Outgoing Week 2 (vertical-down)
-                                    if (els.mobileOutgoingWeek1Box && els.mobileOutgoingWeek2Box) {
-                                        animateClone(els.mobileOutgoingWeek1Box, els.mobileOutgoingWeek2Box, outgoingWeek1Val, 'vertical-down', () => {
-                                            els.mobileOutgoingWeek2.innerText = outgoingWeek1Val;
-                                            els.mobileOutgoingWeek2.style.opacity = '1';
-                                            if (els.yellowWeek2) els.yellowWeek2.innerText = outgoingWeek1Val;
-                                        });
-                                        els.mobileOutgoingWeek1.style.opacity = '0';
-                                    }
-
-                                    // 7. Customer Demand -> Retailer Demand (vertical-up)
-                                    setTimeout(() => {
-                                        if (mobileCustomerDemand && mobileRetailerDemand) {
-                                            mobileCustomerDemand.innerText = randomDemand;
-                                            if (els.customerDemand) els.customerDemand.innerText = randomDemand;
-
-                                            animateClone(mobileCustomerDemand.parentElement, mobileRetailerDemand.parentElement, randomDemand.toString(), 'vertical-up', () => {
-                                                mobileRetailerDemand.innerText = randomDemand;
-                                                if (els.retailerDemandInner) els.retailerDemandInner.innerText = randomDemand;
-
-                                                // Calculate outgoing delivery
-                                                const invEl = els.retailerInventory?.querySelector('.text-3xl');
-                                                const currentInv = parseInt(invEl?.innerText) || 0;
-                                                const deliverVal = Math.min(currentInv, randomDemand);
-
-                                                // Update inventory
-                                                if (invEl) invEl.innerText = Math.max(0, currentInv - deliverVal);
-
-                                                // New outgoing enters Week 1
-                                                setTimeout(() => {
-                                                    els.mobileOutgoingWeek1.innerText = deliverVal;
-                                                    els.mobileOutgoingWeek1.style.opacity = '1';
-                                                    if (els.yellowWeek1) els.yellowWeek1.innerText = deliverVal;
-
-                                                    // Re-enable mobile interface
-                                                    if (mobileOrderInput) mobileOrderInput.disabled = false;
-                                                    if (mobileBtnUp) mobileBtnUp.disabled = false;
-                                                    if (mobileBtnDown) mobileBtnDown.disabled = false;
-                                                    if (mobileBtnSend) {
-                                                        mobileBtnSend.querySelector('span').innerText = "Send";
-                                                        mobileBtnSend.disabled = false;
-                                                        mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
-                                                        validateInput();
-                                                    }
-                                                }, 1000);
-                                            });
+                                        if (mobileOrderInput) mobileOrderInput.disabled = false;
+                                        if (mobileBtnUp) mobileBtnUp.disabled = false;
+                                        if (mobileBtnDown) mobileBtnDown.disabled = false;
+                                        if (mobileBtnSend) {
+                                            mobileBtnSend.querySelector('span').innerText = "Send";
+                                            mobileBtnSend.disabled = false;
+                                            mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
+                                            validateInput();
                                         }
-                                    }, 1000);
+                                    }, 2500); // Wait for both animations to complete (2s animation + buffer)
                                 };
 
                                 // --- Desktop Animation Function ---
