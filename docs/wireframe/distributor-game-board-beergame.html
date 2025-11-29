@@ -2,7 +2,7 @@
 <html class="" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Beer Game - Wholesaler Dashboard</title>
+<title>Beer Game - Distributor Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
@@ -25,7 +25,7 @@
                         'mono-surface': '#2C2C2C', // Slightly lighter dark gray for cards/surfaces
                         'mono-text': '#E0E0E0', // Light gray for primary text
                         'mono-light': '#808080', // Medium gray for secondary text/borders
-                        'accent': '#10B981', // Green as the contrasting accent color
+                        'accent': '#8B5CF6', // Violet/Purple as the contrasting accent color
                     },
                     fontFamily: {
                         sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
@@ -109,29 +109,29 @@
             <!-- MAIN GAME BOARD (Sketch Implementation) -->
             <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-4 lg:p-6 lg:p-8 shadow-2xl flex flex-col-reverse lg:flex-row items-stretch lg:justify-between gap-4 lg:gap-0 relative overflow-hidden">
 
-                <!-- 1. LEFT NODE: DISTRIBUTOR -->
+                <!-- 1. LEFT NODE: FACTORY -->
                 <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
                     <!-- Header - hidden on mobile -->
                     <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Distributor</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Factory</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) in top row -->
                     <div class="lg:hidden p-3 pb-0">
-                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Distributor</h3>
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Factory</h3>
                     </div>
 
                     <div class="flex-1 flex items-center justify-start pt-2 lg:pt-[34px] p-3 lg:p-4 relative flex-col">
                         <!-- Mobile Order Box - aligned with right pipe, centered with inventory -->
                         <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-distributor-order-value bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                            <div class="mobile-factory-order-value bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                          <!-- Faint background icon -->
-                         <span class="material-symbols-outlined text-7xl lg:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">warehouse</span>
+                         <span class="material-symbols-outlined text-7xl lg:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">factory</span>
 
-                         <!-- Hidden Inventory Box (Distributor) -->
-                         <div id="distributor-inventory" class="bg-mono-bg/30 p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
+                         <!-- Hidden Inventory Box (Factory) -->
+                         <div id="factory-inventory" class="bg-mono-bg/30 p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
@@ -140,12 +140,12 @@
                     <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-end">
                          <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div id="distributor-order-value" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                                <div id="factory-order-value" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- PIPE SECTION 1: Distributor -> Wholesaler (Hidden on mobile) -->
+                <!-- PIPE SECTION 1: Factory -> Distributor (Hidden on mobile) -->
                 <div class="hidden lg:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
 
                     <!-- Top Pipe: Deliveries (Rightward) -->
@@ -153,17 +153,17 @@
                         <!-- Pipe Background -->
                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
 
-                        <!-- Delay Boxes (Sitting on pipe) - VIOLET for incoming deliveries -->
+                        <!-- Delay Boxes (Sitting on pipe) - CYAN for incoming deliveries from Factory -->
                         <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
                              <!-- Week 1 -->
-                             <div class="bg-mono-surface border border-violet-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                             <div class="bg-mono-surface border border-cyan-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                                <div id="delivery-week-1" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">20</div>
+                                <div id="delivery-week-1" class="bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]">20</div>
                             </div>
                              <!-- Week 2 -->
-                             <div class="bg-mono-surface border border-violet-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                             <div class="bg-mono-surface border border-cyan-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                                <div id="delivery-week-2" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                                <div id="delivery-week-2" class="bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]">30</div>
                             </div>
                         </div>
                     </div>
@@ -175,23 +175,23 @@
                     </div>
                 </div>
 
-                <!-- MOBILE VERTICAL CONNECTOR 1: Distributor -> Wholesaler -->
+                <!-- MOBILE VERTICAL CONNECTOR 1: Factory -> Distributor -->
                 <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-60px)] -my-5">
-                    <!-- Left pipe with Week 1/Week 2 boxes (deliveries flowing down) - VIOLET -->
+                    <!-- Left pipe with Week 1/Week 2 boxes (deliveries flowing down) - CYAN -->
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
                         <!-- Week 2 box -->
-                        <div id="mobile-delivery-week-2-box" class="bg-mono-surface border border-violet-500/30 rounded p-2">
+                        <div id="mobile-delivery-week-2-box" class="bg-mono-surface border border-cyan-500/30 rounded p-2">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                            <div id="mobile-delivery-week-2" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                            <div id="mobile-delivery-week-2" class="bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]">30</div>
                         </div>
                         <!-- Pipe between Week 2 and Week 1 -->
                         <div class="w-[70px] flex-1 min-h-[16px] bg-mono-surface"></div>
                         <!-- Week 1 box -->
-                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-violet-500/30 rounded p-2">
+                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-cyan-500/30 rounded p-2">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                            <div id="mobile-delivery-week-1" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">20</div>
+                            <div id="mobile-delivery-week-1" class="bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]">20</div>
                         </div>
                         <!-- Vertical pipe line (bottom) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
@@ -200,32 +200,32 @@
                     <div id="mobile-order-pipe-1" class="w-[70px] self-stretch bg-mono-surface"></div>
                 </div>
 
-                <!-- 2. CENTER NODE: INVENTORY (WHOLESALER) -->
+                <!-- 2. CENTER NODE: INVENTORY (DISTRIBUTOR) -->
                 <div class="w-full lg:w-56 min-h-[250px] lg:min-h-0 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
                     <!-- Mobile: Absolutely centered Inventory (pushed down to avoid overlap with Order) -->
-                    <div id="wholesaler-inventory-mobile" class="lg:hidden absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 bg-mono-bg/30 p-2 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] min-h-[120px] z-20">
+                    <div id="distributor-inventory-mobile" class="lg:hidden absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 bg-mono-bg/30 p-2 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] min-h-[120px] z-20">
                         <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-10">Inventory</h4>
                         <div class="text-3xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
                     </div>
 
                     <!-- Header - hidden on mobile -->
                     <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Distributor</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) + Order slot at top right -->
                     <div class="lg:hidden p-3 pb-0 relative">
-                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Wholesaler</h3>
-                        <!-- Mobile Order Box - aligned with right pipe at top (incoming orders from Retailer) -->
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Distributor</h3>
+                        <!-- Mobile Order Box - aligned with right pipe at top (incoming orders from Wholesaler) -->
                         <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-amber-400/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-wholesaler-order-value bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                            <div class="mobile-distributor-order-value bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>
 
                     <!-- Inventory Display (Wrapped Box) - Desktop only -->
                     <div class="hidden lg:flex flex-1 items-center justify-center pt-[34px] p-6">
-                         <div id="wholesaler-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
+                         <div id="distributor-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
                         </div>
@@ -245,7 +245,7 @@
                             <!-- Order Input (Numeric Up/Down) -->
                              <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform relative group">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div id="wholesaler-order-value" class="bg-accent/10 px-1 py-0 rounded border border-accent/20 flex items-center justify-center min-w-[55px]">
+                                <div id="distributor-order-value" class="bg-accent/10 px-1 py-0 rounded border border-accent/20 flex items-center justify-center min-w-[55px]">
                                     <input type="number" value="30" id="orderInput" min="0" class="w-6 bg-transparent text-center font-sans font-bold text-accent border-0 p-0 focus:ring-0 appearance-none" />
                                     <div class="flex flex-col ml-0.5">
                                         <button id="btnUp" class="text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
@@ -269,24 +269,24 @@
                                 const mobileBtnUp = document.querySelector('.mobile-btn-up');
                                 const mobileBtnDown = document.querySelector('.mobile-btn-down');
                                 const mobileBtnSend = document.querySelector('.mobile-btn-send');
-                                const mobileWholesalerOrder = document.querySelector('.mobile-wholesaler-order-value');
-                                const mobileRetailerOrder = document.querySelector('.mobile-retailer-order');
                                 const mobileDistributorOrder = document.querySelector('.mobile-distributor-order-value');
+                                const mobileWholesalerOrder = document.querySelector('.mobile-wholesaler-order');
+                                const mobileFactoryOrder = document.querySelector('.mobile-factory-order-value');
 
                                 // --- Get Elements by ID ---
                                 const els = {
+                                    factoryOrderInner: document.getElementById('factory-order-value'),
                                     distributorOrderInner: document.getElementById('distributor-order-value'),
-                                    wholesalerOrderInner: document.getElementById('wholesaler-order-value'),
-                                    wholesalerInventory: document.getElementById('wholesaler-inventory'),
-                                    violetWeek1: document.getElementById('delivery-week-1'),
-                                    violetWeek2: document.getElementById('delivery-week-2'),
-                                    greenWeek1: document.getElementById('outgoing-week-1'),
-                                    greenWeek2: document.getElementById('outgoing-week-2'),
-                                    wholesalerOrderReceived: document.getElementById('wholesaler-order-received'),
-                                    wholesalerOrderReceivedInner: document.getElementById('wholesaler-order-received-value'),
-                                    retailerOrder: document.getElementById('retailer-order'),
-                                    retailerInventory: document.getElementById('retailer-inventory'),
                                     distributorInventory: document.getElementById('distributor-inventory'),
+                                    cyanWeek1: document.getElementById('delivery-week-1'),
+                                    cyanWeek2: document.getElementById('delivery-week-2'),
+                                    violetWeek1: document.getElementById('outgoing-week-1'),
+                                    violetWeek2: document.getElementById('outgoing-week-2'),
+                                    distributorOrderReceived: document.getElementById('distributor-order-received'),
+                                    distributorOrderReceivedInner: document.getElementById('distributor-order-received-value'),
+                                    wholesalerOrder: document.getElementById('wholesaler-order'),
+                                    wholesalerInventory: document.getElementById('wholesaler-inventory'),
+                                    factoryInventory: document.getElementById('factory-inventory'),
                                     // Mobile elements
                                     mobileDeliveryWeek1: document.getElementById('mobile-delivery-week-1'),
                                     mobileDeliveryWeek2: document.getElementById('mobile-delivery-week-2'),
@@ -304,24 +304,24 @@
                                 const gameState = {
                                     // Configuration
                                     config: {
-                                        distributorInventory: 100,
+                                        factoryInventory: 100,
                                         orderRange: { min: 10, max: 20 }
                                     },
 
                                     // Current values (shared between mobile/desktop)
                                     incomingOrder: 0,
                                     orderValue: 0,
-                                    wholesalerInventory: 50,
+                                    distributorInventory: 50,
 
                                     // Calculated delivery values
-                                    distributorDelivery: 0,
-                                    wholesalerOutgoing: 0,
+                                    factoryDelivery: 0,
+                                    distributorOutgoing: 0,
 
                                     // Week slot values
-                                    violetWeek1: 20,
-                                    violetWeek2: 30,
-                                    greenWeek1: 25,
-                                    greenWeek2: 20,
+                                    cyanWeek1: 20,
+                                    cyanWeek2: 30,
+                                    violetWeek1: 25,
+                                    violetWeek2: 20,
 
                                     // Phase 2 clone references (for Phase 3)
                                     phase2: {
@@ -340,52 +340,52 @@
                                         return Math.min(Math.max(0, available), Math.max(0, requested));
                                     },
 
-                                    processDistributorOrder(orderValue) {
+                                    processFactoryOrder(orderValue) {
                                         this.orderValue = orderValue;
-                                        this.distributorDelivery = this.calculateDelivery(this.config.distributorInventory, orderValue);
-                                        return this.distributorDelivery;
+                                        this.factoryDelivery = this.calculateDelivery(this.config.factoryInventory, orderValue);
+                                        return this.factoryDelivery;
                                     },
 
-                                    processWholesalerOrder(orderValue) {
-                                        this.wholesalerOutgoing = this.calculateDelivery(this.wholesalerInventory, orderValue);
-                                        this.wholesalerInventory = Math.max(0, this.wholesalerInventory - orderValue);
-                                        return { outgoing: this.wholesalerOutgoing, newInventory: this.wholesalerInventory };
+                                    processDistributorOrder(orderValue) {
+                                        this.distributorOutgoing = this.calculateDelivery(this.distributorInventory, orderValue);
+                                        this.distributorInventory = Math.max(0, this.distributorInventory - orderValue);
+                                        return { outgoing: this.distributorOutgoing, newInventory: this.distributorInventory };
                                     },
 
                                     receiveDelivery(amount) {
-                                        this.wholesalerInventory += amount;
-                                        return this.wholesalerInventory;
+                                        this.distributorInventory += amount;
+                                        return this.distributorInventory;
                                     },
 
                                     advanceWeeks() {
-                                        // Violet weeks (incoming deliveries from distributor)
+                                        // Cyan weeks (incoming deliveries from factory)
+                                        this.cyanWeek2 = this.cyanWeek1;
+                                        this.cyanWeek1 = this.factoryDelivery;
+                                        // Violet weeks (outgoing deliveries to wholesaler)
                                         this.violetWeek2 = this.violetWeek1;
-                                        this.violetWeek1 = this.distributorDelivery;
-                                        // Green weeks (outgoing deliveries to retailer)
-                                        this.greenWeek2 = this.greenWeek1;
-                                        this.greenWeek1 = this.wholesalerOutgoing;
+                                        this.violetWeek1 = this.distributorOutgoing;
                                     }
                                 };
 
                                 // Sync gameState to all DOM elements
                                 function syncStateToDOM() {
-                                    // Wholesaler inventory (both mobile and desktop)
-                                    const desktopInv = els.wholesalerInventory?.querySelector('.text-5xl');
-                                    const mobileInv = document.getElementById('wholesaler-inventory-mobile')?.querySelector('.text-3xl');
-                                    if (desktopInv) desktopInv.innerText = gameState.wholesalerInventory;
-                                    if (mobileInv) mobileInv.innerText = gameState.wholesalerInventory;
+                                    // Distributor inventory (both mobile and desktop)
+                                    const desktopInv = els.distributorInventory?.querySelector('.text-5xl');
+                                    const mobileInv = document.getElementById('distributor-inventory-mobile')?.querySelector('.text-3xl');
+                                    if (desktopInv) desktopInv.innerText = gameState.distributorInventory;
+                                    if (mobileInv) mobileInv.innerText = gameState.distributorInventory;
 
                                     // Week slots (desktop)
+                                    if (els.cyanWeek1) els.cyanWeek1.innerText = gameState.cyanWeek1;
+                                    if (els.cyanWeek2) els.cyanWeek2.innerText = gameState.cyanWeek2;
                                     if (els.violetWeek1) els.violetWeek1.innerText = gameState.violetWeek1;
                                     if (els.violetWeek2) els.violetWeek2.innerText = gameState.violetWeek2;
-                                    if (els.greenWeek1) els.greenWeek1.innerText = gameState.greenWeek1;
-                                    if (els.greenWeek2) els.greenWeek2.innerText = gameState.greenWeek2;
 
                                     // Week slots (mobile)
-                                    if (els.mobileDeliveryWeek1) els.mobileDeliveryWeek1.innerText = gameState.violetWeek1;
-                                    if (els.mobileDeliveryWeek2) els.mobileDeliveryWeek2.innerText = gameState.violetWeek2;
-                                    if (els.mobileOutgoingWeek1) els.mobileOutgoingWeek1.innerText = gameState.greenWeek1;
-                                    if (els.mobileOutgoingWeek2) els.mobileOutgoingWeek2.innerText = gameState.greenWeek2;
+                                    if (els.mobileDeliveryWeek1) els.mobileDeliveryWeek1.innerText = gameState.cyanWeek1;
+                                    if (els.mobileDeliveryWeek2) els.mobileDeliveryWeek2.innerText = gameState.cyanWeek2;
+                                    if (els.mobileOutgoingWeek1) els.mobileOutgoingWeek1.innerText = gameState.violetWeek1;
+                                    if (els.mobileOutgoingWeek2) els.mobileOutgoingWeek2.innerText = gameState.violetWeek2;
                                 }
 
                                 // Initialize DOM from gameState on page load
@@ -592,60 +592,60 @@
                                     const randomIncomingOrder = gameState.generateIncomingOrder();
 
                                     // Get current values from gameState
-                                    const deliveryWeek1Val = gameState.violetWeek1.toString();
-                                    const deliveryWeek2Val = gameState.violetWeek2.toString();
-                                    const outgoingWeek1Val = gameState.greenWeek1.toString();
-                                    const outgoingWeek2Val = gameState.greenWeek2.toString();
+                                    const deliveryWeek1Val = gameState.cyanWeek1.toString();
+                                    const deliveryWeek2Val = gameState.cyanWeek2.toString();
+                                    const outgoingWeek1Val = gameState.violetWeek1.toString();
+                                    const outgoingWeek2Val = gameState.violetWeek2.toString();
 
                                     // ========================================
                                     // PHASE 1: Two parallel animations (both DOWNWARD)
-                                    // 1. Retailer Order -> Wholesaler Order Received
-                                    // 2. Wholesaler Order -> Distributor Order
+                                    // 1. Wholesaler Order -> Distributor Order Received
+                                    // 2. Distributor Order -> Factory Order
                                     // Only inner value boxes animate, NOT containers with labels
                                     // ========================================
 
-                                    // --- Animation 1: Retailer Order -> Wholesaler Order Received ---
-                                    // Keep retailer order as "?" - only the animated clone shows the number
+                                    // --- Animation 1: Wholesaler Order -> Distributor Order Received ---
+                                    // Keep wholesaler order as "?" - only the animated clone shows the number
                                     // The clone will display randomIncomingOrder while original stays as "?"
 
-                                    // Animate ONLY the inner value box (mobileRetailerOrder) to wholesaler order inner box
-                                    // Direction: vertical-down (retailer is at top, wholesaler is below)
-                                    animateClone(mobileRetailerOrder, mobileWholesalerOrder, randomIncomingOrder.toString(), 'vertical-down', () => {
-                                        // Update wholesaler order received slot - value stays visible here
-                                        mobileWholesalerOrder.innerText = randomIncomingOrder;
-                                        if (els.wholesalerOrderReceivedInner) els.wholesalerOrderReceivedInner.innerText = randomIncomingOrder;
-                                        // Retailer order stays as "?" (original was never changed)
-                                        console.log("Phase 1a complete: Order arrived at wholesaler order slot");
+                                    // Animate ONLY the inner value box (mobileWholesalerOrder) to distributor order inner box
+                                    // Direction: vertical-down (wholesaler is at top, distributor is below)
+                                    animateClone(mobileWholesalerOrder, mobileDistributorOrder, randomIncomingOrder.toString(), 'vertical-down', () => {
+                                        // Update distributor order received slot - value stays visible here
+                                        mobileDistributorOrder.innerText = randomIncomingOrder;
+                                        if (els.distributorOrderReceivedInner) els.distributorOrderReceivedInner.innerText = randomIncomingOrder;
+                                        // Wholesaler order stays as "?" (original was never changed)
+                                        console.log("Phase 1a complete: Order arrived at distributor order slot");
                                     }, false, true);
 
-                                    // --- Animation 2: Wholesaler Order -> Distributor Order ---
-                                    // Get the wholesaler order value box (the div containing the input's parent)
+                                    // --- Animation 2: Distributor Order -> Factory Order ---
+                                    // Get the distributor order value box (the div containing the input's parent)
                                     const mobileOrderValueBox = mobileOrderInput?.parentElement;
 
-                                    if (mobileOrderValueBox && mobileDistributorOrder) {
-                                        // Animate the order value box downward to distributor order slot
-                                        // Direction: vertical-down (wholesaler is above distributor in mobile layout)
-                                        animateClone(mobileOrderValueBox, mobileDistributorOrder, orderVal, 'vertical-down', () => {
-                                            // Update distributor order slot - value stays visible here
-                                            mobileDistributorOrder.innerText = orderVal;
-                                            if (els.distributorOrderInner) els.distributorOrderInner.innerText = orderVal;
-                                            console.log("Phase 1b complete: Order arrived at distributor order slot");
+                                    if (mobileOrderValueBox && mobileFactoryOrder) {
+                                        // Animate the order value box downward to factory order slot
+                                        // Direction: vertical-down (distributor is above factory in mobile layout)
+                                        animateClone(mobileOrderValueBox, mobileFactoryOrder, orderVal, 'vertical-down', () => {
+                                            // Update factory order slot - value stays visible here
+                                            mobileFactoryOrder.innerText = orderVal;
+                                            if (els.factoryOrderInner) els.factoryOrderInner.innerText = orderVal;
+                                            console.log("Phase 1b complete: Order arrived at factory order slot");
 
-                                            // Clear the wholesaler order input after animation
+                                            // Clear the distributor order input after animation
                                             if (mobileOrderInput) mobileOrderInput.value = '';
                                         }, false, true);
                                     }
 
-                                    // --- Animation 3: Outgoing Week 2 inner -> Retailer (UP along pipe, then RIGHT into retailer inventory) ---
-                                    const retailerInventoryEl = document.getElementById('retailer-inventory');
+                                    // --- Animation 3: Outgoing Week 2 inner -> Wholesaler (UP along pipe, then RIGHT into wholesaler inventory) ---
+                                    const wholesalerInventoryEl = document.getElementById('wholesaler-inventory');
 
-                                    if (els.mobileOutgoingWeek2 && mobileRetailerOrder && retailerInventoryEl) {
+                                    if (els.mobileOutgoingWeek2 && mobileWholesalerOrder && wholesalerInventoryEl) {
                                         // Calculate distances
                                         const week2Rect = els.mobileOutgoingWeek2.getBoundingClientRect();
-                                        const orderRect = mobileRetailerOrder.getBoundingClientRect();
-                                        const retailerInventoryRect = retailerInventoryEl.getBoundingClientRect();
+                                        const orderRect = mobileWholesalerOrder.getBoundingClientRect();
+                                        const wholesalerInventoryRect = wholesalerInventoryEl.getBoundingClientRect();
                                         const verticalDistance = week2Rect.top - orderRect.top;
-                                        const horizontalDistance = retailerInventoryRect.left + (retailerInventoryRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
+                                        const horizontalDistance = wholesalerInventoryRect.left + (wholesalerInventoryRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
 
                                         // Clone the element
                                         const clone = els.mobileOutgoingWeek2.cloneNode(true);
@@ -674,7 +674,7 @@
 
                                         animation.onfinish = () => {
                                             clone.remove();
-                                            console.log("Phase 1c complete: Week 2 delivered to retailer");
+                                            console.log("Phase 1c complete: Week 2 delivered to wholesaler");
                                         };
 
                                         // Clear Week 2 slot
@@ -685,7 +685,7 @@
                                     if (els.mobileOutgoingWeek1 && els.mobileOutgoingWeek2) {
                                         animateClone(els.mobileOutgoingWeek1, els.mobileOutgoingWeek2, outgoingWeek1Val, 'vertical-up', () => {
                                             // Update gameState and sync
-                                            gameState.greenWeek2 = parseInt(outgoingWeek1Val);
+                                            gameState.violetWeek2 = parseInt(outgoingWeek1Val);
                                             els.mobileOutgoingWeek2.innerText = outgoingWeek1Val;
                                             els.mobileOutgoingWeek2.style.opacity = '1';
                                             syncStateToDOM();
@@ -696,13 +696,13 @@
                                         els.mobileOutgoingWeek1.style.opacity = '0';
                                     }
 
-                                    // --- Animation 5: Violet Delivery Week 2 inner -> Wholesaler Inventory (DOWN along pipe, then RIGHT into inventory) ---
-                                    const wholesalerInventoryMobile = document.getElementById('wholesaler-inventory-mobile');
+                                    // --- Animation 5: Cyan Delivery Week 2 inner -> Distributor Inventory (DOWN along pipe, then RIGHT into inventory) ---
+                                    const distributorInventoryMobile = document.getElementById('distributor-inventory-mobile');
 
-                                    if (els.mobileDeliveryWeek2 && wholesalerInventoryMobile) {
+                                    if (els.mobileDeliveryWeek2 && distributorInventoryMobile) {
                                         // Calculate distances
                                         const week2Rect = els.mobileDeliveryWeek2.getBoundingClientRect();
-                                        const inventoryRect = wholesalerInventoryMobile.getBoundingClientRect();
+                                        const inventoryRect = distributorInventoryMobile.getBoundingClientRect();
                                         const verticalDistance = inventoryRect.top + (inventoryRect.height / 2) - week2Rect.top - (week2Rect.height / 2);
                                         const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
 
@@ -736,22 +736,22 @@
                                             // Update inventory value using gameState
                                             gameState.receiveDelivery(parseInt(deliveryWeek2Val || 0));
                                             syncStateToDOM();
-                                            console.log("Phase 1e complete: Violet Week 2 delivered to inventory");
+                                            console.log("Phase 1e complete: Cyan Week 2 delivered to inventory");
                                         };
 
                                         // Clear Week 2 slot
                                         els.mobileDeliveryWeek2.style.opacity = '0';
                                     }
 
-                                    // --- Animation 6: Violet Delivery Week 1 inner -> Week 2 slot (DOWN) ---
+                                    // --- Animation 6: Cyan Delivery Week 1 inner -> Week 2 slot (DOWN) ---
                                     if (els.mobileDeliveryWeek1 && els.mobileDeliveryWeek2) {
                                         animateClone(els.mobileDeliveryWeek1, els.mobileDeliveryWeek2, deliveryWeek1Val, 'vertical-down', () => {
                                             // Update gameState and sync
-                                            gameState.violetWeek2 = parseInt(deliveryWeek1Val);
+                                            gameState.cyanWeek2 = parseInt(deliveryWeek1Val);
                                             els.mobileDeliveryWeek2.innerText = deliveryWeek1Val;
                                             els.mobileDeliveryWeek2.style.opacity = '1';
                                             syncStateToDOM();
-                                            console.log("Phase 1f complete: Violet Week 1 moved to Week 2 slot");
+                                            console.log("Phase 1f complete: Cyan Week 1 moved to Week 2 slot");
                                         }, false, true);
 
                                         // Clear Week 1 slot
@@ -760,29 +760,29 @@
 
                                     // ========================================
                                     // PHASE 2: After 1 sec pause
-                                    // 1. Order in Distributor -> LEFT into Inventory -> Morph to violet
-                                    // 2. Order in Wholesaler -> LEFT to center, DOWN into Inventory -> Morph to outgoing (green)
+                                    // 1. Order in Factory -> LEFT into Inventory -> Morph to cyan
+                                    // 2. Order in Distributor -> LEFT to center, DOWN into Inventory -> Morph to outgoing (violet)
                                     // ========================================
                                     setTimeout(() => {
                                         console.log("Starting Phase 2...");
 
-                                        const distributorInventoryEl = document.getElementById('distributor-inventory');
-                                        const wholesalerInventoryMobileEl = document.getElementById('wholesaler-inventory-mobile');
+                                        const factoryInventoryEl = document.getElementById('factory-inventory');
+                                        const distributorInventoryMobileEl = document.getElementById('distributor-inventory-mobile');
 
-                                        // --- Phase 2a: Distributor Order -> Inventory ---
-                                        if (mobileDistributorOrder && distributorInventoryEl) {
+                                        // --- Phase 2a: Factory Order -> Inventory ---
+                                        if (mobileFactoryOrder && factoryInventoryEl) {
                                             // Calculate distances - Order moves LEFT horizontally only (align with inventory center X)
-                                            const orderRect = mobileDistributorOrder.getBoundingClientRect();
-                                            const inventoryRect = distributorInventoryEl.getBoundingClientRect();
+                                            const orderRect = mobileFactoryOrder.getBoundingClientRect();
+                                            const inventoryRect = factoryInventoryEl.getBoundingClientRect();
                                             const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - orderRect.left - (orderRect.width / 2);
                                             // No vertical movement - stays at same Y position
 
-                                            // Use gameState for distributor processing
-                                            const orderValue = parseInt(mobileDistributorOrder.innerText) || 0;
-                                            const deliveryValue = gameState.processDistributorOrder(orderValue);
+                                            // Use gameState for factory processing
+                                            const orderValue = parseInt(mobileFactoryOrder.innerText) || 0;
+                                            const deliveryValue = gameState.processFactoryOrder(orderValue);
 
                                             // Clone the order element (copy moves, original stays with last turn's value)
-                                            const clone = mobileDistributorOrder.cloneNode(true);
+                                            const clone = mobileFactoryOrder.cloneNode(true);
                                             clone.id = '';
                                             clone.innerText = orderValue; // Current order value
                                             clone.style.position = 'fixed';
@@ -797,7 +797,7 @@
 
                                             // Keep original order slot visible with last turn's value (for demo, show the same value)
                                             // In a real game, this would be the previous turn's order
-                                            mobileDistributorOrder.innerText = orderValue;
+                                            mobileFactoryOrder.innerText = orderValue;
 
                                             // Animation: Move LEFT horizontally only (no vertical movement)
                                             const moveAnimation = clone.animate([
@@ -810,49 +810,49 @@
                                             });
 
                                             moveAnimation.onfinish = () => {
-                                                // Morph to violet: change colors and update value
+                                                // Morph to cyan: change colors and update value
                                                 clone.style.transition = 'all 0.5s ease-in-out';
-                                                clone.style.backgroundColor = 'rgba(139, 92, 246, 0.1)'; // violet-500/10
-                                                clone.style.borderColor = 'rgba(139, 92, 246, 0.2)'; // violet-500/20
-                                                clone.style.color = 'rgb(167, 139, 250)'; // violet-400
+                                                clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)'; // cyan-500/10
+                                                clone.style.borderColor = 'rgba(6, 182, 212, 0.2)'; // cyan-500/20
+                                                clone.style.color = 'rgb(34, 211, 238)'; // cyan-400
                                                 clone.innerText = deliveryValue;
 
                                                 // After morph, create a new element at the exact position where clone ended
                                                 setTimeout(() => {
                                                     // Get the current position of the clone (where it ended)
                                                     const cloneRect = clone.getBoundingClientRect();
-                                                    const inventoryRect2 = distributorInventoryEl.getBoundingClientRect();
+                                                    const inventoryRect2 = factoryInventoryEl.getBoundingClientRect();
 
                                                     // Calculate position relative to inventory element
                                                     const relativeLeft = cloneRect.left - inventoryRect2.left;
                                                     const relativeTop = cloneRect.top - inventoryRect2.top;
 
-                                                    // Create a new violet delivery element inside inventory (mobile only)
-                                                    const violetSlot = document.createElement('div');
-                                                    violetSlot.className = 'lg:hidden bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px] absolute';
-                                                    violetSlot.innerText = deliveryValue;
-                                                    violetSlot.style.left = `${relativeLeft}px`;
-                                                    violetSlot.style.top = `${relativeTop}px`;
-                                                    violetSlot.style.width = `${cloneRect.width}px`;
-                                                    violetSlot.style.zIndex = '50';
+                                                    // Create a new cyan delivery element inside inventory (mobile only)
+                                                    const cyanSlot = document.createElement('div');
+                                                    cyanSlot.className = 'lg:hidden bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px] absolute';
+                                                    cyanSlot.innerText = deliveryValue;
+                                                    cyanSlot.style.left = `${relativeLeft}px`;
+                                                    cyanSlot.style.top = `${relativeTop}px`;
+                                                    cyanSlot.style.width = `${cloneRect.width}px`;
+                                                    cyanSlot.style.zIndex = '50';
 
                                                     // Remove the fixed clone
                                                     clone.remove();
 
-                                                    // Add violet slot to inventory
-                                                    distributorInventoryEl.appendChild(violetSlot);
+                                                    // Add cyan slot to inventory
+                                                    factoryInventoryEl.appendChild(cyanSlot);
 
-                                                    console.log(`Phase 2a complete: Order morphed to violet delivery (${deliveryValue})`);
+                                                    console.log(`Phase 2a complete: Order morphed to cyan delivery (${deliveryValue})`);
                                                     // Store reference for Phase 3 in gameState
-                                                    gameState.phase2.deliveryClone = violetSlot;
+                                                    gameState.phase2.deliveryClone = cyanSlot;
                                                 }, 500); // After morph transition completes
                                             };
                                         }
 
-                                        // --- Phase 2b: Wholesaler Order Received -> Inventory (LEFT then DOWN) ---
-                                        if (mobileWholesalerOrder && wholesalerInventoryMobileEl) {
-                                            const orderRect = mobileWholesalerOrder.getBoundingClientRect();
-                                            const invRect = wholesalerInventoryMobileEl.getBoundingClientRect();
+                                        // --- Phase 2b: Distributor Order Received -> Inventory (LEFT then DOWN) ---
+                                        if (mobileDistributorOrder && distributorInventoryMobileEl) {
+                                            const orderRect = mobileDistributorOrder.getBoundingClientRect();
+                                            const invRect = distributorInventoryMobileEl.getBoundingClientRect();
 
                                             // Calculate horizontal distance to center of inventory
                                             const horizDist = invRect.left + (invRect.width / 2) - orderRect.left - (orderRect.width / 2);
@@ -862,10 +862,10 @@
 
                                             // Use gameState for order processing
                                             const orderValue = gameState.incomingOrder;
-                                            const { outgoing: outgoingDelivery, newInventory: newWholesalerInv } = gameState.processWholesalerOrder(orderValue);
+                                            const { outgoing: outgoingDelivery, newInventory: newDistributorInv } = gameState.processDistributorOrder(orderValue);
 
                                             // Clone the order element (copy moves, original stays)
-                                            const orderClone = mobileWholesalerOrder.cloneNode(true);
+                                            const orderClone = mobileDistributorOrder.cloneNode(true);
                                             orderClone.id = '';
                                             orderClone.innerText = orderValue;
                                             orderClone.style.position = 'fixed';
@@ -879,7 +879,7 @@
                                             document.body.appendChild(orderClone);
 
                                             // Keep original order slot visible with the value
-                                            mobileWholesalerOrder.innerText = orderValue;
+                                            mobileDistributorOrder.innerText = orderValue;
 
                                             // Animation: LEFT horizontally to center, then DOWN into inventory
                                             const orderAnimation = orderClone.animate([
@@ -893,80 +893,80 @@
                                             });
 
                                             orderAnimation.onfinish = () => {
-                                                // Morph to green/accent (outgoing delivery)
+                                                // Morph to violet/accent (outgoing delivery to wholesaler)
                                                 orderClone.style.transition = 'all 0.5s ease-in-out';
-                                                orderClone.style.backgroundColor = 'rgba(16, 185, 129, 0.1)'; // accent/10
-                                                orderClone.style.borderColor = 'rgba(16, 185, 129, 0.2)'; // accent/20
-                                                orderClone.style.color = 'rgb(52, 211, 153)'; // green-400
+                                                orderClone.style.backgroundColor = 'rgba(139, 92, 246, 0.1)'; // violet-500/10
+                                                orderClone.style.borderColor = 'rgba(139, 92, 246, 0.2)'; // violet-500/20
+                                                orderClone.style.color = 'rgb(167, 139, 250)'; // violet-400
                                                 orderClone.innerText = outgoingDelivery;
 
-                                                // Update wholesaler inventory via DOM sync
+                                                // Update distributor inventory via DOM sync
                                                 syncStateToDOM();
 
                                                 // After morph, create element inside inventory
                                                 setTimeout(() => {
                                                     const cloneRect = orderClone.getBoundingClientRect();
-                                                    const invRect2 = wholesalerInventoryMobileEl.getBoundingClientRect();
+                                                    const invRect2 = distributorInventoryMobileEl.getBoundingClientRect();
 
                                                     const relLeft = cloneRect.left - invRect2.left;
                                                     const relTop = cloneRect.top - invRect2.top;
 
-                                                    const greenSlot = document.createElement('div');
-                                                    greenSlot.className = 'bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px] absolute';
-                                                    greenSlot.innerText = outgoingDelivery;
-                                                    greenSlot.style.left = `${relLeft}px`;
-                                                    greenSlot.style.top = `${relTop}px`;
-                                                    greenSlot.style.width = `${cloneRect.width}px`;
-                                                    greenSlot.style.zIndex = '50';
+                                                    const violetSlot = document.createElement('div');
+                                                    violetSlot.className = 'bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px] absolute';
+                                                    violetSlot.innerText = outgoingDelivery;
+                                                    violetSlot.style.left = `${relLeft}px`;
+                                                    violetSlot.style.top = `${relTop}px`;
+                                                    violetSlot.style.width = `${cloneRect.width}px`;
+                                                    violetSlot.style.zIndex = '50';
 
                                                     orderClone.remove();
-                                                    wholesalerInventoryMobileEl.appendChild(greenSlot);
+                                                    distributorInventoryMobileEl.appendChild(violetSlot);
 
-                                                    console.log(`Phase 2b complete: Order morphed to outgoing delivery (${outgoingDelivery}), Inventory: ${newWholesalerInv}`);
+                                                    console.log(`Phase 2b complete: Order morphed to outgoing delivery (${outgoingDelivery}), Inventory: ${newDistributorInv}`);
                                                     // Store reference for Phase 3 in gameState
-                                                    gameState.phase2.outgoingClone = greenSlot;
+                                                    gameState.phase2.outgoingClone = violetSlot;
                                                 }, 500);
                                             };
                                         }
                                     }, 3000); // 2s for Phase 1 animations + 1s pause
 
-                                    // --- Phase 3: Violet delivery slot -> Week 1 slot (RIGHT then UP) ---
+                                    // --- Phase 3: Cyan delivery slot -> Week 1 slot (RIGHT then UP) ---
                                     setTimeout(() => {
                                         console.log("Starting Phase 3...");
 
-                                        const violetSlot = gameState.phase2.deliveryClone;
+                                        const cyanSlot = gameState.phase2.deliveryClone;
                                         const week1Target = els.mobileDeliveryWeek1;
 
-                                        if (violetSlot && week1Target) {
-                                            // Get current position of violet slot (inside distributor inventory)
-                                            const violetRect = violetSlot.getBoundingClientRect();
+                                        if (cyanSlot && week1Target) {
+                                            // Get current position of cyan slot (inside factory inventory)
+                                            const cyanRect = cyanSlot.getBoundingClientRect();
                                             // Get target Week 1 slot position
                                             const week1Rect = week1Target.getBoundingClientRect();
 
-                                            // Calculate pipe center (horizontal center between distributor inventory and week boxes)
+                                            // Calculate pipe center (horizontal center between factory inventory and week boxes)
                                             // The pipe is roughly at the same X as the week boxes
                                             const pipeCenterX = week1Rect.left + (week1Rect.width / 2);
 
                                             // Horizontal distance to pipe center
-                                            const horizDist = pipeCenterX - violetRect.left - (violetRect.width / 2);
+                                            const horizDist = pipeCenterX - cyanRect.left - (cyanRect.width / 2);
                                             // Vertical distance up to Week 1
-                                            const vertDist = week1Rect.top - violetRect.top;
+                                            const vertDist = week1Rect.top - cyanRect.top;
 
                                             // Create a fixed-position clone for animation
                                             const animClone = document.createElement('div');
-                                            animClone.className = 'lg:hidden bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]';
-                                            animClone.innerText = violetSlot.innerText;
+                                            animClone.className = 'lg:hidden bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]';
+                                            animClone.innerText = cyanSlot.innerText;
                                             animClone.style.position = 'fixed';
-                                            animClone.style.left = `${violetRect.left}px`;
-                                            animClone.style.top = `${violetRect.top}px`;
-                                            animClone.style.width = `${violetRect.width}px`;
-                                            animClone.style.height = `${violetRect.height}px`;
+                                            animClone.style.left = `${cyanRect.left}px`;
+                                            animClone.style.top = `${cyanRect.top}px`;
+                                            animClone.style.width = `${cyanRect.width}px`;
+                                            animClone.style.height = `${cyanRect.height}px`;
                                             animClone.style.zIndex = '9999';
                                             animClone.style.pointerEvents = 'none';
                                             document.body.appendChild(animClone);
 
-                                            // Hide original violet slot
-                                            violetSlot.style.opacity = '0';
+                                            // Hide original cyan slot
+                                            cyanSlot.style.opacity = '0';
 
                                             // Animate: RIGHT to pipe center, then UP to Week 1
                                             const animation = animClone.animate([
@@ -982,24 +982,24 @@
                                             animation.onfinish = () => {
                                                 animClone.remove();
                                                 // Update Week 1 slot with the delivery value from gameState
-                                                gameState.violetWeek1 = gameState.distributorDelivery;
-                                                week1Target.innerText = gameState.violetWeek1;
+                                                gameState.cyanWeek1 = gameState.factoryDelivery;
+                                                week1Target.innerText = gameState.cyanWeek1;
                                                 week1Target.style.opacity = '1';
-                                                // Remove the original violet slot from inventory
-                                                violetSlot.remove();
+                                                // Remove the original cyan slot from inventory
+                                                cyanSlot.remove();
                                                 // Sync to desktop
                                                 syncStateToDOM();
-                                                console.log("Phase 3a complete: Violet delivery moved to Week 1 slot");
+                                                console.log("Phase 3a complete: Cyan delivery moved to Week 1 slot");
                                             };
                                         }
 
-                                        // --- Phase 3b: Green outgoing slot -> Wholesaler Week 1 (RIGHT then UP) ---
-                                        const greenSlot = gameState.phase2.outgoingClone;
+                                        // --- Phase 3b: Violet outgoing slot -> Distributor Week 1 (RIGHT then UP) ---
+                                        const violetSlot = gameState.phase2.outgoingClone;
                                         const outgoingWeek1Target = els.mobileOutgoingWeek1;
 
-                                        if (greenSlot && outgoingWeek1Target) {
-                                            // Get current position of green slot (inside wholesaler inventory)
-                                            const greenRect = greenSlot.getBoundingClientRect();
+                                        if (violetSlot && outgoingWeek1Target) {
+                                            // Get current position of violet slot (inside distributor inventory)
+                                            const violetRect = violetSlot.getBoundingClientRect();
                                             // Get target Week 1 slot position
                                             const outWeek1Rect = outgoingWeek1Target.getBoundingClientRect();
 
@@ -1007,25 +1007,25 @@
                                             const pipeCenterX = outWeek1Rect.left + (outWeek1Rect.width / 2);
 
                                             // Horizontal distance to pipe center
-                                            const horizDistG = pipeCenterX - greenRect.left - (greenRect.width / 2);
+                                            const horizDistG = pipeCenterX - violetRect.left - (violetRect.width / 2);
                                             // Vertical distance up to Week 1
-                                            const vertDistG = outWeek1Rect.top - greenRect.top;
+                                            const vertDistG = outWeek1Rect.top - violetRect.top;
 
                                             // Create a fixed-position clone for animation
                                             const animCloneG = document.createElement('div');
                                             animCloneG.className = 'lg:hidden bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]';
-                                            animCloneG.innerText = greenSlot.innerText;
+                                            animCloneG.innerText = violetSlot.innerText;
                                             animCloneG.style.position = 'fixed';
-                                            animCloneG.style.left = `${greenRect.left}px`;
-                                            animCloneG.style.top = `${greenRect.top}px`;
-                                            animCloneG.style.width = `${greenRect.width}px`;
-                                            animCloneG.style.height = `${greenRect.height}px`;
+                                            animCloneG.style.left = `${violetRect.left}px`;
+                                            animCloneG.style.top = `${violetRect.top}px`;
+                                            animCloneG.style.width = `${violetRect.width}px`;
+                                            animCloneG.style.height = `${violetRect.height}px`;
                                             animCloneG.style.zIndex = '9999';
                                             animCloneG.style.pointerEvents = 'none';
                                             document.body.appendChild(animCloneG);
 
-                                            // Hide original green slot
-                                            greenSlot.style.opacity = '0';
+                                            // Hide original violet slot
+                                            violetSlot.style.opacity = '0';
 
                                             // Animate: RIGHT to pipe center, then UP to Week 1
                                             const animationG = animCloneG.animate([
@@ -1041,14 +1041,14 @@
                                             animationG.onfinish = () => {
                                                 animCloneG.remove();
                                                 // Update Week 1 slot with the outgoing delivery value from gameState
-                                                gameState.greenWeek1 = gameState.wholesalerOutgoing;
-                                                outgoingWeek1Target.innerText = gameState.greenWeek1;
+                                                gameState.violetWeek1 = gameState.distributorOutgoing;
+                                                outgoingWeek1Target.innerText = gameState.violetWeek1;
                                                 outgoingWeek1Target.style.opacity = '1';
-                                                // Remove the original green slot from inventory
-                                                greenSlot.remove();
+                                                // Remove the original violet slot from inventory
+                                                violetSlot.remove();
                                                 // Sync to desktop
                                                 syncStateToDOM();
-                                                console.log("Phase 3b complete: Green outgoing moved to Week 1 slot");
+                                                console.log("Phase 3b complete: Violet outgoing moved to Week 1 slot");
                                             };
                                         }
                                     }, 6000); // 2s Phase 1 + 1s pause + 2s Phase 2 + 1s pause
@@ -1071,31 +1071,31 @@
                                 const startDesktopAnimation = () => {
                                     console.log("Starting Desktop Animations (Horizontal)...");
 
-                                    // 1. Wholesaler Order -> Distributor Order (Direct)
-                                    animateClone(els.wholesalerOrderInner, els.distributorOrderInner, null, 'direct', () => {
-                                        // PHASE 2: Distributor Order -> Middle of Inventory (Vertical Align Y)
+                                    // 1. Distributor Order -> Factory Order (Direct)
+                                    animateClone(els.distributorOrderInner, els.factoryOrderInner, null, 'direct', () => {
+                                        // PHASE 2: Factory Order -> Middle of Inventory (Vertical Align Y)
                                         setTimeout(() => {
-                                            if (els.distributorOrderInner && els.distributorInventory) {
-                                                animateClone(els.distributorOrderInner, els.distributorInventory, null, 'vertical-align-y', (persistedClone) => {
+                                            if (els.factoryOrderInner && els.factoryInventory) {
+                                                animateClone(els.factoryOrderInner, els.factoryInventory, null, 'vertical-align-y', (persistedClone) => {
                                                     // PHASE 3: Morph & Move to Week 1
                                                     setTimeout(() => {
                                                         if (!persistedClone) return;
 
-                                                        // Morph into Violet Delivery
+                                                        // Morph into Cyan Delivery
                                                         persistedClone.classList.remove('bg-accent/10', 'border-accent/20', 'text-accent');
-                                                        persistedClone.classList.add('bg-violet-500/10', 'border-violet-500/20', 'text-violet-400');
+                                                        persistedClone.classList.add('bg-cyan-500/10', 'border-cyan-500/20', 'text-cyan-400');
 
                                                         const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
                                                         const orderVal = parseInt(valSpan.innerText) || 0;
                                                         // Use gameState for delivery calculation
-                                                        const deliverVal = gameState.processDistributorOrder(orderVal);
+                                                        const deliverVal = gameState.processFactoryOrder(orderVal);
                                                         valSpan.innerText = deliverVal;
 
-                                                        if (els.violetWeek1) {
-                                                            animateClone(persistedClone, els.violetWeek1, deliverVal, 'vertical-dogleg', () => {
-                                                                gameState.violetWeek1 = deliverVal;
-                                                                els.violetWeek1.innerText = gameState.violetWeek1;
-                                                                els.violetWeek1.style.opacity = '1';
+                                                        if (els.cyanWeek1) {
+                                                            animateClone(persistedClone, els.cyanWeek1, deliverVal, 'vertical-dogleg', () => {
+                                                                gameState.cyanWeek1 = deliverVal;
+                                                                els.cyanWeek1.innerText = gameState.cyanWeek1;
+                                                                els.cyanWeek1.style.opacity = '1';
                                                                 syncStateToDOM();
                                                             });
                                                             persistedClone.remove();
@@ -1106,19 +1106,36 @@
                                         }, 1000);
                                     }, false, true);
 
-                                    // Clear source Wholesaler Order
-                                    const desktopOrderInput = els.wholesalerOrderInner.querySelector('input');
+                                    // Clear source Distributor Order
+                                    const desktopOrderInput = els.distributorOrderInner.querySelector('input');
                                     if (desktopOrderInput) desktopOrderInput.value = '';
 
-                                    // 2. Violet Week 2 -> Wholesaler Inventory
-                                    animateClone(els.violetWeek2, els.wholesalerInventory, null, 'dogleg', () => {
+                                    // 2. Cyan Week 2 -> Distributor Inventory
+                                    animateClone(els.cyanWeek2, els.distributorInventory, null, 'dogleg', () => {
                                         // Use gameState to receive delivery
-                                        gameState.receiveDelivery(gameState.violetWeek2);
+                                        gameState.receiveDelivery(gameState.cyanWeek2);
                                         syncStateToDOM();
                                     });
-                                    els.violetWeek2.style.opacity = '0';
+                                    els.cyanWeek2.style.opacity = '0';
 
-                                    // 3. Violet Week 1 -> Violet Week 2
+                                    // 3. Cyan Week 1 -> Cyan Week 2
+                                    if (els.cyanWeek1 && els.cyanWeek2) {
+                                        const val = gameState.cyanWeek1;
+                                        animateClone(els.cyanWeek1, els.cyanWeek2, null, 'direct', () => {
+                                            gameState.cyanWeek2 = val;
+                                            els.cyanWeek2.innerText = gameState.cyanWeek2;
+                                            els.cyanWeek2.style.opacity = '1';
+                                        });
+                                        els.cyanWeek1.style.opacity = '0';
+                                    }
+
+                                    // 4. Violet Week 2 -> Wholesaler
+                                    if (els.violetWeek2 && els.wholesalerInventory) {
+                                        animateClone(els.violetWeek2, els.wholesalerInventory, null, 'dogleg');
+                                        els.violetWeek2.style.opacity = '0';
+                                    }
+
+                                    // 5. Violet Week 1 -> Violet Week 2
                                     if (els.violetWeek1 && els.violetWeek2) {
                                         const val = gameState.violetWeek1;
                                         animateClone(els.violetWeek1, els.violetWeek2, null, 'direct', () => {
@@ -1129,35 +1146,18 @@
                                         els.violetWeek1.style.opacity = '0';
                                     }
 
-                                    // 4. Green Week 2 -> Retailer
-                                    if (els.greenWeek2 && els.retailerInventory) {
-                                        animateClone(els.greenWeek2, els.retailerInventory, null, 'dogleg');
-                                        els.greenWeek2.style.opacity = '0';
-                                    }
-
-                                    // 5. Green Week 1 -> Green Week 2
-                                    if (els.greenWeek1 && els.greenWeek2) {
-                                        const val = gameState.greenWeek1;
-                                        animateClone(els.greenWeek1, els.greenWeek2, null, 'direct', () => {
-                                            gameState.greenWeek2 = val;
-                                            els.greenWeek2.innerText = gameState.greenWeek2;
-                                            els.greenWeek2.style.opacity = '1';
-                                        });
-                                        els.greenWeek1.style.opacity = '0';
-                                    }
-
-                                    // 6. Retailer Order -> Wholesaler Order Received
-                                    if (els.retailerOrder && els.wholesalerOrderReceived) {
+                                    // 6. Wholesaler Order -> Distributor Order Received
+                                    if (els.wholesalerOrder && els.distributorOrderReceived) {
                                         // Use gameState for order generation (shared with mobile)
                                         const randomIncomingOrder = gameState.generateIncomingOrder();
 
-                                        animateClone(els.retailerOrder, els.wholesalerOrderReceived, randomIncomingOrder.toString(), 'horizontal', () => {
-                                            const targetNum = els.wholesalerOrderReceived.querySelector('.font-bold');
+                                        animateClone(els.wholesalerOrder, els.distributorOrderReceived, randomIncomingOrder.toString(), 'horizontal', () => {
+                                            const targetNum = els.distributorOrderReceived.querySelector('.font-bold');
                                             if (targetNum) targetNum.innerText = randomIncomingOrder;
 
                                             setTimeout(() => {
-                                                if (els.wholesalerOrderReceivedInner && els.wholesalerInventory) {
-                                                    animateClone(els.wholesalerOrderReceivedInner, els.wholesalerInventory, null, 'vertical-align-y', (persistedClone) => {
+                                                if (els.distributorOrderReceivedInner && els.distributorInventory) {
+                                                    animateClone(els.distributorOrderReceivedInner, els.distributorInventory, null, 'vertical-align-y', (persistedClone) => {
                                                         setTimeout(() => {
                                                             if (!persistedClone) return;
 
@@ -1167,17 +1167,17 @@
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
 
                                                             // Use gameState for order processing
-                                                            const { outgoing: deliverVal, newInventory } = gameState.processWholesalerOrder(gameState.incomingOrder);
+                                                            const { outgoing: deliverVal, newInventory } = gameState.processDistributorOrder(gameState.incomingOrder);
                                                             valSpan.innerText = deliverVal;
 
                                                             // Sync DOM with gameState
                                                             syncStateToDOM();
 
-                                                            if (els.greenWeek1) {
-                                                                animateClone(persistedClone, els.greenWeek1, deliverVal, 'vertical-dogleg', () => {
-                                                                    gameState.greenWeek1 = deliverVal;
-                                                                    els.greenWeek1.innerText = gameState.greenWeek1;
-                                                                    els.greenWeek1.style.opacity = '1';
+                                                            if (els.violetWeek1) {
+                                                                animateClone(persistedClone, els.violetWeek1, deliverVal, 'vertical-dogleg', () => {
+                                                                    gameState.violetWeek1 = deliverVal;
+                                                                    els.violetWeek1.innerText = gameState.violetWeek1;
+                                                                    els.violetWeek1.style.opacity = '1';
                                                                     syncStateToDOM();
 
                                                                     if (orderInput) orderInput.disabled = false;
@@ -1262,10 +1262,10 @@
                             });
                         </script>
 
-                        <!-- Order Received Box (Right, Dashed) - incoming orders from Retailer - AMBER -->
-                         <div id="wholesaler-order-received" class="bg-mono-surface border border-dashed border-amber-400/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                        <!-- Order Received Box (Right, Dashed) - incoming orders from Wholesaler - AMBER -->
+                         <div id="distributor-order-received" class="bg-mono-surface border border-dashed border-amber-400/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div id="wholesaler-order-received-value" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                            <div id="distributor-order-received-value" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>
 
@@ -1288,14 +1288,14 @@
                         </div>
                     </div>
                 </div>
-                <!-- PIPE SECTION 2: Wholesaler -> Retailer (Hidden on mobile) -->
+                <!-- PIPE SECTION 2: Distributor -> Wholesaler (Hidden on mobile) -->
                 <div class="hidden lg:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
-                     <!-- Top Pipe: Deliveries (Rightward) - GREEN/ACCENT -->
+                     <!-- Top Pipe: Deliveries (Rightward) - VIOLET/ACCENT -->
                      <div class="relative h-16 top-[40px] w-full flex items-center">
                         <!-- Pipe Background -->
                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
 
-                        <!-- Delay Boxes (Deliveries to Retailer) - GREEN/ACCENT -->
+                        <!-- Delay Boxes (Deliveries to Wholesaler) - VIOLET/ACCENT -->
                         <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
                             <!-- Week 1 -->
                              <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
@@ -1317,9 +1317,9 @@
                     </div>
                 </div>
 
-                <!-- MOBILE VERTICAL CONNECTOR 2: Wholesaler -> Retailer -->
+                <!-- MOBILE VERTICAL CONNECTOR 2: Distributor -> Wholesaler -->
                 <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-60px)] -my-5">
-                    <!-- Left pipe with Week 1/Week 2 boxes (outgoing deliveries flowing down) - GREEN/ACCENT -->
+                    <!-- Left pipe with Week 1/Week 2 boxes (outgoing deliveries flowing down) - VIOLET/ACCENT -->
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
@@ -1342,26 +1342,26 @@
                     <div id="mobile-order-pipe" class="w-[70px] self-stretch bg-mono-surface"></div>
                 </div>
 
-                <!-- 3. RIGHT NODE: RETAILER -->
+                <!-- 3. RIGHT NODE: WHOLESALER -->
                 <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
                     <!-- Header - hidden on mobile -->
                     <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Retailer</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) in top row -->
                     <div class="lg:hidden p-3 pb-0">
-                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Retailer</h3>
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Wholesaler</h3>
                     </div>
 
                     <div class="flex-1 flex flex-col items-center justify-center p-3 lg:p-4 space-y-2 relative">
                         <!-- Mobile Order Box - aligned with right pipe, centered with inventory -->
                         <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-amber-400/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-retailer-order bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                            <div class="mobile-wholesaler-order bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>
                         </div>
-                        <!-- Hidden Inventory Box (Retailer - downstream) -->
-                        <div id="retailer-inventory" class="bg-mono-bg/30 p-4 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] cursor-help" title="Hidden Information">
+                        <!-- Hidden Inventory Box (Wholesaler - downstream) -->
+                        <div id="wholesaler-inventory" class="bg-mono-bg/30 p-4 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] cursor-help" title="Hidden Information">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
@@ -1370,7 +1370,7 @@
                     <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-start">
                         <div class="bg-mono-surface border border-amber-400/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div id="retailer-order" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                            <div id="wholesaler-order" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>
                         </div>
                     </div>
                 </div>
@@ -1497,7 +1497,7 @@
         // Initial conditions
         const INITIAL_INVENTORY = 50;
 
-        // External inputs: orders (from retailer) and deliveries (from distributor)
+        // External inputs: orders (from wholesaler) and deliveries (from factory)
         const weeklyInputs = [
             { week: '1', orders: 10, deliveries: 0 },
             { week: '2', orders: 12, deliveries: 10 },
@@ -1541,8 +1541,8 @@
 
             const row = {
                 week: input.week,
-                incomingOrders: input.orders,         // Orders from retailer
-                deliveries: input.deliveries,         // Deliveries from distributor
+                incomingOrders: input.orders,         // Orders from wholesaler
+                deliveries: input.deliveries,         // Deliveries from factory
                 outgoingOrders: outgoingDeliveries,   // What we ship = min(available, orders)
                 inventory: newInventory,              // End-of-period inventory
                 backorders: newBackorders,            // End-of-period backorders
