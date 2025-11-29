@@ -783,77 +783,9 @@
                                     setTimeout(() => {
                                         console.log("Starting Phase 2...");
 
-                                        const factoryInventoryEl = document.getElementById('factory-inventory');
                                         const factoryInventoryMobileEl = document.getElementById('factory-inventory-mobile');
 
-                                        // --- Phase 2a: Factory Order -> Inventory ---
-                                        // Note: Factory Order is Orange (Accent). Becomes Production Delivery (Cyan).
-                                        if (mobileFactoryOrder && factoryInventoryEl) {
-                                            const orderRect = mobileFactoryOrder.getBoundingClientRect();
-                                            const inventoryRect = factoryInventoryEl.getBoundingClientRect();
-                                            const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - orderRect.left - (orderRect.width / 2);
-
-                                            // Use gameState for production processing (Factory's order to Production)
-                                            const orderValue = parseInt(mobileFactoryOrder.innerText) || 0;
-                                            const deliveryValue = gameState.processProductionOrder(orderValue);
-
-                                            // Clone the order element
-                                            const clone = mobileFactoryOrder.cloneNode(true);
-                                            clone.id = '';
-                                            clone.innerText = orderValue;
-                                            clone.style.position = 'fixed';
-                                            clone.style.left = `${orderRect.left}px`;
-                                            clone.style.top = `${orderRect.top}px`;
-                                            clone.style.width = `${orderRect.width}px`;
-                                            clone.style.height = `${orderRect.height}px`;
-                                            clone.style.margin = '0';
-                                            clone.style.zIndex = '9999';
-                                            clone.style.pointerEvents = 'none';
-                                            document.body.appendChild(clone);
-
-                                            mobileFactoryOrder.innerText = orderValue;
-
-                                            const moveAnimation = clone.animate([
-                                                { transform: 'translate(0, 0)', opacity: 1 },
-                                                { transform: `translate(${horizontalDistance}px, 0)`, opacity: 1 }
-                                            ], {
-                                                duration: 1000,
-                                                easing: 'ease-in-out',
-                                                fill: 'forwards'
-                                            });
-
-                                            moveAnimation.onfinish = () => {
-                                                // Morph to cyan (production): change colors and update value
-                                                clone.style.transition = 'all 0.5s ease-in-out';
-                                                clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)'; // production/10 (cyan)
-                                                clone.style.borderColor = 'rgba(6, 182, 212, 0.2)'; // production/20 (cyan)
-                                                clone.style.color = 'rgb(6, 182, 212)'; // production (cyan)
-                                                clone.innerText = deliveryValue;
-
-                                                setTimeout(() => {
-                                                    const cloneRect = clone.getBoundingClientRect();
-                                                    const inventoryRect2 = factoryInventoryEl.getBoundingClientRect();
-                                                    const relativeLeft = cloneRect.left - inventoryRect2.left;
-                                                    const relativeTop = cloneRect.top - inventoryRect2.top;
-
-                                                    const cyanSlot = document.createElement('div');
-                                                    cyanSlot.className = 'lg:hidden bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px] absolute';
-                                                    cyanSlot.innerText = deliveryValue;
-                                                    cyanSlot.style.left = `${relativeLeft}px`;
-                                                    cyanSlot.style.top = `${relativeTop}px`;
-                                                    cyanSlot.style.width = `${cloneRect.width}px`;
-                                                    cyanSlot.style.zIndex = '50';
-
-                                                    clone.remove();
-                                                    factoryInventoryEl.appendChild(cyanSlot);
-
-                                                    console.log(`Phase 2a complete: Order morphed to cyan delivery (${deliveryValue})`);
-                                                    gameState.phase2.deliveryClone = cyanSlot;
-                                                }, 500);
-                                            };
-                                        }
-
-                                        // --- Phase 2b: Factory Order Received (from Distributor) -> Inventory ---
+                                        // --- Phase 2: Factory Order Received (from Distributor) -> Inventory ---
                                         // Note: Incoming is Violet. Becomes Outgoing Delivery (Orange/Accent).
                                         if (mobileFactoryOrder && factoryInventoryMobileEl) {
                                             // Wait, mobileFactoryOrder is the Output slot.
@@ -930,64 +862,11 @@
                                         }
                                     }, 3000); 
 
-                                    // --- Phase 3: Deliveries move to first week slots ---
+                                    // --- Phase 3: Outgoing delivery moves to Week 1 slot ---
                                     setTimeout(() => {
                                         console.log("Starting Phase 3...");
 
-                                        // 3a: Cyan delivery slot -> Week 1 slot (RIGHT then UP? No, Production is Bottom)
-                                        // Production (Bottom) -> Factory (Middle).
-                                        // Week 1 is between them.
-                                        // So move from Inventory (Middle) -> Week 1 (Below).
-                                        // Flow: Inventory -> Week 1. Direction: DOWN.
-                                        const cyanSlot = gameState.phase2.deliveryClone;
-                                        const week1Target = els.mobileDeliveryWeek1;
-
-                                        if (cyanSlot && week1Target) {
-                                            const cyanRect = cyanSlot.getBoundingClientRect();
-                                            const week1Rect = week1Target.getBoundingClientRect();
-                                            
-                                            // Pipe center is roughly aligned with Week 1 box
-                                            const pipeCenterX = week1Rect.left + (week1Rect.width / 2);
-                                            const horizDist = pipeCenterX - cyanRect.left - (cyanRect.width / 2);
-                                            // Vertical distance DOWN to Week 1
-                                            const vertDist = week1Rect.top - cyanRect.top;
-
-                                            const animClone = document.createElement('div');
-                                            animClone.className = 'lg:hidden bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]';
-                                            animClone.innerText = cyanSlot.innerText;
-                                            animClone.style.position = 'fixed';
-                                            animClone.style.left = `${cyanRect.left}px`;
-                                            animClone.style.top = `${cyanRect.top}px`;
-                                            animClone.style.width = `${cyanRect.width}px`;
-                                            animClone.style.height = `${cyanRect.height}px`;
-                                            animClone.style.zIndex = '9999';
-                                            animClone.style.pointerEvents = 'none';
-                                            document.body.appendChild(animClone);
-
-                                            cyanSlot.style.opacity = '0';
-
-                                            const animation = animClone.animate([
-                                                { transform: 'translate(0, 0)', opacity: 1 },
-                                                { transform: `translate(${horizDist}px, 0)`, opacity: 1, offset: 0.4 },
-                                                { transform: `translate(${horizDist}px, ${vertDist}px)`, opacity: 1 }
-                                            ], {
-                                                duration: 2000,
-                                                easing: 'linear',
-                                                fill: 'forwards'
-                                            });
-
-                                            animation.onfinish = () => {
-                                                animClone.remove();
-                                                gameState.orangeWeek1 = gameState.productionDelivery; // Cyan
-                                                week1Target.innerText = gameState.orangeWeek1;
-                                                week1Target.style.opacity = '1';
-                                                cyanSlot.remove();
-                                                syncStateToDOM();
-                                                console.log("Phase 3a complete: Cyan delivery moved to Week 1 slot");
-                                            };
-                                        }
-
-                                        // 3b: Orange outgoing slot -> Distributor Week 1 (RIGHT then UP)
+                                        // Orange outgoing slot -> Distributor Week 1 (RIGHT then UP)
                                         // Factory (Middle) -> Distributor (Top).
                                         // Week 1 is Above.
                                         // Flow: Inventory (Middle) -> Week 1 (Above). Direction: UP.
@@ -1036,7 +915,7 @@
                                                 console.log("Phase 3b complete: Orange outgoing moved to Week 1 slot");
                                             };
                                         }
-                                    }, 6000); 
+                                    }, 8000); // Wait for Phase 1 (2s) + pause (1s) + Phase 2 (2s) + morph (0.5s) + buffer
 
                                     setTimeout(() => {
                                         if (mobileOrderInput) mobileOrderInput.disabled = false;
@@ -1048,7 +927,7 @@
                                             mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
                                             validateInput();
                                         }
-                                    }, 9000);
+                                    }, 11000); // Phase 3 (8s) + animation (2s) + buffer
                                 };
 
                                 // --- Desktop Animation Function ---
