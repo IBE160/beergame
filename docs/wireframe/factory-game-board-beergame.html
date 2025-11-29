@@ -255,41 +255,33 @@
                                     productionOrderInner: document.getElementById('production-order-value'),
                                     factoryOrderInner: document.getElementById('factory-order-value'),
                                     factoryInventory: document.getElementById('factory-inventory'),
-                                    
-                                    // Incoming Deliveries (from Production - Cyan/Blue)
-                                    orangeWeek1: document.getElementById('delivery-week-1'), // Named orangeWeek1 in logic but holds Production delivery
-                                    orangeWeek2: document.getElementById('delivery-week-2'),
-                                    
-                                    // Outgoing Deliveries (to Distributor - Orange/Accent)
-                                    violetWeek1: document.getElementById('outgoing-week-1'), // Named violetWeek1 in logic but holds Factory delivery
+
+                                    // Outgoing Deliveries (to Distributor - Violet/Orange)
+                                    // Desktop
+                                    violetWeek1: document.getElementById('outgoing-week-1'),
                                     violetWeek2: document.getElementById('outgoing-week-2'),
-                                    
-                                    factoryOrderReceived: document.getElementById('factory-order-received'),
-                                    factoryOrderReceivedInner: document.getElementById('factory-order-received-value'),
-                                    
-                                    distributorOrder: document.getElementById('distributor-order'),
-                                    distributorInventory: document.getElementById('distributor-inventory'),
-                                    productionInventory: document.getElementById('production-inventory'),
-                                    
-                                    // Mobile elements
-                                    mobileDeliveryWeek1: document.getElementById('mobile-delivery-week-1'),
-                                    mobileDeliveryWeek2: document.getElementById('mobile-delivery-week-2'),
-                                    mobileDeliveryWeek1Box: document.getElementById('mobile-delivery-week-1-box'),
-                                    mobileDeliveryWeek2Box: document.getElementById('mobile-delivery-week-2-box'),
+                                    // Mobile
                                     mobileOutgoingWeek1: document.getElementById('mobile-outgoing-week-1'),
                                     mobileOutgoingWeek2: document.getElementById('mobile-outgoing-week-2'),
                                     mobileOutgoingWeek1Box: document.getElementById('mobile-outgoing-week-1-box'),
                                     mobileOutgoingWeek2Box: document.getElementById('mobile-outgoing-week-2-box'),
 
-                                    // Production Week boxes (inside Production node)
+                                    factoryOrderReceived: document.getElementById('factory-order-received'),
+                                    factoryOrderReceivedInner: document.getElementById('factory-order-received-value'),
+
+                                    distributorOrder: document.getElementById('distributor-order'),
+                                    distributorInventory: document.getElementById('distributor-inventory'),
+                                    productionInventory: document.getElementById('production-inventory'),
+
+                                    // Production Week boxes (inside Production node - Cyan)
+                                    // Desktop
+                                    productionWeek1: document.getElementById('production-week-1'),
+                                    productionWeek2: document.getElementById('production-week-2'),
+                                    // Mobile
                                     mobileProductionWeek1: document.getElementById('mobile-production-week-1'),
                                     mobileProductionWeek2: document.getElementById('mobile-production-week-2'),
                                     mobileProductionWeek1Box: document.getElementById('mobile-production-week-1-box'),
-                                    mobileProductionWeek2Box: document.getElementById('mobile-production-week-2-box'),
-
-                                    // Desktop Production Week boxes
-                                    productionWeek1: document.getElementById('production-week-1'),
-                                    productionWeek2: document.getElementById('production-week-2')
+                                    mobileProductionWeek2Box: document.getElementById('mobile-production-week-2-box')
                                 };
 
                                 // ========================================
@@ -315,14 +307,9 @@
                                     // Production Week slots (inside Production node - Cyan)
                                     productionWeek1: 20,
                                     productionWeek2: 30,
-                                    // Outgoing Week slots (Factory -> Distributor pipe - Orange)
+                                    // Outgoing Week slots (Factory -> Distributor pipe - Violet/Orange)
                                     violetWeek1: 25,
                                     violetWeek2: 20,
-                                    // Legacy aliases for compatibility
-                                    get orangeWeek1() { return this.productionWeek1; },
-                                    set orangeWeek1(v) { this.productionWeek1 = v; },
-                                    get orangeWeek2() { return this.productionWeek2; },
-                                    set orangeWeek2(v) { this.productionWeek2 = v; },
 
                                     // Phase 2 clone references (for Phase 3)
                                     phase2: {
@@ -359,10 +346,10 @@
                                     },
 
                                     advanceWeeks() {
-                                        // Incoming deliveries pipeline
-                                        this.orangeWeek2 = this.orangeWeek1;
-                                        this.orangeWeek1 = this.productionDelivery;
-                                        // Outgoing deliveries pipeline
+                                        // Production pipeline (inside Production node)
+                                        this.productionWeek2 = this.productionWeek1;
+                                        this.productionWeek1 = this.productionDelivery;
+                                        // Outgoing deliveries pipeline (Factory -> Distributor)
                                         this.violetWeek2 = this.violetWeek1;
                                         this.violetWeek1 = this.factoryOutgoing;
                                     }
@@ -376,15 +363,19 @@
                                     if (desktopInv) desktopInv.innerText = gameState.factoryInventory;
                                     if (mobileInv) mobileInv.innerText = gameState.factoryInventory;
 
-                                    // Week slots (desktop)
-                                    if (els.orangeWeek1) els.orangeWeek1.innerText = gameState.orangeWeek1;
-                                    if (els.orangeWeek2) els.orangeWeek2.innerText = gameState.orangeWeek2;
+                                    // Production Week slots (inside Production node - Cyan)
+                                    // Desktop
+                                    if (els.productionWeek1) els.productionWeek1.innerText = gameState.productionWeek1;
+                                    if (els.productionWeek2) els.productionWeek2.innerText = gameState.productionWeek2;
+                                    // Mobile
+                                    if (els.mobileProductionWeek1) els.mobileProductionWeek1.innerText = gameState.productionWeek1;
+                                    if (els.mobileProductionWeek2) els.mobileProductionWeek2.innerText = gameState.productionWeek2;
+
+                                    // Outgoing Week slots (Factory -> Distributor pipe - Violet/Orange)
+                                    // Desktop
                                     if (els.violetWeek1) els.violetWeek1.innerText = gameState.violetWeek1;
                                     if (els.violetWeek2) els.violetWeek2.innerText = gameState.violetWeek2;
-
-                                    // Week slots (mobile)
-                                    if (els.mobileDeliveryWeek1) els.mobileDeliveryWeek1.innerText = gameState.orangeWeek1;
-                                    if (els.mobileDeliveryWeek2) els.mobileDeliveryWeek2.innerText = gameState.orangeWeek2;
+                                    // Mobile
                                     if (els.mobileOutgoingWeek1) els.mobileOutgoingWeek1.innerText = gameState.violetWeek1;
                                     if (els.mobileOutgoingWeek2) els.mobileOutgoingWeek2.innerText = gameState.violetWeek2;
                                 }
@@ -583,9 +574,7 @@
                                     const orderVal = mobileOrderInput?.value || '0';
                                     const randomIncomingOrder = gameState.generateIncomingOrder();
 
-                                    // Get current values from gameState
-                                    const deliveryWeek1Val = gameState.orangeWeek1.toString();
-                                    const deliveryWeek2Val = gameState.orangeWeek2.toString();
+                                    // Get current values from gameState for outgoing slots
                                     const outgoingWeek1Val = gameState.violetWeek1.toString();
                                     const outgoingWeek2Val = gameState.violetWeek2.toString();
 
