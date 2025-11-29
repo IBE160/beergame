@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html class="" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Beer Game - Factory Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+
+<!-- React & Recharts Dependencies -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+<script src="https://unpkg.com/recharts@2.5.0/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        'mono-bg': '#1A1A1A', // Dark charcoal/black background
+                        'mono-surface': '#2C2C2C', // Slightly lighter dark gray for cards/surfaces
+                        'mono-text': '#E0E0E0', // Light gray for primary text
+                        'mono-light': '#808080', // Medium gray for secondary text/borders
+                        'accent': '#F97316', // Orange as the contrasting accent color (Factory)
+                        'production': '#06B6D4', // Cyan for Production pipeline
+                    },
+                    fontFamily: {
+                        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+                        mono: ["Roboto Mono", "monospace"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.25rem", // Sharper corners for a modern look
+                        'sm': "0.125rem",
+                        'md': "0.375rem",
+                        'lg': "0.5rem",
+                        'xl': "0.75rem",
+                        'full': "9999px",
+                    },
+                    borderWidth: {
+                        '1': '1px',
+                    }
+                },
+            },
+        };
+    </script>
+<style type="text/tailwindcss">body {
+            @apply font-sans bg-mono-bg text-mono-text antialiased;
+        }.flow-pipe {
+            @apply absolute bg-mono-light opacity-50 transition-all duration-300 ease-out;
+        }
+        .flow-pipe.active {
+            @apply bg-accent opacity-100;
+        }
+        .flow-pipe.vertical {
+            @apply w-[2px] h-1/2;
+        }
+        .flow-pipe.horizontal {
+            @apply h-[2px] w-1/2;
+        }
+        .flow-pipe.arrow-end::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            @apply opacity-0 transition-opacity duration-300 ease-out;
+        }
+        .flow-pipe.arrow-end.active::after {
+             @apply opacity-100;
+        }
+        .flow-pipe.arrow-down::after {
+            border-width: 6px 4px 0 4px;border-color: var(--tw-bg-accent) transparent transparent transparent;
+            left: 50%;
+            bottom: -6px;transform: translateX(-50%);
+        }
+        .flow-pipe.arrow-up::after {
+            border-width: 0 4px 6px 4px;border-color: transparent transparent var(--tw-bg-accent) transparent;
+            left: 50%;
+            top: -6px;transform: translateX(-50%);
+        }
+        .flow-pipe.arrow-right::after {
+            border-width: 4px 0 4px 6px;border-color: transparent transparent transparent var(--tw-bg-accent);
+            top: 50%;
+            right: -6px;transform: translateY(-50%);
+        }
+        .flow-pipe.arrow-left::after {
+            border-width: 4px 6px 4px 0;border-color: transparent var(--tw-bg-accent) transparent transparent;
+            top: 50%;
+            left: -6px;transform: translateY(-50%);
+        }
+        /* Hide numeric spinners */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+</head>
+<body class="font-sans bg-mono-bg text-mono-text antialiased">
+    <div class="w-full h-screen p-6 overflow-auto">
+        <div class="flex-1 flex flex-col w-full max-w-[1600px] mx-auto relative z-10 space-y-6 px-6">
+            
+            <!-- MAIN GAME BOARD (Sketch Implementation) -->
+            <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-8 shadow-2xl flex items-stretch justify-between gap-0 relative overflow-hidden">
+                
+                <!-- 1. LEFT NODE: WHOLESALER -->
+                <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
+                    <div class="p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Production</h3>
+                    </div>
+                    <div class="flex-1 flex flex-col items-center justify-evenly p-4 relative">
+                         <!-- Faint background icon -->
+                         <span class="material-symbols-outlined text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">precision_manufacturing</span>
+
+                         <!-- Week 2 (Production Pipeline) -->
+                         <div class="bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform z-10">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                            <div id="delivery-week-2" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">30</div>
+                        </div>
+                         <!-- Week 1 (Production Pipeline) -->
+                         <div class="bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform z-10">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                            <div id="delivery-week-1" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">20</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PIPE SECTION 1: Production -> Factory -->
+                <div class="flex-1 flex flex-col justify-between py-4 relative min-w-[200px]">
+
+                    <!-- Top Pipe: Deliveries (Rightward) -->
+                    <div class="relative h-16 top-[40px] w-full flex items-center">
+                        <!-- Pipe Background -->
+                        <div id="production-pipe" class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
+                    </div>
+
+                    <!-- Bottom Pipe: Orders (Leftward) -->
+                    <div class="relative h-16 w-full flex items-center top-[5px]">
+                        <!-- Pipe Background -->
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[40px] bg-mono-surface rounded-none"></div>
+                    </div>
+                </div>
+
+                <!-- 2. CENTER NODE: INVENTORY (RETAILER) -->
+                <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
+                    
+                    <!-- Header -->
+                    <div class="p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Factory</h3>
+                    </div>
+
+                    <!-- Inventory Display (Wrapped Box) -->
+                    <div class="flex-1 flex items-center justify-center pt-[34px] p-6">
+                         <div id="retailer-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
+                            <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
+                            <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Section: Order (Left) & Demand (Right) -->
+                    <div class="p-4 bg-mono-surface rounded-b-xl flex justify-between items-end gap-2 relative">
+                        
+                        <!-- Order Section with Send Button -->
+                        <div class="flex flex-col items-center gap-2">
+                            <button class="w-full bg-transparent border border-accent hover:bg-accent/10 text-white rounded py-1 shadow-md transition-colors flex items-center justify-center">
+                                <span class="text-[10px] font-bold uppercase">Send</span>
+                            </button>
+                        
+                            <!-- Order Input (Numeric Up/Down - Styled like Wholesaler) -->
+                             <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform relative group">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
+                                <div id="retailer-order-value" class="bg-accent/10 px-1 py-0 rounded border border-accent/20 flex items-center justify-center min-w-[55px]">
+                                    <input type="number" value="30" id="orderInput" min="0" class="w-6 bg-transparent text-center font-sans font-bold text-accent text-xs border-0 p-0 focus:ring-0 appearance-none" />
+                                    <div class="flex flex-col ml-0.5">
+                                        <button id="btnUp" class="text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
+                                        <button id="btnDown" class="text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_down</span></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Script for Order Input Logic & Animations -->
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const orderInput = document.getElementById('orderInput');
+                                const btnUp = document.getElementById('btnUp');
+                                const btnDown = document.getElementById('btnDown');
+                                const btnSend = document.querySelector('button.w-full.bg-transparent.border-accent');
+
+                                // --- Get Elements by ID ---
+                                const els = {
+                                    wholesalerOrderInner: document.getElementById('wholesaler-order-value'),
+                                    retailerOrderInner: document.getElementById('retailer-order-value'),
+                                    retailerInventory: document.getElementById('retailer-inventory'),
+                                    greenWeek1: document.getElementById('delivery-week-1'),
+                                    greenWeek2: document.getElementById('delivery-week-2'),
+                                    yellowWeek1: document.getElementById('outgoing-week-1'),
+                                    yellowWeek2: document.getElementById('outgoing-week-2'),
+                                    retailerDemand: document.getElementById('retailer-demand'),
+                                    retailerDemandInner: document.getElementById('retailer-demand-value'),
+                                    customerDemand: document.getElementById('customer-demand'),
+                                    downstreamInventory: document.getElementById('downstream-inventory'),
+                                    wholesalerInventory: document.getElementById('wholesaler-inventory'),
+                                    productionPipe: document.getElementById('production-pipe')
+                                };
+
+                                // --- Input Logic ---
+                                const validateInput = () => {
+                                    const val = orderInput.value;
+                                    const isEmpty = val === '' || val === null;
+                                    
+                                    if (isEmpty) {
+                                        btnSend.disabled = true;
+                                        btnSend.classList.add('opacity-50', 'cursor-not-allowed');
+                                        btnSend.classList.remove('hover:bg-accent/10');
+                                    } else {
+                                        btnSend.disabled = false;
+                                        btnSend.classList.remove('opacity-50', 'cursor-not-allowed');
+                                        btnSend.classList.add('hover:bg-accent/10');
+                                    }
+                                };
+
+                                btnUp.addEventListener('click', () => { orderInput.stepUp(); validateInput(); });
+                                btnDown.addEventListener('click', () => { orderInput.stepDown(); validateInput(); });
+                                orderInput.addEventListener('input', validateInput);
+                                orderInput.addEventListener('change', () => { 
+                                    if (orderInput.value < 0) orderInput.value = 0;
+                                    validateInput(); 
+                                });
+                                validateInput();
+
+                                // --- Animation Logic ---
+                                window.startState3Animation = () => {
+                                    console.log("Starting State 3 Animations (Order + Green Week 2)...");
+
+                                    // Helper to clone and animate
+                                    const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null, persist = false, overwrite = false) => {
+                                        if (!sourceEl || !targetEl) {
+                                            console.error("Animation Source or Target missing", { sourceEl, targetEl });
+                                            return;
+                                        }
+                                        
+                                        const rectSource = sourceEl.getBoundingClientRect();
+                                        const rectTarget = targetEl.getBoundingClientRect();
+                                        
+                                        // Create Ghost
+                                        const clone = sourceEl.cloneNode(true);
+                                        
+                                        // Clean up clone IDs/inputs
+                                        clone.id = '';
+                                        const input = clone.querySelector('input');
+                                        if (input) {
+                                            const val = input.value;
+                                            const span = document.createElement('span');
+                                            span.innerText = val;
+                                            span.className = input.className.replace('bg-transparent', ''); 
+                                            span.style.display = 'inline-block';
+                                            input.replaceWith(span);
+                                            const btns = clone.querySelectorAll('button');
+                                            btns.forEach(b => b.remove());
+                                        }
+                                        
+                                        if (textOverride !== null) {
+                                            const numberDiv = clone.querySelector('.font-bold') || clone;
+                                            numberDiv.innerText = textOverride;
+                                        }
+
+                                        // Style Ghost
+                                        clone.style.position = 'fixed';
+                                        clone.style.left = `${rectSource.left}px`;
+                                        clone.style.top = `${rectSource.top}px`;
+                                        clone.style.width = `${rectSource.width}px`;
+                                        clone.style.height = `${rectSource.height}px`;
+                                        clone.style.margin = '0';
+                                        clone.style.zIndex = '9999';
+                                        clone.style.pointerEvents = 'none';
+                                        clone.style.transition = 'none';
+                                        document.body.appendChild(clone);
+
+                                        // Calculate Keyframes
+                                        let keyframes;
+                                        const deltaX = rectTarget.left - rectSource.left;
+                                        const deltaY = rectTarget.top - rectSource.top;
+
+                                        if (pathType === 'dogleg') {
+                                            // Horizontal to left border, then down to center
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
+                                            
+                                            const waypointX = deltaX; // Align left edges
+                                            const finalX = deltaX + centerOffsetX; // Center in box
+                                            const finalY = deltaY + centerOffsetY; // Center in box
+                                            
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)', offset: 0 },
+                                                { transform: `translate(${waypointX}px, 0)`, offset: 0.6 },
+                                                { transform: `translate(${finalX}px, ${finalY}px)`, offset: 1 }
+                                            ];
+                                        } else if (pathType === 'vertical-dogleg') {
+                                            // Vertical first, then horizontal
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
+                                            
+                                            const finalX = deltaX + centerOffsetX;
+                                            const finalY = deltaY + centerOffsetY;
+                                            // Move vertically to target's Y level (plus centering)
+                                            const adjustedY = finalY;
+                                            
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)', offset: 0 },
+                                                { transform: `translate(0, ${adjustedY}px)`, offset: 0.6 },
+                                                { transform: `translate(${finalX}px, ${adjustedY}px)`, offset: 1 }
+                                            ];
+                                        } else if (pathType === 'vertical-align-y') {
+                                            // Vertical only, align to target's Y center, preserve Source X
+                                            const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
+                                            const finalY = deltaY + centerOffsetY;
+
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)' },
+                                                { transform: `translate(0, ${finalY}px)` }
+                                            ];
+                                        } else if (pathType === 'horizontal') {
+                                            // Horizontal only, keep Y at 0, center at target
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const finalX = deltaX + centerOffsetX;
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)' },
+                                                { transform: `translate(${finalX}px, 0)` }
+                                            ];
+                                        } else if (pathType === 'via-pipe-to-inventory') {
+                                            // 3-step path: vertical to pipe center, horizontal along pipe, then to inventory center
+                                            const pipeRect = els.productionPipe.getBoundingClientRect();
+                                            const pipeCenterY = pipeRect.top + pipeRect.height / 2;
+                                            const sourceCenterY = rectSource.top + rectSource.height / 2;
+
+                                            // Step 1: Move vertically to align with pipe center
+                                            const step1Y = pipeCenterY - sourceCenterY;
+
+                                            // Step 2: Move horizontally to the left edge of target (inventory)
+                                            const step2X = rectTarget.left - rectSource.left;
+
+                                            // Step 3: Move to center of inventory
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const centerOffsetY = (rectTarget.top + rectTarget.height / 2) - pipeCenterY;
+                                            const finalX = step2X + centerOffsetX;
+                                            const finalY = step1Y + centerOffsetY;
+
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)', offset: 0 },
+                                                { transform: `translate(0, ${step1Y}px)`, offset: 0.25 },
+                                                { transform: `translate(${step2X}px, ${step1Y}px)`, offset: 0.7 },
+                                                { transform: `translate(${finalX}px, ${finalY}px)`, offset: 1 }
+                                            ];
+                                        } else if (pathType === 'horizontal-then-vertical') {
+                                            // 2-step path: horizontal to align with target X center, then vertical to target center
+                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
+                                            const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
+
+                                            // Step 1: Move horizontally to align center with target center X
+                                            const step1X = deltaX + centerOffsetX;
+
+                                            // Step 2: Move vertically to target center
+                                            const finalY = deltaY + centerOffsetY;
+
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)', offset: 0 },
+                                                { transform: `translate(${step1X}px, 0)`, offset: 0.6 },
+                                                { transform: `translate(${step1X}px, ${finalY}px)`, offset: 1 }
+                                            ];
+                                        } else {
+                                            // Direct path
+                                            keyframes = [
+                                                { transform: 'translate(0, 0)' },
+                                                { transform: `translate(${deltaX}px, ${deltaY}px)` }
+                                            ];
+                                        }
+
+                                        // Animate
+                                        const animation = clone.animate(keyframes, {
+                                            duration: 2000,
+                                            easing: 'ease-in-out',
+                                            fill: 'forwards'
+                                        });
+
+                                        animation.onfinish = () => {
+                                            if (!persist) clone.remove();
+                                            // Optional: update target text
+                                            if (overwrite || targetEl.innerText.trim() === '' || targetEl.innerText.trim() === '&nbsp;') {
+                                                targetEl.innerText = input ? input.value : clone.innerText.trim();
+                                            }
+                                            if (onComplete) onComplete(clone);
+                                        };
+                                    };
+
+                                    // 1. Green Week 2 -> Retailer Inventory (via pipe)
+                                    animateClone(els.greenWeek2, els.retailerInventory, null, 'via-pipe-to-inventory', () => {
+                                        // Update Inventory to 80 (50 + 30)
+                                        const invNumber = els.retailerInventory.querySelector('.text-5xl');
+                                        if (invNumber) invNumber.innerText = '80';
+                                    });
+                                    // Hide source Green Week 2 number immediately
+                                    els.greenWeek2.style.opacity = '0';
+
+                                    // 2. Factory Order -> Production Week 1 (horizontal then vertical)
+                                    if (els.retailerOrderInner && els.greenWeek1) {
+                                        // Capture order value before animation
+                                        const capturedOrderVal = document.getElementById('orderInput').value || '0';
+                                        animateClone(els.retailerOrderInner, els.greenWeek1, capturedOrderVal, 'horizontal-then-vertical', (clone) => {
+                                            // Morph color from Factory orange to Production cyan
+                                            if (clone) {
+                                                clone.style.transition = 'all 0.3s ease-out';
+                                                clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)'; // production/10
+                                                clone.style.borderColor = 'rgba(6, 182, 212, 0.2)'; // production/20
+                                                clone.style.color = '#06B6D4'; // production
+                                                // Remove clone after color morph is visible
+                                                setTimeout(() => clone.remove(), 300);
+                                            }
+                                            // Update Week 1 with Order value
+                                            els.greenWeek1.innerText = capturedOrderVal;
+                                            els.greenWeek1.style.opacity = '1';
+                                        }, true); // persist clone for color morph
+                                        // Clear the order input as it "moves"
+                                        document.getElementById('orderInput').value = '';
+                                    }
+
+                                    // 3. Green Week 1 -> Green Week 2
+                                    if (els.greenWeek1 && els.greenWeek2) {
+                                        const val = els.greenWeek1.innerText;
+                                        animateClone(els.greenWeek1, els.greenWeek2, null, 'direct', () => {
+                                            // Update Week 2 with Week 1's value and show it
+                                            els.greenWeek2.innerText = val;
+                                            els.greenWeek2.style.opacity = '1';
+                                        });
+                                        // Hide source Week 1 number immediately
+                                        els.greenWeek1.style.opacity = '0';
+                                    }
+
+                                    // 4. Yellow Week 2 -> Downstream Inventory
+                                    if (els.yellowWeek2 && els.downstreamInventory) {
+                                        animateClone(els.yellowWeek2, els.downstreamInventory, null, 'dogleg');
+                                        // Hide source number immediately
+                                        els.yellowWeek2.style.opacity = '0';
+                                    }
+
+                                    // 5. Yellow Week 1 -> Yellow Week 2
+                                    if (els.yellowWeek1 && els.yellowWeek2) {
+                                        const val = els.yellowWeek1.innerText;
+                                        animateClone(els.yellowWeek1, els.yellowWeek2, null, 'direct', () => {
+                                            // Update Week 2 with Week 1's value and show it
+                                            els.yellowWeek2.innerText = val;
+                                            els.yellowWeek2.style.opacity = '1';
+                                        });
+                                        // Hide source Week 1 number immediately
+                                        els.yellowWeek1.style.opacity = '0';
+                                    }
+
+                                    // 6. Customer Demand -> Retailer Demand
+                                    if (els.customerDemand && els.retailerDemand) {
+                                        // Random Demand 10-20
+                                        const randomDemand = Math.floor(Math.random() * 11) + 10;
+                                        
+                                        animateClone(els.customerDemand, els.retailerDemand, randomDemand.toString(), 'horizontal', () => {
+                                            const targetNum = els.retailerDemand.querySelector('.font-bold');
+                                            if (targetNum) targetNum.innerText = randomDemand;
+
+                                            // Phase 3: Retailer Demand -> Middle of Inventory (Vertical Align Y)
+                                            // Imitates Wholesaler Order movements
+                                            setTimeout(() => {
+                                                if (els.retailerDemandInner && els.retailerInventory) {
+                                                    animateClone(els.retailerDemandInner, els.retailerInventory, null, 'vertical-align-y', (persistedClone) => {
+                                                        // Phase 4: Morph & Move to Yellow Week 1
+                                                        setTimeout(() => {
+                                                            if (!persistedClone) return;
+
+                                                            // 1. Morph into Orange Delivery Order
+                                                            // Remove violet order styles (from Distributor)
+                                                            persistedClone.classList.remove('bg-violet-500/10', 'border-violet-500/20', 'text-violet-400');
+                                                            // Add orange accent styles (Factory's color)
+                                                            persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
+
+                                                            // Calculate & Update Value: Min(CurrentInv, Demand)
+                                                            const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
+                                                            // Use the randomDemand we generated
+                                                            const demandVal = randomDemand;
+                                                            
+                                                            // Get current inventory to calculate delivery cap
+                                                            const invNumber = els.retailerInventory.querySelector('.text-5xl');
+                                                            let currentInv = 0;
+                                                            if (invNumber) currentInv = parseInt(invNumber.innerText) || 0;
+
+                                                            const deliverVal = Math.min(currentInv, demandVal);
+                                                            valSpan.innerText = deliverVal;
+
+                                                            // Decrease Inventory Level
+                                                            if (invNumber) {
+                                                                invNumber.innerText = Math.max(0, currentInv - deliverVal);
+                                                            }
+
+                                                            // 2. Move to Yellow Week 1 (Vertical Dogleg: Up then Right)
+                                                            if (els.yellowWeek1) {
+                                                                animateClone(persistedClone, els.yellowWeek1, deliverVal, 'vertical-dogleg', () => {
+                                                                    els.yellowWeek1.innerText = deliverVal;
+                                                                    els.yellowWeek1.style.opacity = '1';
+
+                                                                    // Reset Interface for Next Round
+                                                                    if (orderInput) orderInput.disabled = false;
+                                                                    if (btnUp) btnUp.disabled = false;
+                                                                    if (btnDown) btnDown.disabled = false;
+
+                                                                    if (btnSend) {
+                                                                        btnSend.querySelector('span').innerText = "Send";
+                                                                        validateInput();
+                                                                    }
+                                                                });
+                                                                // Remove the intermediate clone
+                                                                persistedClone.remove();
+                                                            }
+                                                        }, 1000);
+                                                    }, true);
+                                                }
+                                            }, 1000);
+                                        });
+                                    }
+                                };
+
+                                // --- Send Button Logic ---
+                                if (btnSend) {
+                                    btnSend.addEventListener('click', () => {
+                                        // State 1 -> Transition
+                                        orderInput.disabled = true;
+                                        btnUp.disabled = true;
+                                        btnDown.disabled = true;
+                                        btnSend.disabled = true;
+                                        
+                                        btnSend.querySelector('span').innerText = "WAIT";
+                                        btnSend.classList.add('opacity-50', 'cursor-not-allowed');
+                                        btnSend.classList.remove('hover:bg-accent/10');
+
+                                        // Simulate 5 second delay
+                                        setTimeout(() => {
+                                            // State 2: Sent/Waiting
+                                            btnSend.querySelector('span').innerText = "SENT";
+                                            console.log("Transition to State 2 complete. Order locked.");
+                                            
+                                            // Trigger State 3
+                                            startState3Animation();
+                                        }, 5000);
+                                    });
+                                }
+                            });
+                        </script>
+
+                        <!-- Order Box (Right, Dashed) - from Distributor (purple) -->
+                         <div id="retailer-demand" class="bg-mono-surface border border-dashed border-violet-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform cursor-pointer">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div id="retailer-demand-value" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                        </div>
+                    </div>                                                      
+                </div>
+                <!-- PIPE SECTION 2: Retailer -> Customer -->
+                <div class="flex-1 flex flex-col justify-between py-4 relative min-w-[200px]">
+                     <!-- Top Pipe: Deliveries (Rightward) -->
+                     <div class="relative h-16 top-[40px] w-full flex items-center">
+                        <!-- Pipe Background -->
+                        <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
+
+                        <!-- Delay Boxes (Deliveries to Customer) -->
+                        <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
+                            <!-- Week 1 -->
+                             <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                                <div id="outgoing-week-1" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">25</div>
+                            </div>
+                            <!-- Week 2 -->
+                             <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                                <div id="outgoing-week-2" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">20</div>
+                            </div>
+                       </div>
+                    </div>
+
+                    <!-- Bottom Pipe: Demand (Leftward) -->
+                    <div class="relative h-16 w-full flex items-center top-[5px]">
+                         <!-- Pipe Background -->
+                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[40px] bg-mono-surface rounded-none"></div>
+                    </div>
+                </div>
+
+                <!-- 3. RIGHT NODE: CUSTOMERS -->
+                <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
+                    <div class="p-4 border-b  border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Distributor</h3>
+                    </div>
+                    <!-- Downstream Inventory Display -->
+                    <div class="flex-1 flex items-center justify-center pt-[34px] p-6">
+                        <div id="downstream-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
+                            <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
+                            <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
+                        </div>
+                    </div>
+                    <!-- Order Box (Bottom) - from Distributor (purple) -->
+                    <div class="p-4 bg-mono-surface rounded-b-xl flex justify-start">
+                        <div class="bg-mono-surface border border-violet-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div id="customer-demand" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">?</div>                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Animation Styles -->
+            <style>
+                @keyframes slideRight {
+                    0% { transform: translateX(-100%); opacity: 0; }
+                    50% { opacity: 1; }
+                    100% { transform: translateX(100%); opacity: 0; }
+                }
+                @keyframes slideLeft {
+                    0% { transform: translateX(100%); opacity: 0; }
+                    50% { opacity: 1; }
+                    100% { transform: translateX(-100%); opacity: 0; }
+                }
+                @keyframes extendLeft {
+                    0% { width: 0; opacity: 0.5; }
+                    100% { width: 100%; opacity: 0; }
+                }
+            </style>
+
+            <!-- Charts Container -->
+            <div id="charts-root" class="w-full flex-1 min-h-[320px] mt-8 mb-8"></div>
+        </div>
+    </div>
+
+    <script type="text/babel">
+        const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
+
+        // Mock Data for Beer Game (Retailer Perspective - Customer Demand Spikes)
+        const data = [
+            { week: 'W1', orders: 12, inventory: 40, cost: 60 },
+            { week: 'W2', orders: 15, inventory: 35, cost: 130 },
+            { week: 'W3', orders: 25, inventory: 25, cost: 210 },
+            { week: 'W4', orders: 40, inventory: 5, cost: 320 },
+            { week: 'W5', orders: 35, inventory: -10, cost: 480 },
+            { week: 'W6', orders: 30, inventory: -25, cost: 700 },
+            { week: 'W7', orders: 20, inventory: -15, cost: 850 },
+            { week: 'W8', orders: 15, inventory: 0, cost: 950 },
+            { week: 'W9', orders: 12, inventory: 10, cost: 1000 },
+            { week: 'W10', orders: 12, inventory: 15, cost: 1050 },
+        ];
+
+        const CustomTooltip = ({ active, payload, label }) => {
+            if (active && payload && payload.length) {
+                return (
+                    <div className="bg-mono-surface border border-mono-light/20 p-3 rounded shadow-xl">
+                        <p className="text-mono-text font-bold mb-1">{label}</p>
+                        {payload.map((entry, index) => (
+                            <p key={index} style={{ color: entry.color }} className="text-sm">
+                                {entry.name}: {entry.value}
+                            </p>
+                        ))}
+                    </div>
+                );
+            }
+            return null;
+        };
+
+        const DashboardCharts = () => {
+            return (
+                <div className="grid grid-cols-2 gap-6 w-full h-full">
+                    {/* Orders vs Inventory Chart */}
+                    <div className="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
+                        <h3 className="font-semibold mb-4 text-mono-text">Orders vs. Inventory</h3>
+                        <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded overflow-hidden">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+                                    <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                    <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Legend verticalAlign="top" height={36} />
+                                    <Line type="monotone" dataKey="orders" name="Orders" stroke="#E0E0E0" strokeWidth={2} dot={{r: 3, fill: '#E0E0E0'}} activeDot={{r: 5}} />
+                                    <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#F97316" strokeWidth={3} dot={{r: 3, fill: '#F97316'}} activeDot={{r: 6}} />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+
+                    {/* Cost Accumulation Chart */}
+                    <div className="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
+                        <h3 className="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
+                        <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded overflow-hidden">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                    <defs>
+                                        <linearGradient id="colorCostRetailer" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#F97316" stopOpacity={0.8}/>
+                                            <stop offset="95%" stopColor="#F97316" stopOpacity={0}/>
+                                        </linearGradient>
+                                    </defs>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+                                    <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                    <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
+                                    <Tooltip content={<CustomTooltip />} />
+                                    <Area type="monotone" dataKey="cost" name="Total Cost ($)" stroke="#F97316" fillOpacity={1} fill="url(#colorCostRetailer)" />
+                                </AreaChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('charts-root'));
+        root.render(<DashboardCharts />);
+    </script>
+</body></html>
