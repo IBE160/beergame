@@ -820,17 +820,16 @@
                                         // Step 2: Move LEFT to Week 1 horizontal position
                                         const deltaX = week1Rect.left + (week1Rect.width/2) - (orderRect.left + orderRect.width/2);
 
-                                        // Clone the element
-                                        const clone = factoryOrderBox.cloneNode(true);
+                                        // Clone from the Week 1 slot to get the correct size
+                                        const clone = els.mobileProductionWeek1.cloneNode(true);
                                         clone.id = '';
-                                        // Get the input value and display it
-                                        const orderValForClone = orderVal;
-                                        clone.innerHTML = orderValForClone;
+                                        clone.innerText = orderVal;
                                         clone.style.position = 'fixed';
-                                        clone.style.left = `${orderRect.left}px`;
-                                        clone.style.top = `${orderRect.top}px`;
-                                        clone.style.width = `${orderRect.width}px`;
-                                        clone.style.height = `${orderRect.height}px`;
+                                        // Start at the order box position but with Week 1 slot size
+                                        clone.style.left = `${orderRect.left + (orderRect.width - week1Rect.width) / 2}px`;
+                                        clone.style.top = `${orderRect.top + (orderRect.height - week1Rect.height) / 2}px`;
+                                        clone.style.width = `${week1Rect.width}px`;
+                                        clone.style.height = `${week1Rect.height}px`;
                                         clone.style.margin = '0';
                                         clone.style.zIndex = '9999';
                                         clone.style.pointerEvents = 'none';
