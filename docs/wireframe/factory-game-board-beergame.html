@@ -2,7 +2,7 @@
 <html class="" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Beer Game - Distributor Dashboard</title>
+<title>Beer Game - Factory Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
@@ -25,7 +25,8 @@
                         'mono-surface': '#2C2C2C', // Slightly lighter dark gray for cards/surfaces
                         'mono-text': '#E0E0E0', // Light gray for primary text
                         'mono-light': '#808080', // Medium gray for secondary text/borders
-                        'accent': '#8B5CF6', // Violet/Purple as the contrasting accent color
+                        'accent': '#F97316', // Orange as the contrasting accent color (Factory)
+                        'production': '#06B6D4', // Cyan for Production pipeline
                     },
                     fontFamily: {
                         sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
@@ -109,29 +110,29 @@
             <!-- MAIN GAME BOARD (Sketch Implementation) -->
             <div class="w-full bg-mono-surface/40 backdrop-blur-md border border-mono-light/10 rounded-2xl p-4 lg:p-6 lg:p-8 shadow-2xl flex flex-col-reverse lg:flex-row items-stretch lg:justify-between gap-4 lg:gap-0 relative overflow-hidden">
 
-                <!-- 1. LEFT NODE: FACTORY -->
+                <!-- 1. LEFT NODE: PRODUCTION -->
                 <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20 group">
                     <!-- Header - hidden on mobile -->
                     <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Factory</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Production</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) in top row -->
                     <div class="lg:hidden p-3 pb-0">
-                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Factory</h3>
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Production</h3>
                     </div>
 
                     <div class="flex-1 flex items-center justify-start pt-2 lg:pt-[34px] p-3 lg:p-4 relative flex-col">
                         <!-- Mobile Order Box - aligned with right pipe, centered with inventory -->
                         <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-factory-order-value bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                            <div class="mobile-production-order-value bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                          <!-- Faint background icon -->
-                         <span class="material-symbols-outlined text-7xl lg:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">factory</span>
+                         <span class="material-symbols-outlined text-7xl lg:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">precision_manufacturing</span>
 
-                         <!-- Hidden Inventory Box (Factory) -->
-                         <div id="factory-inventory" class="bg-mono-bg/30 p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
+                         <!-- Hidden Inventory Box (Production) -->
+                         <div id="production-inventory" class="bg-mono-bg/30 p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
@@ -140,12 +141,12 @@
                     <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-end">
                          <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div id="factory-order-value" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                                <div id="production-order-value" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- PIPE SECTION 1: Factory -> Distributor (Hidden on mobile) -->
+                <!-- PIPE SECTION 1: Production -> Factory (Hidden on mobile) -->
                 <div class="hidden lg:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
 
                     <!-- Top Pipe: Deliveries (Rightward) -->
@@ -153,17 +154,17 @@
                         <!-- Pipe Background -->
                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
 
-                        <!-- Delay Boxes (Sitting on pipe) - ORANGE for incoming deliveries from Factory -->
+                        <!-- Delay Boxes (Sitting on pipe) - ORANGE for incoming deliveries from Production -->
                         <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
                              <!-- Week 1 -->
-                             <div class="bg-mono-surface border border-orange-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                             <div class="bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                                <div id="delivery-week-1" class="bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]">20</div>
+                                <div id="delivery-week-1" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">20</div>
                             </div>
                              <!-- Week 2 -->
-                             <div class="bg-mono-surface border border-orange-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                             <div class="bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                                <div id="delivery-week-2" class="bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                                <div id="delivery-week-2" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">30</div>
                             </div>
                         </div>
                     </div>
@@ -175,23 +176,23 @@
                     </div>
                 </div>
 
-                <!-- MOBILE VERTICAL CONNECTOR 1: Factory -> Distributor -->
+                <!-- MOBILE VERTICAL CONNECTOR 1: Production -> Factory -->
                 <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-60px)] -my-5">
                     <!-- Left pipe with Week 1/Week 2 boxes (deliveries flowing down) - ORANGE -->
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
                         <!-- Week 2 box -->
-                        <div id="mobile-delivery-week-2-box" class="bg-mono-surface border border-orange-500/30 rounded p-2">
+                        <div id="mobile-delivery-week-2-box" class="bg-mono-surface border border-production/30 rounded p-2">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                            <div id="mobile-delivery-week-2" class="bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                            <div id="mobile-delivery-week-2" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">30</div>
                         </div>
                         <!-- Pipe between Week 2 and Week 1 -->
                         <div class="w-[70px] flex-1 min-h-[16px] bg-mono-surface"></div>
                         <!-- Week 1 box -->
-                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-orange-500/30 rounded p-2">
+                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-production/30 rounded p-2">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                            <div id="mobile-delivery-week-1" class="bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]">20</div>
+                            <div id="mobile-delivery-week-1" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">20</div>
                         </div>
                         <!-- Vertical pipe line (bottom) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
@@ -200,32 +201,32 @@
                     <div id="mobile-order-pipe-1" class="w-[70px] self-stretch bg-mono-surface"></div>
                 </div>
 
-                <!-- 2. CENTER NODE: INVENTORY (DISTRIBUTOR) -->
+                <!-- 2. CENTER NODE: INVENTORY (FACTORY) -->
                 <div class="w-full lg:w-56 min-h-[250px] lg:min-h-0 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-30">
                     <!-- Mobile: Absolutely centered Inventory (pushed down to avoid overlap with Order) -->
-                    <div id="distributor-inventory-mobile" class="lg:hidden absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 bg-mono-bg/30 p-2 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] min-h-[120px] z-20">
+                    <div id="factory-inventory-mobile" class="lg:hidden absolute left-1/2 top-[55%] -translate-x-1/2 -translate-y-1/2 bg-mono-bg/30 p-2 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] min-h-[120px] z-20">
                         <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-10">Inventory</h4>
                         <div class="text-3xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
                     </div>
 
                     <!-- Header - hidden on mobile -->
                     <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Distributor</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Factory</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) + Order slot at top right -->
                     <div class="lg:hidden p-3 pb-0 relative">
-                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Distributor</h3>
-                        <!-- Mobile Order Box - aligned with right pipe at top (incoming orders from Wholesaler) - GREEN (Wholesaler color) -->
-                        <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-emerald-500/30 p-2 rounded shadow-lg z-10">
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Factory</h3>
+                        <!-- Mobile Order Box - aligned with right pipe at top (incoming orders from Distributor) - GREEN (Distributor color) -->
+                        <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-violet-500/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-distributor-order-value bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20 text-emerald-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                            <div class="mobile-factory-order-value bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>
 
                     <!-- Inventory Display (Wrapped Box) - Desktop only -->
                     <div class="hidden lg:flex flex-1 items-center justify-center pt-[34px] p-6">
-                         <div id="distributor-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
+                         <div id="factory-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">50</div>
                         </div>
@@ -245,7 +246,7 @@
                             <!-- Order Input (Numeric Up/Down) -->
                              <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform relative group">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div id="distributor-order-value" class="bg-accent/10 px-1 py-0 rounded border border-accent/20 flex items-center justify-center min-w-[55px]">
+                                <div id="factory-order-value" class="bg-accent/10 px-1 py-0 rounded border border-accent/20 flex items-center justify-center min-w-[55px]">
                                     <input type="number" value="30" id="orderInput" min="0" class="w-6 bg-transparent text-center font-sans font-bold text-accent border-0 p-0 focus:ring-0 appearance-none" />
                                     <div class="flex flex-col ml-0.5">
                                         <button id="btnUp" class="text-accent hover:text-white leading-none"><span class="material-symbols-outlined text-[10px]">arrow_drop_up</span></button>
@@ -269,24 +270,24 @@
                                 const mobileBtnUp = document.querySelector('.mobile-btn-up');
                                 const mobileBtnDown = document.querySelector('.mobile-btn-down');
                                 const mobileBtnSend = document.querySelector('.mobile-btn-send');
-                                const mobileDistributorOrder = document.querySelector('.mobile-distributor-order-value');
-                                const mobileWholesalerOrder = document.querySelector('.mobile-wholesaler-order');
                                 const mobileFactoryOrder = document.querySelector('.mobile-factory-order-value');
+                                const mobileDistributorOrder = document.querySelector('.mobile-distributor-order');
+                                const mobileProductionOrder = document.querySelector('.mobile-production-order-value');
 
                                 // --- Get Elements by ID ---
                                 const els = {
+                                    productionOrderInner: document.getElementById('production-order-value'),
                                     factoryOrderInner: document.getElementById('factory-order-value'),
-                                    distributorOrderInner: document.getElementById('distributor-order-value'),
-                                    distributorInventory: document.getElementById('distributor-inventory'),
+                                    factoryInventory: document.getElementById('factory-inventory'),
                                     orangeWeek1: document.getElementById('delivery-week-1'),
                                     orangeWeek2: document.getElementById('delivery-week-2'),
                                     violetWeek1: document.getElementById('outgoing-week-1'),
                                     violetWeek2: document.getElementById('outgoing-week-2'),
-                                    distributorOrderReceived: document.getElementById('distributor-order-received'),
-                                    distributorOrderReceivedInner: document.getElementById('distributor-order-received-value'),
-                                    wholesalerOrder: document.getElementById('wholesaler-order'),
-                                    wholesalerInventory: document.getElementById('wholesaler-inventory'),
-                                    factoryInventory: document.getElementById('factory-inventory'),
+                                    factoryOrderReceived: document.getElementById('factory-order-received'),
+                                    factoryOrderReceivedInner: document.getElementById('factory-order-received-value'),
+                                    distributorOrder: document.getElementById('distributor-order'),
+                                    distributorInventory: document.getElementById('distributor-inventory'),
+                                    productionInventory: document.getElementById('production-inventory'),
                                     // Mobile elements
                                     mobileDeliveryWeek1: document.getElementById('mobile-delivery-week-1'),
                                     mobileDeliveryWeek2: document.getElementById('mobile-delivery-week-2'),
@@ -304,18 +305,18 @@
                                 const gameState = {
                                     // Configuration
                                     config: {
-                                        factoryInventory: 100,
+                                        productionInventory: 100,
                                         orderRange: { min: 10, max: 20 }
                                     },
 
                                     // Current values (shared between mobile/desktop)
                                     incomingOrder: 0,
                                     orderValue: 0,
-                                    distributorInventory: 50,
+                                    factoryInventory: 50,
 
                                     // Calculated delivery values
-                                    factoryDelivery: 0,
-                                    distributorOutgoing: 0,
+                                    productionDelivery: 0,
+                                    factoryOutgoing: 0,
 
                                     // Week slot values
                                     orangeWeek1: 20,
@@ -340,40 +341,40 @@
                                         return Math.min(Math.max(0, available), Math.max(0, requested));
                                     },
 
-                                    processFactoryOrder(orderValue) {
+                                    processProductionOrder(orderValue) {
                                         this.orderValue = orderValue;
-                                        this.factoryDelivery = this.calculateDelivery(this.config.factoryInventory, orderValue);
-                                        return this.factoryDelivery;
+                                        this.productionDelivery = this.calculateDelivery(this.config.productionInventory, orderValue);
+                                        return this.productionDelivery;
                                     },
 
-                                    processDistributorOrder(orderValue) {
-                                        this.distributorOutgoing = this.calculateDelivery(this.distributorInventory, orderValue);
-                                        this.distributorInventory = Math.max(0, this.distributorInventory - orderValue);
-                                        return { outgoing: this.distributorOutgoing, newInventory: this.distributorInventory };
+                                    processFactoryOrder(orderValue) {
+                                        this.factoryOutgoing = this.calculateDelivery(this.factoryInventory, orderValue);
+                                        this.factoryInventory = Math.max(0, this.factoryInventory - orderValue);
+                                        return { outgoing: this.factoryOutgoing, newInventory: this.factoryInventory };
                                     },
 
                                     receiveDelivery(amount) {
-                                        this.distributorInventory += amount;
-                                        return this.distributorInventory;
+                                        this.factoryInventory += amount;
+                                        return this.factoryInventory;
                                     },
 
                                     advanceWeeks() {
-                                        // Orange weeks (incoming deliveries from factory)
+                                        // Orange weeks (incoming deliveries from production)
                                         this.orangeWeek2 = this.orangeWeek1;
-                                        this.orangeWeek1 = this.factoryDelivery;
-                                        // Violet weeks (outgoing deliveries to wholesaler)
+                                        this.orangeWeek1 = this.productionDelivery;
+                                        // Violet weeks (outgoing deliveries to distributor)
                                         this.violetWeek2 = this.violetWeek1;
-                                        this.violetWeek1 = this.distributorOutgoing;
+                                        this.violetWeek1 = this.factoryOutgoing;
                                     }
                                 };
 
                                 // Sync gameState to all DOM elements
                                 function syncStateToDOM() {
-                                    // Distributor inventory (both mobile and desktop)
-                                    const desktopInv = els.distributorInventory?.querySelector('.text-5xl');
-                                    const mobileInv = document.getElementById('distributor-inventory-mobile')?.querySelector('.text-3xl');
-                                    if (desktopInv) desktopInv.innerText = gameState.distributorInventory;
-                                    if (mobileInv) mobileInv.innerText = gameState.distributorInventory;
+                                    // Factory inventory (both mobile and desktop)
+                                    const desktopInv = els.factoryInventory?.querySelector('.text-5xl');
+                                    const mobileInv = document.getElementById('factory-inventory-mobile')?.querySelector('.text-3xl');
+                                    if (desktopInv) desktopInv.innerText = gameState.factoryInventory;
+                                    if (mobileInv) mobileInv.innerText = gameState.factoryInventory;
 
                                     // Week slots (desktop)
                                     if (els.orangeWeek1) els.orangeWeek1.innerText = gameState.orangeWeek1;
@@ -599,53 +600,53 @@
 
                                     // ========================================
                                     // PHASE 1: Two parallel animations (both DOWNWARD)
-                                    // 1. Wholesaler Order -> Distributor Order Received
-                                    // 2. Distributor Order -> Factory Order
+                                    // 1. Distributor Order -> Factory Order Received
+                                    // 2. Factory Order -> Production Order
                                     // Only inner value boxes animate, NOT containers with labels
                                     // ========================================
 
-                                    // --- Animation 1: Wholesaler Order -> Distributor Order Received ---
-                                    // Keep wholesaler order as "?" - only the animated clone shows the number
+                                    // --- Animation 1: Distributor Order -> Factory Order Received ---
+                                    // Keep distributor order as "?" - only the animated clone shows the number
                                     // The clone will display randomIncomingOrder while original stays as "?"
 
-                                    // Animate ONLY the inner value box (mobileWholesalerOrder) to distributor order inner box
-                                    // Direction: vertical-down (wholesaler is at top, distributor is below)
-                                    animateClone(mobileWholesalerOrder, mobileDistributorOrder, randomIncomingOrder.toString(), 'vertical-down', () => {
-                                        // Update distributor order received slot - value stays visible here
-                                        mobileDistributorOrder.innerText = randomIncomingOrder;
-                                        if (els.distributorOrderReceivedInner) els.distributorOrderReceivedInner.innerText = randomIncomingOrder;
-                                        // Wholesaler order stays as "?" (original was never changed)
-                                        console.log("Phase 1a complete: Order arrived at distributor order slot");
+                                    // Animate ONLY the inner value box (mobileDistributorOrder) to factory order inner box
+                                    // Direction: vertical-down (distributor is at top, factory is below)
+                                    animateClone(mobileDistributorOrder, mobileFactoryOrder, randomIncomingOrder.toString(), 'vertical-down', () => {
+                                        // Update factory order received slot - value stays visible here
+                                        mobileFactoryOrder.innerText = randomIncomingOrder;
+                                        if (els.factoryOrderReceivedInner) els.factoryOrderReceivedInner.innerText = randomIncomingOrder;
+                                        // Distributor order stays as "?" (original was never changed)
+                                        console.log("Phase 1a complete: Order arrived at factory order slot");
                                     }, false, true);
 
-                                    // --- Animation 2: Distributor Order -> Factory Order ---
-                                    // Get the distributor order value box (the div containing the input's parent)
+                                    // --- Animation 2: Factory Order -> Production Order ---
+                                    // Get the factory order value box (the div containing the input's parent)
                                     const mobileOrderValueBox = mobileOrderInput?.parentElement;
 
-                                    if (mobileOrderValueBox && mobileFactoryOrder) {
-                                        // Animate the order value box downward to factory order slot
-                                        // Direction: vertical-down (distributor is above factory in mobile layout)
-                                        animateClone(mobileOrderValueBox, mobileFactoryOrder, orderVal, 'vertical-down', () => {
-                                            // Update factory order slot - value stays visible here
-                                            mobileFactoryOrder.innerText = orderVal;
-                                            if (els.factoryOrderInner) els.factoryOrderInner.innerText = orderVal;
-                                            console.log("Phase 1b complete: Order arrived at factory order slot");
+                                    if (mobileOrderValueBox && mobileProductionOrder) {
+                                        // Animate the order value box downward to production order slot
+                                        // Direction: vertical-down (factory is above production in mobile layout)
+                                        animateClone(mobileOrderValueBox, mobileProductionOrder, orderVal, 'vertical-down', () => {
+                                            // Update production order slot - value stays visible here
+                                            mobileProductionOrder.innerText = orderVal;
+                                            if (els.productionOrderInner) els.productionOrderInner.innerText = orderVal;
+                                            console.log("Phase 1b complete: Order arrived at production order slot");
 
-                                            // Clear the distributor order input after animation
+                                            // Clear the factory order input after animation
                                             if (mobileOrderInput) mobileOrderInput.value = '';
                                         }, false, true);
                                     }
 
-                                    // --- Animation 3: Outgoing Week 2 inner -> Wholesaler (UP along pipe, then RIGHT into wholesaler inventory) ---
-                                    const wholesalerInventoryEl = document.getElementById('wholesaler-inventory');
+                                    // --- Animation 3: Outgoing Week 2 inner -> Distributor (UP along pipe, then RIGHT into distributor inventory) ---
+                                    const distributorInventoryEl = document.getElementById('distributor-inventory');
 
-                                    if (els.mobileOutgoingWeek2 && mobileWholesalerOrder && wholesalerInventoryEl) {
+                                    if (els.mobileOutgoingWeek2 && mobileDistributorOrder && distributorInventoryEl) {
                                         // Calculate distances
                                         const week2Rect = els.mobileOutgoingWeek2.getBoundingClientRect();
-                                        const orderRect = mobileWholesalerOrder.getBoundingClientRect();
-                                        const wholesalerInventoryRect = wholesalerInventoryEl.getBoundingClientRect();
+                                        const orderRect = mobileDistributorOrder.getBoundingClientRect();
+                                        const distributorInventoryRect = distributorInventoryEl.getBoundingClientRect();
                                         const verticalDistance = week2Rect.top - orderRect.top;
-                                        const horizontalDistance = wholesalerInventoryRect.left + (wholesalerInventoryRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
+                                        const horizontalDistance = distributorInventoryRect.left + (distributorInventoryRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
 
                                         // Clone the element
                                         const clone = els.mobileOutgoingWeek2.cloneNode(true);
@@ -674,7 +675,7 @@
 
                                         animation.onfinish = () => {
                                             clone.remove();
-                                            console.log("Phase 1c complete: Week 2 delivered to wholesaler");
+                                            console.log("Phase 1c complete: Week 2 delivered to distributor");
                                         };
 
                                         // Clear Week 2 slot
@@ -696,13 +697,13 @@
                                         els.mobileOutgoingWeek1.style.opacity = '0';
                                     }
 
-                                    // --- Animation 5: Orange Delivery Week 2 inner -> Distributor Inventory (DOWN along pipe, then RIGHT into inventory) ---
-                                    const distributorInventoryMobile = document.getElementById('distributor-inventory-mobile');
+                                    // --- Animation 5: Orange Delivery Week 2 inner -> Factory Inventory (DOWN along pipe, then RIGHT into inventory) ---
+                                    const factoryInventoryMobile = document.getElementById('factory-inventory-mobile');
 
-                                    if (els.mobileDeliveryWeek2 && distributorInventoryMobile) {
+                                    if (els.mobileDeliveryWeek2 && factoryInventoryMobile) {
                                         // Calculate distances
                                         const week2Rect = els.mobileDeliveryWeek2.getBoundingClientRect();
-                                        const inventoryRect = distributorInventoryMobile.getBoundingClientRect();
+                                        const inventoryRect = factoryInventoryMobile.getBoundingClientRect();
                                         const verticalDistance = inventoryRect.top + (inventoryRect.height / 2) - week2Rect.top - (week2Rect.height / 2);
                                         const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
 
@@ -760,8 +761,8 @@
 
                                     // ========================================
                                     // PHASE 2: After 1 sec pause
-                                    // 1. Order in Factory -> LEFT into Inventory -> Morph to orange
-                                    // 2. Order in Distributor -> LEFT to center, DOWN into Inventory -> Morph to outgoing (violet)
+                                    // 1. Order in Factory -> LEFT into Inventory -> Morph to cyan (production)
+                                    // 2. Order in Factory -> LEFT to center, DOWN into Inventory -> Morph to outgoing (orange)
                                     // ========================================
                                     setTimeout(() => {
                                         console.log("Starting Phase 2...");
@@ -810,11 +811,11 @@
                                             });
 
                                             moveAnimation.onfinish = () => {
-                                                // Morph to orange: change colors and update value
+                                                // Morph to cyan (production): change colors and update value
                                                 clone.style.transition = 'all 0.5s ease-in-out';
-                                                clone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)'; // orange-500/10
-                                                clone.style.borderColor = 'rgba(249, 115, 22, 0.2)'; // orange-500/20
-                                                clone.style.color = 'rgb(251, 146, 60)'; // orange-400
+                                                clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)'; // production/10 (cyan)
+                                                clone.style.borderColor = 'rgba(6, 182, 212, 0.2)'; // production/20 (cyan)
+                                                clone.style.color = 'rgb(6, 182, 212)'; // production (cyan)
                                                 clone.innerText = deliveryValue;
 
                                                 // After morph, create a new element at the exact position where clone ended
@@ -829,7 +830,7 @@
 
                                                     // Create a new orange delivery element inside inventory (mobile only)
                                                     const orangeSlot = document.createElement('div');
-                                                    orangeSlot.className = 'lg:hidden bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px] absolute';
+                                                    orangeSlot.className = 'lg:hidden bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px] absolute';
                                                     orangeSlot.innerText = deliveryValue;
                                                     orangeSlot.style.left = `${relativeLeft}px`;
                                                     orangeSlot.style.top = `${relativeTop}px`;
@@ -849,10 +850,10 @@
                                             };
                                         }
 
-                                        // --- Phase 2b: Distributor Order Received -> Inventory (LEFT then DOWN) ---
-                                        if (mobileDistributorOrder && distributorInventoryMobileEl) {
-                                            const orderRect = mobileDistributorOrder.getBoundingClientRect();
-                                            const invRect = distributorInventoryMobileEl.getBoundingClientRect();
+                                        // --- Phase 2b: Factory Order Received -> Inventory (LEFT then DOWN) ---
+                                        if (mobileFactoryOrder && factoryInventoryMobileEl) {
+                                            const orderRect = mobileFactoryOrder.getBoundingClientRect();
+                                            const invRect = factoryInventoryMobileEl.getBoundingClientRect();
 
                                             // Calculate horizontal distance to center of inventory
                                             const horizDist = invRect.left + (invRect.width / 2) - orderRect.left - (orderRect.width / 2);
@@ -862,10 +863,10 @@
 
                                             // Use gameState for order processing
                                             const orderValue = gameState.incomingOrder;
-                                            const { outgoing: outgoingDelivery, newInventory: newDistributorInv } = gameState.processDistributorOrder(orderValue);
+                                            const { outgoing: outgoingDelivery, newInventory: newFactoryInv } = gameState.processFactoryOrder(orderValue);
 
                                             // Clone the order element (copy moves, original stays)
-                                            const orderClone = mobileDistributorOrder.cloneNode(true);
+                                            const orderClone = mobileFactoryOrder.cloneNode(true);
                                             orderClone.id = '';
                                             orderClone.innerText = orderValue;
                                             orderClone.style.position = 'fixed';
@@ -879,7 +880,7 @@
                                             document.body.appendChild(orderClone);
 
                                             // Keep original order slot visible with the value
-                                            mobileDistributorOrder.innerText = orderValue;
+                                            mobileFactoryOrder.innerText = orderValue;
 
                                             // Animation: LEFT horizontally to center, then DOWN into inventory
                                             const orderAnimation = orderClone.animate([
@@ -893,20 +894,20 @@
                                             });
 
                                             orderAnimation.onfinish = () => {
-                                                // Morph to violet/accent (outgoing delivery to wholesaler)
+                                                // Morph to orange/accent (outgoing delivery to distributor)
                                                 orderClone.style.transition = 'all 0.5s ease-in-out';
-                                                orderClone.style.backgroundColor = 'rgba(139, 92, 246, 0.1)'; // violet-500/10
-                                                orderClone.style.borderColor = 'rgba(139, 92, 246, 0.2)'; // violet-500/20
-                                                orderClone.style.color = 'rgb(167, 139, 250)'; // violet-400
+                                                orderClone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)'; // accent/10 (orange)
+                                                orderClone.style.borderColor = 'rgba(249, 115, 22, 0.2)'; // accent/20 (orange)
+                                                orderClone.style.color = 'rgb(251, 146, 60)'; // orange-400
                                                 orderClone.innerText = outgoingDelivery;
 
-                                                // Update distributor inventory via DOM sync
+                                                // Update factory inventory via DOM sync
                                                 syncStateToDOM();
 
                                                 // After morph, create element inside inventory
                                                 setTimeout(() => {
                                                     const cloneRect = orderClone.getBoundingClientRect();
-                                                    const invRect2 = distributorInventoryMobileEl.getBoundingClientRect();
+                                                    const invRect2 = factoryInventoryMobileEl.getBoundingClientRect();
 
                                                     const relLeft = cloneRect.left - invRect2.left;
                                                     const relTop = cloneRect.top - invRect2.top;
@@ -920,9 +921,9 @@
                                                     violetSlot.style.zIndex = '50';
 
                                                     orderClone.remove();
-                                                    distributorInventoryMobileEl.appendChild(violetSlot);
+                                                    factoryInventoryMobileEl.appendChild(violetSlot);
 
-                                                    console.log(`Phase 2b complete: Order morphed to outgoing delivery (${outgoingDelivery}), Inventory: ${newDistributorInv}`);
+                                                    console.log(`Phase 2b complete: Order morphed to outgoing delivery (${outgoingDelivery}), Inventory: ${newFactoryInv}`);
                                                     // Store reference for Phase 3 in gameState
                                                     gameState.phase2.outgoingClone = violetSlot;
                                                 }, 500);
@@ -954,7 +955,7 @@
 
                                             // Create a fixed-position clone for animation
                                             const animClone = document.createElement('div');
-                                            animClone.className = 'lg:hidden bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]';
+                                            animClone.className = 'lg:hidden bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]';
                                             animClone.innerText = orangeSlot.innerText;
                                             animClone.style.position = 'fixed';
                                             animClone.style.left = `${orangeRect.left}px`;
@@ -993,7 +994,7 @@
                                             };
                                         }
 
-                                        // --- Phase 3b: Violet outgoing slot -> Distributor Week 1 (RIGHT then UP) ---
+                                        // --- Phase 3b: Violet outgoing slot -> Factory Outgoing Week 1 (RIGHT then UP) ---
                                         const violetSlot = gameState.phase2.outgoingClone;
                                         const outgoingWeek1Target = els.mobileOutgoingWeek1;
 
@@ -1071,24 +1072,24 @@
                                 const startDesktopAnimation = () => {
                                     console.log("Starting Desktop Animations (Horizontal)...");
 
-                                    // 1. Distributor Order -> Factory Order (Direct)
-                                    animateClone(els.distributorOrderInner, els.factoryOrderInner, null, 'direct', () => {
-                                        // PHASE 2: Factory Order -> Middle of Inventory (Vertical Align Y)
+                                    // 1. Factory Order -> Production Order (Direct)
+                                    animateClone(els.factoryOrderInner, els.productionOrderInner, null, 'direct', () => {
+                                        // PHASE 2: Production Order -> Middle of Inventory (Vertical Align Y)
                                         setTimeout(() => {
-                                            if (els.factoryOrderInner && els.factoryInventory) {
-                                                animateClone(els.factoryOrderInner, els.factoryInventory, null, 'vertical-align-y', (persistedClone) => {
+                                            if (els.productionOrderInner && els.productionInventory) {
+                                                animateClone(els.productionOrderInner, els.productionInventory, null, 'vertical-align-y', (persistedClone) => {
                                                     // PHASE 3: Morph & Move to Week 1
                                                     setTimeout(() => {
                                                         if (!persistedClone) return;
 
-                                                        // Morph into Orange Delivery
+                                                        // Morph into Cyan (Production) Delivery
                                                         persistedClone.classList.remove('bg-accent/10', 'border-accent/20', 'text-accent');
-                                                        persistedClone.classList.add('bg-orange-500/10', 'border-orange-500/20', 'text-orange-400');
+                                                        persistedClone.classList.add('bg-production/10', 'border-production/20', 'text-production');
 
                                                         const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
                                                         const orderVal = parseInt(valSpan.innerText) || 0;
                                                         // Use gameState for delivery calculation
-                                                        const deliverVal = gameState.processFactoryOrder(orderVal);
+                                                        const deliverVal = gameState.processProductionOrder(orderVal);
                                                         valSpan.innerText = deliverVal;
 
                                                         if (els.orangeWeek1) {
@@ -1106,12 +1107,12 @@
                                         }, 1000);
                                     }, false, true);
 
-                                    // Clear source Distributor Order
-                                    const desktopOrderInput = els.distributorOrderInner.querySelector('input');
+                                    // Clear source Factory Order
+                                    const desktopOrderInput = els.factoryOrderInner.querySelector('input');
                                     if (desktopOrderInput) desktopOrderInput.value = '';
 
-                                    // 2. Orange Week 2 -> Distributor Inventory
-                                    animateClone(els.orangeWeek2, els.distributorInventory, null, 'dogleg', () => {
+                                    // 2. Orange Week 2 -> Factory Inventory
+                                    animateClone(els.orangeWeek2, els.factoryInventory, null, 'dogleg', () => {
                                         // Use gameState to receive delivery
                                         gameState.receiveDelivery(gameState.orangeWeek2);
                                         syncStateToDOM();
@@ -1129,9 +1130,9 @@
                                         els.orangeWeek1.style.opacity = '0';
                                     }
 
-                                    // 4. Violet Week 2 -> Wholesaler
-                                    if (els.violetWeek2 && els.wholesalerInventory) {
-                                        animateClone(els.violetWeek2, els.wholesalerInventory, null, 'dogleg');
+                                    // 4. Violet Week 2 -> Distributor
+                                    if (els.violetWeek2 && els.distributorInventory) {
+                                        animateClone(els.violetWeek2, els.distributorInventory, null, 'dogleg');
                                         els.violetWeek2.style.opacity = '0';
                                     }
 
@@ -1146,28 +1147,28 @@
                                         els.violetWeek1.style.opacity = '0';
                                     }
 
-                                    // 6. Wholesaler Order -> Distributor Order Received
-                                    if (els.wholesalerOrder && els.distributorOrderReceived) {
+                                    // 6. Distributor Order -> Factory Order Received
+                                    if (els.distributorOrder && els.factoryOrderReceived) {
                                         // Use gameState for order generation (shared with mobile)
                                         const randomIncomingOrder = gameState.generateIncomingOrder();
 
-                                        animateClone(els.wholesalerOrder, els.distributorOrderReceived, randomIncomingOrder.toString(), 'horizontal', () => {
-                                            const targetNum = els.distributorOrderReceived.querySelector('.font-bold');
+                                        animateClone(els.distributorOrder, els.factoryOrderReceived, randomIncomingOrder.toString(), 'horizontal', () => {
+                                            const targetNum = els.factoryOrderReceived.querySelector('.font-bold');
                                             if (targetNum) targetNum.innerText = randomIncomingOrder;
 
                                             setTimeout(() => {
-                                                if (els.distributorOrderReceivedInner && els.distributorInventory) {
-                                                    animateClone(els.distributorOrderReceivedInner, els.distributorInventory, null, 'vertical-align-y', (persistedClone) => {
+                                                if (els.factoryOrderReceivedInner && els.factoryInventory) {
+                                                    animateClone(els.factoryOrderReceivedInner, els.factoryInventory, null, 'vertical-align-y', (persistedClone) => {
                                                         setTimeout(() => {
                                                             if (!persistedClone) return;
 
-                                                            persistedClone.classList.remove('bg-emerald-500/10', 'border-emerald-500/20', 'text-emerald-400');
+                                                            persistedClone.classList.remove('bg-violet-500/10', 'border-violet-500/20', 'text-violet-400');
                                                             persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
 
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
 
                                                             // Use gameState for order processing
-                                                            const { outgoing: deliverVal, newInventory } = gameState.processDistributorOrder(gameState.incomingOrder);
+                                                            const { outgoing: deliverVal, newInventory } = gameState.processFactoryOrder(gameState.incomingOrder);
                                                             valSpan.innerText = deliverVal;
 
                                                             // Sync DOM with gameState
@@ -1262,10 +1263,10 @@
                             });
                         </script>
 
-                        <!-- Order Received Box (Right, Dashed) - incoming orders from Wholesaler - GREEN (Wholesaler color) -->
-                         <div id="distributor-order-received" class="bg-mono-surface border border-dashed border-emerald-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                        <!-- Order Received Box (Right, Dashed) - incoming orders from Distributor - GREEN (Distributor color) -->
+                         <div id="factory-order-received" class="bg-mono-surface border border-dashed border-violet-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div id="distributor-order-received-value" class="bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20 text-emerald-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                            <div id="factory-order-received-value" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>
 
@@ -1288,14 +1289,14 @@
                         </div>
                     </div>
                 </div>
-                <!-- PIPE SECTION 2: Distributor -> Wholesaler (Hidden on mobile) -->
+                <!-- PIPE SECTION 2: Factory -> Distributor (Hidden on mobile) -->
                 <div class="hidden lg:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
                      <!-- Top Pipe: Deliveries (Rightward) - VIOLET/ACCENT -->
                      <div class="relative h-16 top-[40px] w-full flex items-center">
                         <!-- Pipe Background -->
                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
 
-                        <!-- Delay Boxes (Deliveries to Wholesaler) - VIOLET/ACCENT -->
+                        <!-- Delay Boxes (Deliveries to Distributor) - VIOLET/ACCENT -->
                         <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
                             <!-- Week 1 -->
                              <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
@@ -1317,7 +1318,7 @@
                     </div>
                 </div>
 
-                <!-- MOBILE VERTICAL CONNECTOR 2: Distributor -> Wholesaler -->
+                <!-- MOBILE VERTICAL CONNECTOR 2: Factory -> Distributor -->
                 <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-60px)] -my-5">
                     <!-- Left pipe with Week 1/Week 2 boxes (outgoing deliveries flowing down) - VIOLET/ACCENT -->
                     <div class="flex flex-col items-center justify-evenly">
@@ -1342,35 +1343,35 @@
                     <div id="mobile-order-pipe" class="w-[70px] self-stretch bg-mono-surface"></div>
                 </div>
 
-                <!-- 3. RIGHT NODE: WHOLESALER -->
+                <!-- 3. RIGHT NODE: DISTRIBUTOR -->
                 <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
                     <!-- Header - hidden on mobile -->
                     <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
-                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                        <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Distributor</h3>
                     </div>
 
                     <!-- Mobile: Title (centered) in top row -->
                     <div class="lg:hidden p-3 pb-0">
-                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Distributor</h3>
                     </div>
 
                     <div class="flex-1 flex flex-col items-center justify-center p-3 lg:p-4 space-y-2 relative">
-                        <!-- Mobile Order Box - aligned with right pipe, centered with inventory - GREEN (Wholesaler color) -->
-                        <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-emerald-500/30 p-2 rounded shadow-lg z-10">
+                        <!-- Mobile Order Box - aligned with right pipe, centered with inventory - GREEN (Distributor color) -->
+                        <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-violet-500/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-wholesaler-order bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20 text-emerald-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                            <div class="mobile-distributor-order bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">?</div>
                         </div>
-                        <!-- Hidden Inventory Box (Wholesaler - downstream) -->
-                        <div id="wholesaler-inventory" class="bg-mono-bg/30 p-4 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] cursor-help" title="Hidden Information">
+                        <!-- Hidden Inventory Box (Distributor - downstream) -->
+                        <div id="distributor-inventory" class="bg-mono-bg/30 p-4 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] cursor-help" title="Hidden Information">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
                             <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
                     </div>
-                    <!-- Order Box (Bottom) - tablet/desktop only - GREEN (Wholesaler color) -->
+                    <!-- Order Box (Bottom) - tablet/desktop only - GREEN (Distributor color) -->
                     <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-start">
-                        <div class="bg-mono-surface border border-emerald-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                        <div class="bg-mono-surface border border-violet-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div id="wholesaler-order" class="bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20 text-emerald-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                            <div id="distributor-order" class="bg-violet-500/10 px-3 py-1 rounded border border-violet-500/20 text-violet-400 font-sans font-bold text-center min-w-[55px]">?</div>
                         </div>
                     </div>
                 </div>
@@ -1497,7 +1498,7 @@
         // Initial conditions
         const INITIAL_INVENTORY = 50;
 
-        // External inputs: orders (from wholesaler) and deliveries (from factory)
+        // External inputs: orders (from distributor) and deliveries (from production)
         const weeklyInputs = [
             { week: '1', orders: 10, deliveries: 0 },
             { week: '2', orders: 12, deliveries: 10 },
@@ -1541,8 +1542,8 @@
 
             const row = {
                 week: input.week,
-                incomingOrders: input.orders,         // Orders from wholesaler
-                deliveries: input.deliveries,         // Deliveries from factory
+                incomingOrders: input.orders,         // Orders from distributor
+                deliveries: input.deliveries,         // Deliveries from production
                 outgoingOrders: outgoingDeliveries,   // What we ship = min(available, orders)
                 inventory: newInventory,              // End-of-period inventory
                 backorders: newBackorders,            // End-of-period backorders
@@ -1840,11 +1841,11 @@
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={data} margin={{ top: 20, right: 15, left: 5, bottom: 20 }}>
                                         <defs>
-                                            <linearGradient id="colorHoldingCostDistributor" x1="0" y1="0" x2="0" y2="1">
+                                            <linearGradient id="colorHoldingCostFactory" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
                                                 <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.2}/>
                                             </linearGradient>
-                                            <linearGradient id="colorBackorderCostDistributor" x1="0" y1="0" x2="0" y2="1">
+                                            <linearGradient id="colorBackorderCostFactory" x1="0" y1="0" x2="0" y2="1">
                                                 <stop offset="5%" stopColor="rgba(139, 92, 246, 0.9)" stopOpacity={0.8}/>
                                                 <stop offset="95%" stopColor="rgba(139, 92, 246, 0.9)" stopOpacity={0.2}/>
                                             </linearGradient>
@@ -1853,8 +1854,8 @@
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Cost ($)', position: 'insideTopLeft', fill: '#808080', fontSize: 10, dy: -15 }} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#8B5CF6" fillOpacity={1} fill="url(#colorHoldingCostDistributor)" />}
-                                        {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(139, 92, 246, 0.9)" fillOpacity={1} fill="url(#colorBackorderCostDistributor)" />}
+                                        {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#8B5CF6" fillOpacity={1} fill="url(#colorHoldingCostFactory)" />}
+                                        {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(139, 92, 246, 0.9)" fillOpacity={1} fill="url(#colorBackorderCostFactory)" />}
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
