@@ -285,7 +285,11 @@
                                     mobileProductionWeek1: document.getElementById('mobile-production-week-1'),
                                     mobileProductionWeek2: document.getElementById('mobile-production-week-2'),
                                     mobileProductionWeek1Box: document.getElementById('mobile-production-week-1-box'),
-                                    mobileProductionWeek2Box: document.getElementById('mobile-production-week-2-box')
+                                    mobileProductionWeek2Box: document.getElementById('mobile-production-week-2-box'),
+
+                                    // Desktop Production Week boxes
+                                    productionWeek1: document.getElementById('production-week-1'),
+                                    productionWeek2: document.getElementById('production-week-2')
                                 };
 
                                 // ========================================
@@ -1086,13 +1090,70 @@
                                     const desktopOrderInput = els.factoryOrderInner?.querySelector('input');
                                     if (desktopOrderInput) desktopOrderInput.value = '';
 
-                                    // 2. Production Delivery (Cyan) Week 2 -> Factory Inventory
-                                    if (els.orangeWeek2 && els.factoryInventory) {
-                                        animateClone(els.orangeWeek2, els.factoryInventory, null, 'dogleg', () => {
-                                            gameState.receiveDelivery(gameState.orangeWeek2);
-                                            syncStateToDOM();
+                                    // 2. Production Week 2 -> Factory Inventory (Desktop)
+                                    // Path: UP to pipe center, LEFT along pipe to inventory edge, then INTO inventory
+                                    if (els.productionWeek2 && els.factoryInventory) {
+                                        const week2Rect = els.productionWeek2.getBoundingClientRect();
+                                        const inventoryRect = els.factoryInventory.getBoundingClientRect();
+                                        const inventoryValueEl = els.factoryInventory.querySelector('.text-5xl');
+                                        const inventoryValueRect = inventoryValueEl ? inventoryValueEl.getBoundingClientRect() : inventoryRect;
+
+                                        // Find the top pipe (deliveries pipe) - first pipe in PIPE SECTION 1
+                                        const pipeSection = document.querySelector('.hidden.lg\\:flex.flex-1.flex-col.justify-between.py-4.relative.min-w-\\[200px\\]');
+                                        let pipeCenterY = week2Rect.top - 50; // Default fallback
+                                        if (pipeSection) {
+                                            const topPipe = pipeSection.querySelector('.relative.h-16.top-\\[40px\\]');
+                                            if (topPipe) {
+                                                const pipeRect = topPipe.getBoundingClientRect();
+                                                pipeCenterY = pipeRect.top + pipeRect.height / 2;
+                                            }
+                                        }
+
+                                        // Clone and setup
+                                        const productionWeek2Val = gameState.productionWeek2.toString();
+                                        const clone = els.productionWeek2.cloneNode(true);
+                                        clone.id = '';
+                                        clone.innerText = productionWeek2Val;
+                                        clone.style.position = 'fixed';
+                                        clone.style.left = `${week2Rect.left}px`;
+                                        clone.style.top = `${week2Rect.top}px`;
+                                        clone.style.width = `${week2Rect.width}px`;
+                                        clone.style.height = `${week2Rect.height}px`;
+                                        clone.style.margin = '0';
+                                        clone.style.zIndex = '9999';
+                                        clone.style.pointerEvents = 'none';
+                                        document.body.appendChild(clone);
+
+                                        // Calculate animation waypoints
+                                        // Step 1: UP to pipe center (same X, move Y to pipe)
+                                        const deltaY1 = pipeCenterY - (week2Rect.top + week2Rect.height / 2);
+                                        // Step 2: LEFT along pipe to inventory left edge
+                                        const inventoryLeftEdge = inventoryRect.left;
+                                        const deltaX2 = inventoryLeftEdge - (week2Rect.left + week2Rect.width / 2);
+                                        // Step 3: INTO inventory (to center of inventory value)
+                                        const deltaX3 = inventoryValueRect.left + inventoryValueRect.width / 2 - (week2Rect.left + week2Rect.width / 2);
+                                        const deltaY3 = inventoryValueRect.top + inventoryValueRect.height / 2 - (week2Rect.top + week2Rect.height / 2);
+
+                                        // 3-step animation: UP, LEFT, INTO
+                                        const animation = clone.animate([
+                                            { transform: 'translate(0, 0)', opacity: 1 },
+                                            { transform: `translate(0, ${deltaY1}px)`, opacity: 1, offset: 0.3 },
+                                            { transform: `translate(${deltaX2}px, ${deltaY1}px)`, opacity: 1, offset: 0.7 },
+                                            { transform: `translate(${deltaX3}px, ${deltaY3}px)`, opacity: 0 }
+                                        ], {
+                                            duration: 2500,
+                                            easing: 'linear',
+                                            fill: 'forwards'
                                         });
-                                        els.orangeWeek2.style.opacity = '0';
+
+                                        animation.onfinish = () => {
+                                            clone.remove();
+                                            gameState.receiveDelivery(parseInt(productionWeek2Val));
+                                            syncStateToDOM();
+                                            console.log("Desktop: Production Week 2 moved to Factory Inventory");
+                                        };
+
+                                        els.productionWeek2.style.opacity = '0';
                                     }
 
                                     // 3. Production Delivery Week 1 -> Week 2
