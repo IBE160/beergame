@@ -122,51 +122,42 @@
                         <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Production</h3>
                     </div>
 
-                    <div class="flex-1 flex items-center justify-start pt-2 lg:pt-[34px] p-3 lg:p-4 relative flex-col">
-                        <!-- Mobile Order Box - aligned with right pipe, centered with inventory -->
-                        <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg z-10">
-                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-production-order-value bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
-                        </div>
+                    <!-- Content area with Week 1 and Week 2 boxes centered -->
+                    <div class="flex-1 flex items-center justify-center p-3 lg:p-4 relative">
                          <!-- Faint background icon -->
                          <span class="material-symbols-outlined text-7xl lg:text-9xl text-mono-light/5 absolute opacity-[0.03] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">precision_manufacturing</span>
 
-                         <!-- Hidden Inventory Box (Production) -->
-                         <div id="production-inventory" class="bg-mono-bg/30 p-4 mt-0 lg:mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] relative z-10 cursor-help" title="Hidden Information">
-                            <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
-                            <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
-                        </div>
-                    </div>
-                    <!-- Incoming Order Box (Bottom) - tablet/desktop only -->
-                    <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-end">
-                         <div class="bg-mono-surface border border-dashed border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
-                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                                <div id="production-order-value" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                         <!-- Week boxes container - centered both vertically and horizontally -->
+                         <div class="flex flex-row lg:flex-col items-center justify-center gap-4 z-10">
+                             <!-- Week 2 (further from Factory) -->
+                             <div id="mobile-production-week-2-box" class="lg:hidden bg-mono-surface border border-production/30 p-2 rounded shadow-lg">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                                <div id="mobile-production-week-2" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">30</div>
+                            </div>
+                             <!-- Week 1 (closer to Factory) -->
+                             <div id="mobile-production-week-1-box" class="lg:hidden bg-mono-surface border border-production/30 p-2 rounded shadow-lg">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                                <div id="mobile-production-week-1" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">20</div>
+                            </div>
+                             <!-- Desktop Week boxes -->
+                             <div class="hidden lg:block bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                                <div id="production-week-2" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">30</div>
+                            </div>
+                             <div class="hidden lg:block bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                                <div id="production-week-1" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">20</div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- PIPE SECTION 1: Production -> Factory (Hidden on mobile) -->
                 <div class="hidden lg:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
-
                     <!-- Top Pipe: Deliveries (Rightward) -->
                     <div class="relative h-16 top-[40px] w-full flex items-center">
                         <!-- Pipe Background -->
                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
-
-                        <!-- Delay Boxes (Sitting on pipe) - ORANGE for incoming deliveries from Production -->
-                        <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
-                             <!-- Week 1 -->
-                             <div class="bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
-                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                                <div id="delivery-week-1" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">20</div>
-                            </div>
-                             <!-- Week 2 -->
-                             <div class="bg-mono-surface border border-production/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
-                                <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                                <div id="delivery-week-2" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">30</div>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Bottom Pipe: Orders (Leftward) -->
@@ -177,26 +168,9 @@
                 </div>
 
                 <!-- MOBILE VERTICAL CONNECTOR 1: Production -> Factory -->
-                <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-60px)] -my-5">
-                    <!-- Left pipe with Week 1/Week 2 boxes (deliveries flowing down) - ORANGE -->
-                    <div class="flex flex-col items-center justify-evenly">
-                        <!-- Vertical pipe line (top) - reaches role box -->
-                        <div class="w-[70px] h-8 bg-mono-surface"></div>
-                        <!-- Week 2 box -->
-                        <div id="mobile-delivery-week-2-box" class="bg-mono-surface border border-production/30 rounded p-2">
-                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                            <div id="mobile-delivery-week-2" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">30</div>
-                        </div>
-                        <!-- Pipe between Week 2 and Week 1 -->
-                        <div class="w-[70px] flex-1 min-h-[16px] bg-mono-surface"></div>
-                        <!-- Week 1 box -->
-                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-production/30 rounded p-2">
-                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                            <div id="mobile-delivery-week-1" class="bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]">20</div>
-                        </div>
-                        <!-- Vertical pipe line (bottom) - reaches role box -->
-                        <div class="w-[70px] h-8 bg-mono-surface"></div>
-                    </div>
+                <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-60px)] -my-5 min-h-[200px]">
+                    <!-- Left pipe - continuous (deliveries flowing down) -->
+                    <div class="w-[70px] self-stretch bg-mono-surface"></div>
                     <!-- Right pipe - continuous (orders flowing up) -->
                     <div id="mobile-order-pipe-1" class="w-[70px] self-stretch bg-mono-surface"></div>
                 </div>
