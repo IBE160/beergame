@@ -793,9 +793,9 @@
                                             const inventoryRect = factoryInventoryEl.getBoundingClientRect();
                                             const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - orderRect.left - (orderRect.width / 2);
 
-                                            // Use gameState for factory processing
+                                            // Use gameState for production processing (Factory's order to Production)
                                             const orderValue = parseInt(mobileFactoryOrder.innerText) || 0;
-                                            const deliveryValue = gameState.processFactoryOrder(orderValue);
+                                            const deliveryValue = gameState.processProductionOrder(orderValue);
 
                                             // Clone the order element
                                             const clone = mobileFactoryOrder.cloneNode(true);
