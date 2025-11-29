@@ -279,7 +279,13 @@
                                     mobileOutgoingWeek1: document.getElementById('mobile-outgoing-week-1'),
                                     mobileOutgoingWeek2: document.getElementById('mobile-outgoing-week-2'),
                                     mobileOutgoingWeek1Box: document.getElementById('mobile-outgoing-week-1-box'),
-                                    mobileOutgoingWeek2Box: document.getElementById('mobile-outgoing-week-2-box')
+                                    mobileOutgoingWeek2Box: document.getElementById('mobile-outgoing-week-2-box'),
+
+                                    // Production Week boxes (inside Production node)
+                                    mobileProductionWeek1: document.getElementById('mobile-production-week-1'),
+                                    mobileProductionWeek2: document.getElementById('mobile-production-week-2'),
+                                    mobileProductionWeek1Box: document.getElementById('mobile-production-week-1-box'),
+                                    mobileProductionWeek2Box: document.getElementById('mobile-production-week-2-box')
                                 };
 
                                 // ========================================
@@ -302,14 +308,17 @@
                                     factoryOutgoing: 0,
 
                                     // Week slot values
-                                    // 'orange' vars refer to Incoming (Left->Center), 'violet' vars refer to Outgoing (Center->Right)
-                                    // Logic names preserved from Distributor template for consistency, but visually:
-                                    // orangeWeek* = Cyan (Production)
-                                    // violetWeek* = Orange (Factory)
-                                    orangeWeek1: 20,
-                                    orangeWeek2: 30,
+                                    // Production Week slots (inside Production node - Cyan)
+                                    productionWeek1: 20,
+                                    productionWeek2: 30,
+                                    // Outgoing Week slots (Factory -> Distributor pipe - Orange)
                                     violetWeek1: 25,
                                     violetWeek2: 20,
+                                    // Legacy aliases for compatibility
+                                    get orangeWeek1() { return this.productionWeek1; },
+                                    set orangeWeek1(v) { this.productionWeek1 = v; },
+                                    get orangeWeek2() { return this.productionWeek2; },
+                                    set orangeWeek2(v) { this.productionWeek2 = v; },
 
                                     // Phase 2 clone references (for Phase 3)
                                     phase2: {
@@ -681,25 +690,47 @@
                                         els.mobileOutgoingWeek1.style.opacity = '0';
                                     }
 
-                                    // --- Animation 5: Cyan Delivery Week 2 inner -> Factory Inventory (UP along pipe, then RIGHT into inventory) ---
-                                    // Note: Production is Bottom. Factory is Middle. Delivery moves UP.
+                                    // --- Animation 5: Production Week 2 -> Factory Inventory ---
+                                    // Path: LEFT to pipe center, UP along pipe, RIGHT to inventory VALUE
                                     const factoryInventoryMobile = document.getElementById('factory-inventory-mobile');
+                                    const productionWeek2Val = gameState.productionWeek2.toString();
 
-                                    if (els.mobileDeliveryWeek2 && factoryInventoryMobile) {
-                                        // Calculate distances
-                                        const week2Rect = els.mobileDeliveryWeek2.getBoundingClientRect();
-                                        const inventoryRect = factoryInventoryMobile.getBoundingClientRect();
-                                        // Since Factory is ABOVE Production/Pipe, inventoryRect.top < week2Rect.top.
-                                        // vertDistance = week2.top - inv.top (positive). We want to move -vertDistance (UP).
-                                        
-                                        // Vector from source to target
-                                        const deltaY = inventoryRect.top + (inventoryRect.height/2) - (week2Rect.top + week2Rect.height/2);
-                                        const deltaX = inventoryRect.left + (inventoryRect.width/2) - (week2Rect.left + week2Rect.width/2);
+                                    if (els.mobileProductionWeek2 && factoryInventoryMobile) {
+                                        // Get positions
+                                        const week2Rect = els.mobileProductionWeek2.getBoundingClientRect();
+
+                                        // Get the inventory VALUE element (the number inside the inventory box)
+                                        const inventoryValueEl = factoryInventoryMobile.querySelector('.text-3xl');
+                                        const inventoryValueRect = inventoryValueEl ? inventoryValueEl.getBoundingClientRect() : factoryInventoryMobile.getBoundingClientRect();
+
+                                        // Find the left pipe element directly
+                                        const pipeConnector = document.querySelector('.flex.lg\\:hidden.flex-row.items-stretch.justify-between.w-full.px-\\[calc\\(25\\%-60px\\)\\].min-h-\\[200px\\]');
+                                        let pipeCenterX;
+                                        if (pipeConnector) {
+                                            const leftPipe = pipeConnector.firstElementChild;
+                                            if (leftPipe) {
+                                                const pipeRect = leftPipe.getBoundingClientRect();
+                                                pipeCenterX = pipeRect.left + pipeRect.width / 2;
+                                            }
+                                        }
+                                        // Fallback if pipe not found
+                                        if (!pipeCenterX) {
+                                            pipeCenterX = week2Rect.left - 30;
+                                        }
+
+                                        // Step 1: Move LEFT to pipe center
+                                        const deltaX1 = pipeCenterX - (week2Rect.left + week2Rect.width/2);
+
+                                        // Step 2: Move UP to inventory value level
+                                        const deltaY = inventoryValueRect.top + (inventoryValueRect.height/2) - (week2Rect.top + week2Rect.height/2);
+
+                                        // Step 3: Move RIGHT to align with inventory value
+                                        const deltaX2 = inventoryValueRect.left + (inventoryValueRect.width/2) - pipeCenterX;
 
                                         // Clone the element
-                                        const clone = els.mobileDeliveryWeek2.cloneNode(true);
+                                        const clone = els.mobileProductionWeek2.cloneNode(true);
                                         clone.id = '';
-                                        clone.innerText = deliveryWeek2Val;
+                                        clone.innerText = productionWeek2Val;
                                         clone.style.position = 'fixed';
                                         clone.style.left = `${week2Rect.left}px`;
                                         clone.style.top = `${week2Rect.top}px`;
@@ -710,11 +741,12 @@
                                         clone.style.pointerEvents = 'none';
                                         document.body.appendChild(clone);
 
-                                        // Single smooth animation: UP then RIGHT
+                                        // Three-step animation: LEFT to pipe, UP along pipe, RIGHT to inventory value
                                         const animation = clone.animate([
                                             { transform: 'translate(0, 0)', opacity: 1 },
-                                            { transform: `translate(0, ${deltaY}px)`, opacity: 1, offset: 0.5 },
-                                            { transform: `translate(${deltaX}px, ${deltaY}px)`, opacity: 0 }
+                                            { transform: `translate(${deltaX1}px, 0)`, opacity: 1, offset: 0.25 },
+                                            { transform: `translate(${deltaX1}px, ${deltaY}px)`, opacity: 1, offset: 0.75 },
+                                            { transform: `translate(${deltaX1 + deltaX2}px, ${deltaY}px)`, opacity: 0 }
                                         ], {
                                             duration: 2000,
                                             easing: 'linear',
@@ -724,29 +756,13 @@
                                         animation.onfinish = () => {
                                             clone.remove();
                                             // Update inventory value using gameState
-                                            gameState.receiveDelivery(parseInt(deliveryWeek2Val || 0));
+                                            gameState.receiveDelivery(parseInt(productionWeek2Val || 0));
                                             syncStateToDOM();
-                                            console.log("Phase 1e complete: Cyan Week 2 delivered to inventory");
+                                            console.log("Phase 1e complete: Production Week 2 delivered to inventory");
                                         };
 
                                         // Clear Week 2 slot
-                                        els.mobileDeliveryWeek2.style.opacity = '0';
-                                    }
-
-                                    // --- Animation 6: Cyan Delivery Week 1 inner -> Week 2 slot (UP) ---
-                                    // Flow is Production -> Factory (UP)
-                                    if (els.mobileDeliveryWeek1 && els.mobileDeliveryWeek2) {
-                                        animateClone(els.mobileDeliveryWeek1, els.mobileDeliveryWeek2, deliveryWeek1Val, 'vertical-up', () => {
-                                            // Update gameState and sync
-                                            gameState.orangeWeek2 = parseInt(deliveryWeek1Val);
-                                            els.mobileDeliveryWeek2.innerText = deliveryWeek1Val;
-                                            els.mobileDeliveryWeek2.style.opacity = '1';
-                                            syncStateToDOM();
-                                            console.log("Phase 1f complete: Cyan Week 1 moved to Week 2 slot");
-                                        }, false, true);
-
-                                        // Clear Week 1 slot
-                                        els.mobileDeliveryWeek1.style.opacity = '0';
+                                        els.mobileProductionWeek2.style.opacity = '0';
                                     }
 
                                     // ========================================
