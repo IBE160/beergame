@@ -1156,15 +1156,16 @@
                                         els.productionWeek2.style.opacity = '0';
                                     }
 
-                                    // 3. Production Delivery Week 1 -> Week 2
-                                    if (els.orangeWeek1 && els.orangeWeek2) {
-                                        const val = gameState.orangeWeek1;
-                                        animateClone(els.orangeWeek1, els.orangeWeek2, null, 'direct', () => {
-                                            gameState.orangeWeek2 = val;
-                                            els.orangeWeek2.innerText = gameState.orangeWeek2;
-                                            els.orangeWeek2.style.opacity = '1';
+                                    // 3. Production Week 1 -> Week 2 (Desktop)
+                                    if (els.productionWeek1 && els.productionWeek2) {
+                                        const val = gameState.productionWeek1;
+                                        animateClone(els.productionWeek1, els.productionWeek2, null, 'direct', () => {
+                                            gameState.productionWeek2 = val;
+                                            els.productionWeek2.innerText = gameState.productionWeek2;
+                                            els.productionWeek2.style.opacity = '1';
+                                            console.log("Desktop: Production Week 1 moved to Week 2");
                                         });
-                                        els.orangeWeek1.style.opacity = '0';
+                                        els.productionWeek1.style.opacity = '0';
                                     }
 
                                     // 4. Factory Outgoing (Orange) Week 2 -> Distributor
