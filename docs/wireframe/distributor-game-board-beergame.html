@@ -402,7 +402,7 @@
         // ==========================================
         // GAME LOGIC & ANIMATION SECTION
         // ==========================================
-        document.addEventListener('DOMContentLoaded', () => {
+        const initGameLogic = () => {
             // Desktop elements
             const orderInput = document.getElementById('orderInput');
             const btnUp = document.getElementById('btnUp');
@@ -1067,8 +1067,13 @@
                     }, 1000); // faster on mobile
                 });
             }
+        };
 
-        });
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initGameLogic);
+        } else {
+            initGameLogic();
+        }
 
         // Statistics Calculator & Components (Recharts)
         // ... (Rest of the file content is the React components) ...
