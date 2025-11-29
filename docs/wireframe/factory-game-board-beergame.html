@@ -844,13 +844,14 @@
                                         clone.style.display = 'flex';
                                         clone.style.alignItems = 'center';
                                         clone.style.justifyContent = 'center';
-                                        // Style like production/cyan slot
-                                        clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)';
-                                        clone.style.borderColor = 'rgba(6, 182, 212, 0.2)';
-                                        clone.style.color = 'rgb(34, 211, 238)';
-                                        clone.style.border = '1px solid rgba(6, 182, 212, 0.2)';
+                                        // Start with Factory color (orange #F97316)
+                                        clone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                        clone.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                                        clone.style.color = 'rgb(249, 115, 22)';
+                                        clone.style.border = '1px solid rgba(249, 115, 22, 0.2)';
                                         clone.style.borderRadius = '0.25rem';
                                         clone.style.fontWeight = 'bold';
+                                        clone.style.transition = 'background-color 0.5s, border-color 0.5s, color 0.5s';
                                         document.body.appendChild(clone);
 
                                         // Two-step animation: DOWN to Week 1 level, then LEFT into slot
@@ -863,6 +864,14 @@
                                             easing: 'linear',
                                             fill: 'forwards'
                                         });
+
+                                        // Morph to cyan (production color) at the end of animation
+                                        setTimeout(() => {
+                                            clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)';
+                                            clone.style.borderColor = 'rgba(6, 182, 212, 0.2)';
+                                            clone.style.color = 'rgb(34, 211, 238)';
+                                            clone.style.border = '1px solid rgba(6, 182, 212, 0.2)';
+                                        }, 1500); // Morph starts near end of 2000ms animation
 
                                         animation.onfinish = () => {
                                             clone.remove();
