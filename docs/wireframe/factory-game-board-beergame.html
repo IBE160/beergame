@@ -813,6 +813,68 @@
                                         els.mobileProductionWeek1.style.opacity = '0';
                                     }
 
+                                    // --- Animation 7: Factory Order -> Production Week 1 slot ---
+                                    // Path: DOWN to Week 1 level, then LEFT into Week 1 slot
+                                    const factoryOrderBox = mobileOrderInput?.parentElement;
+
+                                    if (factoryOrderBox && els.mobileProductionWeek1) {
+                                        const orderRect = factoryOrderBox.getBoundingClientRect();
+                                        const week1Rect = els.mobileProductionWeek1.getBoundingClientRect();
+
+                                        // Step 1: Move DOWN to Week 1 vertical level
+                                        const deltaY = week1Rect.top + (week1Rect.height/2) - (orderRect.top + orderRect.height/2);
+
+                                        // Step 2: Move LEFT to Week 1 horizontal position
+                                        const deltaX = week1Rect.left + (week1Rect.width/2) - (orderRect.left + orderRect.width/2);
+
+                                        // Clone the element
+                                        const clone = factoryOrderBox.cloneNode(true);
+                                        clone.id = '';
+                                        // Get the input value and display it
+                                        const orderValForClone = orderVal;
+                                        clone.innerHTML = orderValForClone;
+                                        clone.style.position = 'fixed';
+                                        clone.style.left = `${orderRect.left}px`;
+                                        clone.style.top = `${orderRect.top}px`;
+                                        clone.style.width = `${orderRect.width}px`;
+                                        clone.style.height = `${orderRect.height}px`;
+                                        clone.style.margin = '0';
+                                        clone.style.zIndex = '9999';
+                                        clone.style.pointerEvents = 'none';
+                                        clone.style.display = 'flex';
+                                        clone.style.alignItems = 'center';
+                                        clone.style.justifyContent = 'center';
+                                        // Style like production/cyan slot
+                                        clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)';
+                                        clone.style.borderColor = 'rgba(6, 182, 212, 0.2)';
+                                        clone.style.color = 'rgb(34, 211, 238)';
+                                        clone.style.border = '1px solid rgba(6, 182, 212, 0.2)';
+                                        clone.style.borderRadius = '0.25rem';
+                                        clone.style.fontWeight = 'bold';
+                                        document.body.appendChild(clone);
+
+                                        // Two-step animation: DOWN to Week 1 level, then LEFT into slot
+                                        const animation = clone.animate([
+                                            { transform: 'translate(0, 0)', opacity: 1 },
+                                            { transform: `translate(0, ${deltaY}px)`, opacity: 1, offset: 0.5 },
+                                            { transform: `translate(${deltaX}px, ${deltaY}px)`, opacity: 1 }
+                                        ], {
+                                            duration: 2000,
+                                            easing: 'linear',
+                                            fill: 'forwards'
+                                        });
+
+                                        animation.onfinish = () => {
+                                            clone.remove();
+                                            // Update Production Week 1 with the order value
+                                            gameState.productionWeek1 = parseInt(orderVal);
+                                            els.mobileProductionWeek1.innerText = orderVal;
+                                            els.mobileProductionWeek1.style.opacity = '1';
+                                            syncStateToDOM();
+                                            console.log("Phase 1g complete: Factory Order moved to Production Week 1 slot");
+                                        };
+                                    }
+
                                     // ========================================
                                     // PHASE 2: After 1 sec pause
                                     // 1. Order in Factory -> LEFT into Inventory -> Morph to cyan (production)
