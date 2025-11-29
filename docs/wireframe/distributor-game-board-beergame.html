@@ -153,17 +153,17 @@
                         <!-- Pipe Background -->
                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
 
-                        <!-- Delay Boxes (Sitting on pipe) - CYAN for incoming deliveries from Factory -->
+                        <!-- Delay Boxes (Sitting on pipe) - ORANGE for incoming deliveries from Factory -->
                         <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
                              <!-- Week 1 -->
-                             <div class="bg-mono-surface border border-cyan-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                             <div class="bg-mono-surface border border-orange-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                                <div id="delivery-week-1" class="bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]">20</div>
+                                <div id="delivery-week-1" class="bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]">20</div>
                             </div>
                              <!-- Week 2 -->
-                             <div class="bg-mono-surface border border-cyan-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                             <div class="bg-mono-surface border border-orange-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                                 <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                                <div id="delivery-week-2" class="bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                                <div id="delivery-week-2" class="bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]">30</div>
                             </div>
                         </div>
                     </div>
@@ -177,21 +177,21 @@
 
                 <!-- MOBILE VERTICAL CONNECTOR 1: Factory -> Distributor -->
                 <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-60px)] -my-5">
-                    <!-- Left pipe with Week 1/Week 2 boxes (deliveries flowing down) - CYAN -->
+                    <!-- Left pipe with Week 1/Week 2 boxes (deliveries flowing down) - ORANGE -->
                     <div class="flex flex-col items-center justify-evenly">
                         <!-- Vertical pipe line (top) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
                         <!-- Week 2 box -->
-                        <div id="mobile-delivery-week-2-box" class="bg-mono-surface border border-cyan-500/30 rounded p-2">
+                        <div id="mobile-delivery-week-2-box" class="bg-mono-surface border border-orange-500/30 rounded p-2">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
-                            <div id="mobile-delivery-week-2" class="bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]">30</div>
+                            <div id="mobile-delivery-week-2" class="bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]">30</div>
                         </div>
                         <!-- Pipe between Week 2 and Week 1 -->
                         <div class="w-[70px] flex-1 min-h-[16px] bg-mono-surface"></div>
                         <!-- Week 1 box -->
-                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-cyan-500/30 rounded p-2">
+                        <div id="mobile-delivery-week-1-box" class="bg-mono-surface border border-orange-500/30 rounded p-2">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
-                            <div id="mobile-delivery-week-1" class="bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]">20</div>
+                            <div id="mobile-delivery-week-1" class="bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]">20</div>
                         </div>
                         <!-- Vertical pipe line (bottom) - reaches role box -->
                         <div class="w-[70px] h-8 bg-mono-surface"></div>
@@ -278,8 +278,8 @@
                                     factoryOrderInner: document.getElementById('factory-order-value'),
                                     distributorOrderInner: document.getElementById('distributor-order-value'),
                                     distributorInventory: document.getElementById('distributor-inventory'),
-                                    cyanWeek1: document.getElementById('delivery-week-1'),
-                                    cyanWeek2: document.getElementById('delivery-week-2'),
+                                    orangeWeek1: document.getElementById('delivery-week-1'),
+                                    orangeWeek2: document.getElementById('delivery-week-2'),
                                     violetWeek1: document.getElementById('outgoing-week-1'),
                                     violetWeek2: document.getElementById('outgoing-week-2'),
                                     distributorOrderReceived: document.getElementById('distributor-order-received'),
@@ -318,8 +318,8 @@
                                     distributorOutgoing: 0,
 
                                     // Week slot values
-                                    cyanWeek1: 20,
-                                    cyanWeek2: 30,
+                                    orangeWeek1: 20,
+                                    orangeWeek2: 30,
                                     violetWeek1: 25,
                                     violetWeek2: 20,
 
@@ -358,9 +358,9 @@
                                     },
 
                                     advanceWeeks() {
-                                        // Cyan weeks (incoming deliveries from factory)
-                                        this.cyanWeek2 = this.cyanWeek1;
-                                        this.cyanWeek1 = this.factoryDelivery;
+                                        // Orange weeks (incoming deliveries from factory)
+                                        this.orangeWeek2 = this.orangeWeek1;
+                                        this.orangeWeek1 = this.factoryDelivery;
                                         // Violet weeks (outgoing deliveries to wholesaler)
                                         this.violetWeek2 = this.violetWeek1;
                                         this.violetWeek1 = this.distributorOutgoing;
@@ -376,14 +376,14 @@
                                     if (mobileInv) mobileInv.innerText = gameState.distributorInventory;
 
                                     // Week slots (desktop)
-                                    if (els.cyanWeek1) els.cyanWeek1.innerText = gameState.cyanWeek1;
-                                    if (els.cyanWeek2) els.cyanWeek2.innerText = gameState.cyanWeek2;
+                                    if (els.orangeWeek1) els.orangeWeek1.innerText = gameState.orangeWeek1;
+                                    if (els.orangeWeek2) els.orangeWeek2.innerText = gameState.orangeWeek2;
                                     if (els.violetWeek1) els.violetWeek1.innerText = gameState.violetWeek1;
                                     if (els.violetWeek2) els.violetWeek2.innerText = gameState.violetWeek2;
 
                                     // Week slots (mobile)
-                                    if (els.mobileDeliveryWeek1) els.mobileDeliveryWeek1.innerText = gameState.cyanWeek1;
-                                    if (els.mobileDeliveryWeek2) els.mobileDeliveryWeek2.innerText = gameState.cyanWeek2;
+                                    if (els.mobileDeliveryWeek1) els.mobileDeliveryWeek1.innerText = gameState.orangeWeek1;
+                                    if (els.mobileDeliveryWeek2) els.mobileDeliveryWeek2.innerText = gameState.orangeWeek2;
                                     if (els.mobileOutgoingWeek1) els.mobileOutgoingWeek1.innerText = gameState.violetWeek1;
                                     if (els.mobileOutgoingWeek2) els.mobileOutgoingWeek2.innerText = gameState.violetWeek2;
                                 }
@@ -592,8 +592,8 @@
                                     const randomIncomingOrder = gameState.generateIncomingOrder();
 
                                     // Get current values from gameState
-                                    const deliveryWeek1Val = gameState.cyanWeek1.toString();
-                                    const deliveryWeek2Val = gameState.cyanWeek2.toString();
+                                    const deliveryWeek1Val = gameState.orangeWeek1.toString();
+                                    const deliveryWeek2Val = gameState.orangeWeek2.toString();
                                     const outgoingWeek1Val = gameState.violetWeek1.toString();
                                     const outgoingWeek2Val = gameState.violetWeek2.toString();
 
@@ -696,7 +696,7 @@
                                         els.mobileOutgoingWeek1.style.opacity = '0';
                                     }
 
-                                    // --- Animation 5: Cyan Delivery Week 2 inner -> Distributor Inventory (DOWN along pipe, then RIGHT into inventory) ---
+                                    // --- Animation 5: Orange Delivery Week 2 inner -> Distributor Inventory (DOWN along pipe, then RIGHT into inventory) ---
                                     const distributorInventoryMobile = document.getElementById('distributor-inventory-mobile');
 
                                     if (els.mobileDeliveryWeek2 && distributorInventoryMobile) {
@@ -743,15 +743,15 @@
                                         els.mobileDeliveryWeek2.style.opacity = '0';
                                     }
 
-                                    // --- Animation 6: Cyan Delivery Week 1 inner -> Week 2 slot (DOWN) ---
+                                    // --- Animation 6: Orange Delivery Week 1 inner -> Week 2 slot (DOWN) ---
                                     if (els.mobileDeliveryWeek1 && els.mobileDeliveryWeek2) {
                                         animateClone(els.mobileDeliveryWeek1, els.mobileDeliveryWeek2, deliveryWeek1Val, 'vertical-down', () => {
                                             // Update gameState and sync
-                                            gameState.cyanWeek2 = parseInt(deliveryWeek1Val);
+                                            gameState.orangeWeek2 = parseInt(deliveryWeek1Val);
                                             els.mobileDeliveryWeek2.innerText = deliveryWeek1Val;
                                             els.mobileDeliveryWeek2.style.opacity = '1';
                                             syncStateToDOM();
-                                            console.log("Phase 1f complete: Cyan Week 1 moved to Week 2 slot");
+                                            console.log("Phase 1f complete: Orange Week 1 moved to Week 2 slot");
                                         }, false, true);
 
                                         // Clear Week 1 slot
@@ -760,7 +760,7 @@
 
                                     // ========================================
                                     // PHASE 2: After 1 sec pause
-                                    // 1. Order in Factory -> LEFT into Inventory -> Morph to cyan
+                                    // 1. Order in Factory -> LEFT into Inventory -> Morph to orange
                                     // 2. Order in Distributor -> LEFT to center, DOWN into Inventory -> Morph to outgoing (violet)
                                     // ========================================
                                     setTimeout(() => {
@@ -810,11 +810,11 @@
                                             });
 
                                             moveAnimation.onfinish = () => {
-                                                // Morph to cyan: change colors and update value
+                                                // Morph to orange: change colors and update value
                                                 clone.style.transition = 'all 0.5s ease-in-out';
-                                                clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)'; // cyan-500/10
-                                                clone.style.borderColor = 'rgba(6, 182, 212, 0.2)'; // cyan-500/20
-                                                clone.style.color = 'rgb(34, 211, 238)'; // cyan-400
+                                                clone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)'; // orange-500/10
+                                                clone.style.borderColor = 'rgba(249, 115, 22, 0.2)'; // orange-500/20
+                                                clone.style.color = 'rgb(251, 146, 60)'; // orange-400
                                                 clone.innerText = deliveryValue;
 
                                                 // After morph, create a new element at the exact position where clone ended
@@ -827,24 +827,24 @@
                                                     const relativeLeft = cloneRect.left - inventoryRect2.left;
                                                     const relativeTop = cloneRect.top - inventoryRect2.top;
 
-                                                    // Create a new cyan delivery element inside inventory (mobile only)
-                                                    const cyanSlot = document.createElement('div');
-                                                    cyanSlot.className = 'lg:hidden bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px] absolute';
-                                                    cyanSlot.innerText = deliveryValue;
-                                                    cyanSlot.style.left = `${relativeLeft}px`;
-                                                    cyanSlot.style.top = `${relativeTop}px`;
-                                                    cyanSlot.style.width = `${cloneRect.width}px`;
-                                                    cyanSlot.style.zIndex = '50';
+                                                    // Create a new orange delivery element inside inventory (mobile only)
+                                                    const orangeSlot = document.createElement('div');
+                                                    orangeSlot.className = 'lg:hidden bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px] absolute';
+                                                    orangeSlot.innerText = deliveryValue;
+                                                    orangeSlot.style.left = `${relativeLeft}px`;
+                                                    orangeSlot.style.top = `${relativeTop}px`;
+                                                    orangeSlot.style.width = `${cloneRect.width}px`;
+                                                    orangeSlot.style.zIndex = '50';
 
                                                     // Remove the fixed clone
                                                     clone.remove();
 
-                                                    // Add cyan slot to inventory
-                                                    factoryInventoryEl.appendChild(cyanSlot);
+                                                    // Add orange slot to inventory
+                                                    factoryInventoryEl.appendChild(orangeSlot);
 
-                                                    console.log(`Phase 2a complete: Order morphed to cyan delivery (${deliveryValue})`);
+                                                    console.log(`Phase 2a complete: Order morphed to orange delivery (${deliveryValue})`);
                                                     // Store reference for Phase 3 in gameState
-                                                    gameState.phase2.deliveryClone = cyanSlot;
+                                                    gameState.phase2.deliveryClone = orangeSlot;
                                                 }, 500); // After morph transition completes
                                             };
                                         }
@@ -930,16 +930,16 @@
                                         }
                                     }, 3000); // 2s for Phase 1 animations + 1s pause
 
-                                    // --- Phase 3: Cyan delivery slot -> Week 1 slot (RIGHT then UP) ---
+                                    // --- Phase 3: Orange delivery slot -> Week 1 slot (RIGHT then UP) ---
                                     setTimeout(() => {
                                         console.log("Starting Phase 3...");
 
-                                        const cyanSlot = gameState.phase2.deliveryClone;
+                                        const orangeSlot = gameState.phase2.deliveryClone;
                                         const week1Target = els.mobileDeliveryWeek1;
 
-                                        if (cyanSlot && week1Target) {
-                                            // Get current position of cyan slot (inside factory inventory)
-                                            const cyanRect = cyanSlot.getBoundingClientRect();
+                                        if (orangeSlot && week1Target) {
+                                            // Get current position of orange slot (inside factory inventory)
+                                            const orangeRect = orangeSlot.getBoundingClientRect();
                                             // Get target Week 1 slot position
                                             const week1Rect = week1Target.getBoundingClientRect();
 
@@ -948,25 +948,25 @@
                                             const pipeCenterX = week1Rect.left + (week1Rect.width / 2);
 
                                             // Horizontal distance to pipe center
-                                            const horizDist = pipeCenterX - cyanRect.left - (cyanRect.width / 2);
+                                            const horizDist = pipeCenterX - orangeRect.left - (orangeRect.width / 2);
                                             // Vertical distance up to Week 1
-                                            const vertDist = week1Rect.top - cyanRect.top;
+                                            const vertDist = week1Rect.top - orangeRect.top;
 
                                             // Create a fixed-position clone for animation
                                             const animClone = document.createElement('div');
-                                            animClone.className = 'lg:hidden bg-cyan-500/10 px-3 py-1 rounded border border-cyan-500/20 text-cyan-400 font-sans font-bold text-center min-w-[55px]';
-                                            animClone.innerText = cyanSlot.innerText;
+                                            animClone.className = 'lg:hidden bg-orange-500/10 px-3 py-1 rounded border border-orange-500/20 text-orange-400 font-sans font-bold text-center min-w-[55px]';
+                                            animClone.innerText = orangeSlot.innerText;
                                             animClone.style.position = 'fixed';
-                                            animClone.style.left = `${cyanRect.left}px`;
-                                            animClone.style.top = `${cyanRect.top}px`;
-                                            animClone.style.width = `${cyanRect.width}px`;
-                                            animClone.style.height = `${cyanRect.height}px`;
+                                            animClone.style.left = `${orangeRect.left}px`;
+                                            animClone.style.top = `${orangeRect.top}px`;
+                                            animClone.style.width = `${orangeRect.width}px`;
+                                            animClone.style.height = `${orangeRect.height}px`;
                                             animClone.style.zIndex = '9999';
                                             animClone.style.pointerEvents = 'none';
                                             document.body.appendChild(animClone);
 
-                                            // Hide original cyan slot
-                                            cyanSlot.style.opacity = '0';
+                                            // Hide original orange slot
+                                            orangeSlot.style.opacity = '0';
 
                                             // Animate: RIGHT to pipe center, then UP to Week 1
                                             const animation = animClone.animate([
@@ -982,14 +982,14 @@
                                             animation.onfinish = () => {
                                                 animClone.remove();
                                                 // Update Week 1 slot with the delivery value from gameState
-                                                gameState.cyanWeek1 = gameState.factoryDelivery;
-                                                week1Target.innerText = gameState.cyanWeek1;
+                                                gameState.orangeWeek1 = gameState.factoryDelivery;
+                                                week1Target.innerText = gameState.orangeWeek1;
                                                 week1Target.style.opacity = '1';
-                                                // Remove the original cyan slot from inventory
-                                                cyanSlot.remove();
+                                                // Remove the original orange slot from inventory
+                                                orangeSlot.remove();
                                                 // Sync to desktop
                                                 syncStateToDOM();
-                                                console.log("Phase 3a complete: Cyan delivery moved to Week 1 slot");
+                                                console.log("Phase 3a complete: Orange delivery moved to Week 1 slot");
                                             };
                                         }
 
@@ -1081,9 +1081,9 @@
                                                     setTimeout(() => {
                                                         if (!persistedClone) return;
 
-                                                        // Morph into Cyan Delivery
+                                                        // Morph into Orange Delivery
                                                         persistedClone.classList.remove('bg-accent/10', 'border-accent/20', 'text-accent');
-                                                        persistedClone.classList.add('bg-cyan-500/10', 'border-cyan-500/20', 'text-cyan-400');
+                                                        persistedClone.classList.add('bg-orange-500/10', 'border-orange-500/20', 'text-orange-400');
 
                                                         const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
                                                         const orderVal = parseInt(valSpan.innerText) || 0;
@@ -1091,11 +1091,11 @@
                                                         const deliverVal = gameState.processFactoryOrder(orderVal);
                                                         valSpan.innerText = deliverVal;
 
-                                                        if (els.cyanWeek1) {
-                                                            animateClone(persistedClone, els.cyanWeek1, deliverVal, 'vertical-dogleg', () => {
-                                                                gameState.cyanWeek1 = deliverVal;
-                                                                els.cyanWeek1.innerText = gameState.cyanWeek1;
-                                                                els.cyanWeek1.style.opacity = '1';
+                                                        if (els.orangeWeek1) {
+                                                            animateClone(persistedClone, els.orangeWeek1, deliverVal, 'vertical-dogleg', () => {
+                                                                gameState.orangeWeek1 = deliverVal;
+                                                                els.orangeWeek1.innerText = gameState.orangeWeek1;
+                                                                els.orangeWeek1.style.opacity = '1';
                                                                 syncStateToDOM();
                                                             });
                                                             persistedClone.remove();
@@ -1110,23 +1110,23 @@
                                     const desktopOrderInput = els.distributorOrderInner.querySelector('input');
                                     if (desktopOrderInput) desktopOrderInput.value = '';
 
-                                    // 2. Cyan Week 2 -> Distributor Inventory
-                                    animateClone(els.cyanWeek2, els.distributorInventory, null, 'dogleg', () => {
+                                    // 2. Orange Week 2 -> Distributor Inventory
+                                    animateClone(els.orangeWeek2, els.distributorInventory, null, 'dogleg', () => {
                                         // Use gameState to receive delivery
-                                        gameState.receiveDelivery(gameState.cyanWeek2);
+                                        gameState.receiveDelivery(gameState.orangeWeek2);
                                         syncStateToDOM();
                                     });
-                                    els.cyanWeek2.style.opacity = '0';
+                                    els.orangeWeek2.style.opacity = '0';
 
-                                    // 3. Cyan Week 1 -> Cyan Week 2
-                                    if (els.cyanWeek1 && els.cyanWeek2) {
-                                        const val = gameState.cyanWeek1;
-                                        animateClone(els.cyanWeek1, els.cyanWeek2, null, 'direct', () => {
-                                            gameState.cyanWeek2 = val;
-                                            els.cyanWeek2.innerText = gameState.cyanWeek2;
-                                            els.cyanWeek2.style.opacity = '1';
+                                    // 3. Orange Week 1 -> Orange Week 2
+                                    if (els.orangeWeek1 && els.orangeWeek2) {
+                                        const val = gameState.orangeWeek1;
+                                        animateClone(els.orangeWeek1, els.orangeWeek2, null, 'direct', () => {
+                                            gameState.orangeWeek2 = val;
+                                            els.orangeWeek2.innerText = gameState.orangeWeek2;
+                                            els.orangeWeek2.style.opacity = '1';
                                         });
-                                        els.cyanWeek1.style.opacity = '0';
+                                        els.orangeWeek1.style.opacity = '0';
                                     }
 
                                     // 4. Violet Week 2 -> Wholesaler
