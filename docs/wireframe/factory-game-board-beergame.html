@@ -270,8 +270,10 @@
                                 const mobileBtnUp = document.querySelector('.mobile-btn-up');
                                 const mobileBtnDown = document.querySelector('.mobile-btn-down');
                                 const mobileBtnSend = document.querySelector('.mobile-btn-send');
+                                
+                                // Note: Class selectors for mobile value boxes to ensure we target the value, not the container
                                 const mobileFactoryOrder = document.querySelector('.mobile-factory-order-value');
-                                const mobileDistributorOrder = document.querySelector('.mobile-distributor-order');
+                                const mobileDistributorOrder = document.querySelector('.mobile-distributor-order'); // Value box in Right Node
                                 const mobileProductionOrder = document.querySelector('.mobile-production-order-value');
 
                                 // --- Get Elements by ID ---
@@ -279,15 +281,22 @@
                                     productionOrderInner: document.getElementById('production-order-value'),
                                     factoryOrderInner: document.getElementById('factory-order-value'),
                                     factoryInventory: document.getElementById('factory-inventory'),
-                                    orangeWeek1: document.getElementById('delivery-week-1'),
+                                    
+                                    // Incoming Deliveries (from Production - Cyan/Blue)
+                                    orangeWeek1: document.getElementById('delivery-week-1'), // Named orangeWeek1 in logic but holds Production delivery
                                     orangeWeek2: document.getElementById('delivery-week-2'),
-                                    violetWeek1: document.getElementById('outgoing-week-1'),
+                                    
+                                    // Outgoing Deliveries (to Distributor - Orange/Accent)
+                                    violetWeek1: document.getElementById('outgoing-week-1'), // Named violetWeek1 in logic but holds Factory delivery
                                     violetWeek2: document.getElementById('outgoing-week-2'),
+                                    
                                     factoryOrderReceived: document.getElementById('factory-order-received'),
                                     factoryOrderReceivedInner: document.getElementById('factory-order-received-value'),
+                                    
                                     distributorOrder: document.getElementById('distributor-order'),
                                     distributorInventory: document.getElementById('distributor-inventory'),
                                     productionInventory: document.getElementById('production-inventory'),
+                                    
                                     // Mobile elements
                                     mobileDeliveryWeek1: document.getElementById('mobile-delivery-week-1'),
                                     mobileDeliveryWeek2: document.getElementById('mobile-delivery-week-2'),
@@ -319,6 +328,10 @@
                                     factoryOutgoing: 0,
 
                                     // Week slot values
+                                    // 'orange' vars refer to Incoming (Left->Center), 'violet' vars refer to Outgoing (Center->Right)
+                                    // Logic names preserved from Distributor template for consistency, but visually:
+                                    // orangeWeek* = Cyan (Production)
+                                    // violetWeek* = Orange (Factory)
                                     orangeWeek1: 20,
                                     orangeWeek2: 30,
                                     violetWeek1: 25,
@@ -359,10 +372,10 @@
                                     },
 
                                     advanceWeeks() {
-                                        // Orange weeks (incoming deliveries from production)
+                                        // Incoming deliveries pipeline
                                         this.orangeWeek2 = this.orangeWeek1;
                                         this.orangeWeek1 = this.productionDelivery;
-                                        // Violet weeks (outgoing deliveries to distributor)
+                                        // Outgoing deliveries pipeline
                                         this.violetWeek2 = this.violetWeek1;
                                         this.violetWeek1 = this.factoryOutgoing;
                                     }
@@ -474,7 +487,8 @@
 
                                         if (textOverride !== null) {
                                             const numberDiv = clone.querySelector('.font-bold') || clone;
-                                            numberDiv.innerText = textOverride;
+                                            if (numberDiv) numberDiv.innerText = textOverride;
+                                            else clone.innerText = textOverride;
                                         }
 
                                         // Style Ghost
@@ -540,18 +554,8 @@
                                                 { transform: 'translate(0, 0)' },
                                                 { transform: `translate(${finalX}px, 0)` }
                                             ];
-                                        } else if (pathType === 'vertical-down') {
-                                            // Vertical downward movement (for mobile deliveries)
-                                            const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
-                                            const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
-                                            const finalX = deltaX + centerOffsetX;
-                                            const finalY = deltaY + centerOffsetY;
-                                            keyframes = [
-                                                { transform: 'translate(0, 0)' },
-                                                { transform: `translate(${finalX}px, ${finalY}px)` }
-                                            ];
-                                        } else if (pathType === 'vertical-up') {
-                                            // Vertical upward movement (for mobile orders)
+                                        } else if (pathType === 'vertical-down' || pathType === 'vertical-up') {
+                                            // Vertical movement with centering
                                             const centerOffsetX = (rectTarget.width - rectSource.width) / 2;
                                             const centerOffsetY = (rectTarget.height - rectSource.height) / 2;
                                             const finalX = deltaX + centerOffsetX;
@@ -606,18 +610,16 @@
                                     // ========================================
 
                                     // --- Animation 1: Distributor Order -> Factory Order Received ---
-                                    // Keep distributor order as "?" - only the animated clone shows the number
-                                    // The clone will display randomIncomingOrder while original stays as "?"
-
                                     // Animate ONLY the inner value box (mobileDistributorOrder) to factory order inner box
                                     // Direction: vertical-down (distributor is at top, factory is below)
-                                    animateClone(mobileDistributorOrder, mobileFactoryOrder, randomIncomingOrder.toString(), 'vertical-down', () => {
-                                        // Update factory order received slot - value stays visible here
-                                        mobileFactoryOrder.innerText = randomIncomingOrder;
-                                        if (els.factoryOrderReceivedInner) els.factoryOrderReceivedInner.innerText = randomIncomingOrder;
-                                        // Distributor order stays as "?" (original was never changed)
-                                        console.log("Phase 1a complete: Order arrived at factory order slot");
-                                    }, false, true);
+                                    if (mobileDistributorOrder && mobileFactoryOrder) {
+                                        animateClone(mobileDistributorOrder, mobileFactoryOrder, randomIncomingOrder.toString(), 'vertical-down', () => {
+                                            // Update factory order received slot - value stays visible here
+                                            mobileFactoryOrder.innerText = randomIncomingOrder;
+                                            if (els.factoryOrderReceivedInner) els.factoryOrderReceivedInner.innerText = randomIncomingOrder;
+                                            console.log("Phase 1a complete: Order arrived at factory order slot");
+                                        }, false, true);
+                                    }
 
                                     // --- Animation 2: Factory Order -> Production Order ---
                                     // Get the factory order value box (the div containing the input's parent)
@@ -663,11 +665,19 @@
                                         document.body.appendChild(clone);
 
                                         // Single smooth animation: UP then RIGHT, with fade at end
-                                        const animation = clone.animate([
+                                        // Note: on mobile with flex-col-reverse, 'Top' is visual Top (Distributor). 
+                                        // Week2 is below it. So week2.top > distributor.top. distance is negative. 
+                                        // translate(0, -dist) moves up.
+                                        // We calculate offsets manually here.
+                                        
+                                        // Animation path: Move vertically to Distributor level, then horizontally to center
+                                        const animKeys = [
                                             { transform: 'translate(0, 0)', opacity: 1 },
                                             { transform: `translate(0, -${verticalDistance}px)`, opacity: 1, offset: 0.5 },
                                             { transform: `translate(${horizontalDistance}px, -${verticalDistance}px)`, opacity: 0 }
-                                        ], {
+                                        ];
+
+                                        const animation = clone.animate(animKeys, {
                                             duration: 2000,
                                             easing: 'linear',
                                             fill: 'forwards'
@@ -697,15 +707,20 @@
                                         els.mobileOutgoingWeek1.style.opacity = '0';
                                     }
 
-                                    // --- Animation 5: Orange Delivery Week 2 inner -> Factory Inventory (DOWN along pipe, then RIGHT into inventory) ---
+                                    // --- Animation 5: Cyan Delivery Week 2 inner -> Factory Inventory (UP along pipe, then RIGHT into inventory) ---
+                                    // Note: Production is Bottom. Factory is Middle. Delivery moves UP.
                                     const factoryInventoryMobile = document.getElementById('factory-inventory-mobile');
 
                                     if (els.mobileDeliveryWeek2 && factoryInventoryMobile) {
                                         // Calculate distances
                                         const week2Rect = els.mobileDeliveryWeek2.getBoundingClientRect();
                                         const inventoryRect = factoryInventoryMobile.getBoundingClientRect();
-                                        const verticalDistance = inventoryRect.top + (inventoryRect.height / 2) - week2Rect.top - (week2Rect.height / 2);
-                                        const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - week2Rect.left - (week2Rect.width / 2);
+                                        // Since Factory is ABOVE Production/Pipe, inventoryRect.top < week2Rect.top.
+                                        // vertDistance = week2.top - inv.top (positive). We want to move -vertDistance (UP).
+                                        
+                                        // Vector from source to target
+                                        const deltaY = inventoryRect.top + (inventoryRect.height/2) - (week2Rect.top + week2Rect.height/2);
+                                        const deltaX = inventoryRect.left + (inventoryRect.width/2) - (week2Rect.left + week2Rect.width/2);
 
                                         // Clone the element
                                         const clone = els.mobileDeliveryWeek2.cloneNode(true);
@@ -721,11 +736,11 @@
                                         clone.style.pointerEvents = 'none';
                                         document.body.appendChild(clone);
 
-                                        // Single smooth animation: DOWN then RIGHT, with fade at end
+                                        // Single smooth animation: UP then RIGHT
                                         const animation = clone.animate([
                                             { transform: 'translate(0, 0)', opacity: 1 },
-                                            { transform: `translate(0, ${verticalDistance}px)`, opacity: 1, offset: 0.5 },
-                                            { transform: `translate(${horizontalDistance}px, ${verticalDistance}px)`, opacity: 0 }
+                                            { transform: `translate(0, ${deltaY}px)`, opacity: 1, offset: 0.5 },
+                                            { transform: `translate(${deltaX}px, ${deltaY}px)`, opacity: 0 }
                                         ], {
                                             duration: 2000,
                                             easing: 'linear',
@@ -744,15 +759,16 @@
                                         els.mobileDeliveryWeek2.style.opacity = '0';
                                     }
 
-                                    // --- Animation 6: Orange Delivery Week 1 inner -> Week 2 slot (DOWN) ---
+                                    // --- Animation 6: Cyan Delivery Week 1 inner -> Week 2 slot (UP) ---
+                                    // Flow is Production -> Factory (UP)
                                     if (els.mobileDeliveryWeek1 && els.mobileDeliveryWeek2) {
-                                        animateClone(els.mobileDeliveryWeek1, els.mobileDeliveryWeek2, deliveryWeek1Val, 'vertical-down', () => {
+                                        animateClone(els.mobileDeliveryWeek1, els.mobileDeliveryWeek2, deliveryWeek1Val, 'vertical-up', () => {
                                             // Update gameState and sync
                                             gameState.orangeWeek2 = parseInt(deliveryWeek1Val);
                                             els.mobileDeliveryWeek2.innerText = deliveryWeek1Val;
                                             els.mobileDeliveryWeek2.style.opacity = '1';
                                             syncStateToDOM();
-                                            console.log("Phase 1f complete: Orange Week 1 moved to Week 2 slot");
+                                            console.log("Phase 1f complete: Cyan Week 1 moved to Week 2 slot");
                                         }, false, true);
 
                                         // Clear Week 1 slot
@@ -762,30 +778,29 @@
                                     // ========================================
                                     // PHASE 2: After 1 sec pause
                                     // 1. Order in Factory -> LEFT into Inventory -> Morph to cyan (production)
-                                    // 2. Order in Factory -> LEFT to center, DOWN into Inventory -> Morph to outgoing (orange)
+                                    // 2. Order in Factory (Received) -> LEFT to center, DOWN into Inventory -> Morph to orange (outgoing)
                                     // ========================================
                                     setTimeout(() => {
                                         console.log("Starting Phase 2...");
 
                                         const factoryInventoryEl = document.getElementById('factory-inventory');
-                                        const distributorInventoryMobileEl = document.getElementById('distributor-inventory-mobile');
+                                        const factoryInventoryMobileEl = document.getElementById('factory-inventory-mobile');
 
                                         // --- Phase 2a: Factory Order -> Inventory ---
+                                        // Note: Factory Order is Orange (Accent). Becomes Production Delivery (Cyan).
                                         if (mobileFactoryOrder && factoryInventoryEl) {
-                                            // Calculate distances - Order moves LEFT horizontally only (align with inventory center X)
                                             const orderRect = mobileFactoryOrder.getBoundingClientRect();
                                             const inventoryRect = factoryInventoryEl.getBoundingClientRect();
                                             const horizontalDistance = inventoryRect.left + (inventoryRect.width / 2) - orderRect.left - (orderRect.width / 2);
-                                            // No vertical movement - stays at same Y position
 
                                             // Use gameState for factory processing
                                             const orderValue = parseInt(mobileFactoryOrder.innerText) || 0;
                                             const deliveryValue = gameState.processFactoryOrder(orderValue);
 
-                                            // Clone the order element (copy moves, original stays with last turn's value)
+                                            // Clone the order element
                                             const clone = mobileFactoryOrder.cloneNode(true);
                                             clone.id = '';
-                                            clone.innerText = orderValue; // Current order value
+                                            clone.innerText = orderValue;
                                             clone.style.position = 'fixed';
                                             clone.style.left = `${orderRect.left}px`;
                                             clone.style.top = `${orderRect.top}px`;
@@ -796,11 +811,8 @@
                                             clone.style.pointerEvents = 'none';
                                             document.body.appendChild(clone);
 
-                                            // Keep original order slot visible with last turn's value (for demo, show the same value)
-                                            // In a real game, this would be the previous turn's order
                                             mobileFactoryOrder.innerText = orderValue;
 
-                                            // Animation: Move LEFT horizontally only (no vertical movement)
                                             const moveAnimation = clone.animate([
                                                 { transform: 'translate(0, 0)', opacity: 1 },
                                                 { transform: `translate(${horizontalDistance}px, 0)`, opacity: 1 }
@@ -818,54 +830,47 @@
                                                 clone.style.color = 'rgb(6, 182, 212)'; // production (cyan)
                                                 clone.innerText = deliveryValue;
 
-                                                // After morph, create a new element at the exact position where clone ended
                                                 setTimeout(() => {
-                                                    // Get the current position of the clone (where it ended)
                                                     const cloneRect = clone.getBoundingClientRect();
                                                     const inventoryRect2 = factoryInventoryEl.getBoundingClientRect();
-
-                                                    // Calculate position relative to inventory element
                                                     const relativeLeft = cloneRect.left - inventoryRect2.left;
                                                     const relativeTop = cloneRect.top - inventoryRect2.top;
 
-                                                    // Create a new orange delivery element inside inventory (mobile only)
-                                                    const orangeSlot = document.createElement('div');
-                                                    orangeSlot.className = 'lg:hidden bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px] absolute';
-                                                    orangeSlot.innerText = deliveryValue;
-                                                    orangeSlot.style.left = `${relativeLeft}px`;
-                                                    orangeSlot.style.top = `${relativeTop}px`;
-                                                    orangeSlot.style.width = `${cloneRect.width}px`;
-                                                    orangeSlot.style.zIndex = '50';
+                                                    const cyanSlot = document.createElement('div');
+                                                    cyanSlot.className = 'lg:hidden bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px] absolute';
+                                                    cyanSlot.innerText = deliveryValue;
+                                                    cyanSlot.style.left = `${relativeLeft}px`;
+                                                    cyanSlot.style.top = `${relativeTop}px`;
+                                                    cyanSlot.style.width = `${cloneRect.width}px`;
+                                                    cyanSlot.style.zIndex = '50';
 
-                                                    // Remove the fixed clone
                                                     clone.remove();
+                                                    factoryInventoryEl.appendChild(cyanSlot);
 
-                                                    // Add orange slot to inventory
-                                                    factoryInventoryEl.appendChild(orangeSlot);
-
-                                                    console.log(`Phase 2a complete: Order morphed to orange delivery (${deliveryValue})`);
-                                                    // Store reference for Phase 3 in gameState
-                                                    gameState.phase2.deliveryClone = orangeSlot;
-                                                }, 500); // After morph transition completes
+                                                    console.log(`Phase 2a complete: Order morphed to cyan delivery (${deliveryValue})`);
+                                                    gameState.phase2.deliveryClone = cyanSlot;
+                                                }, 500);
                                             };
                                         }
 
-                                        // --- Phase 2b: Factory Order Received -> Inventory (LEFT then DOWN) ---
+                                        // --- Phase 2b: Factory Order Received (from Distributor) -> Inventory ---
+                                        // Note: Incoming is Violet. Becomes Outgoing Delivery (Orange/Accent).
                                         if (mobileFactoryOrder && factoryInventoryMobileEl) {
+                                            // Wait, mobileFactoryOrder is the Output slot.
+                                            // We want the INPUT slot: mobileDistributorOrder (which visually moved to factory input)
+                                            // But in Phase 1a, we updated mobileFactoryOrder with the value.
+                                            // So we start from mobileFactoryOrder (which now holds the incoming value).
+                                            
                                             const orderRect = mobileFactoryOrder.getBoundingClientRect();
                                             const invRect = factoryInventoryMobileEl.getBoundingClientRect();
 
-                                            // Calculate horizontal distance to center of inventory
                                             const horizDist = invRect.left + (invRect.width / 2) - orderRect.left - (orderRect.width / 2);
-                                            // Calculate vertical distance to between title and value (approx 40% from top of inventory)
                                             const targetY = invRect.top + (invRect.height * 0.40);
                                             const vertDist = targetY - orderRect.top - (orderRect.height / 2);
 
-                                            // Use gameState for order processing
                                             const orderValue = gameState.incomingOrder;
                                             const { outgoing: outgoingDelivery, newInventory: newFactoryInv } = gameState.processFactoryOrder(orderValue);
 
-                                            // Clone the order element (copy moves, original stays)
                                             const orderClone = mobileFactoryOrder.cloneNode(true);
                                             orderClone.id = '';
                                             orderClone.innerText = orderValue;
@@ -879,10 +884,8 @@
                                             orderClone.style.pointerEvents = 'none';
                                             document.body.appendChild(orderClone);
 
-                                            // Keep original order slot visible with the value
                                             mobileFactoryOrder.innerText = orderValue;
 
-                                            // Animation: LEFT horizontally to center, then DOWN into inventory
                                             const orderAnimation = orderClone.animate([
                                                 { transform: 'translate(0, 0)', opacity: 1 },
                                                 { transform: `translate(${horizDist}px, 0)`, opacity: 1, offset: 0.5 },
@@ -894,82 +897,75 @@
                                             });
 
                                             orderAnimation.onfinish = () => {
-                                                // Morph to orange/accent (outgoing delivery to distributor)
+                                                // Morph to Orange/Accent (outgoing delivery)
                                                 orderClone.style.transition = 'all 0.5s ease-in-out';
-                                                orderClone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)'; // accent/10 (orange)
-                                                orderClone.style.borderColor = 'rgba(249, 115, 22, 0.2)'; // accent/20 (orange)
+                                                orderClone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)'; // accent/10
+                                                orderClone.style.borderColor = 'rgba(249, 115, 22, 0.2)';
                                                 orderClone.style.color = 'rgb(251, 146, 60)'; // orange-400
                                                 orderClone.innerText = outgoingDelivery;
 
-                                                // Update factory inventory via DOM sync
                                                 syncStateToDOM();
 
-                                                // After morph, create element inside inventory
                                                 setTimeout(() => {
                                                     const cloneRect = orderClone.getBoundingClientRect();
                                                     const invRect2 = factoryInventoryMobileEl.getBoundingClientRect();
-
                                                     const relLeft = cloneRect.left - invRect2.left;
                                                     const relTop = cloneRect.top - invRect2.top;
 
-                                                    const violetSlot = document.createElement('div');
-                                                    violetSlot.className = 'bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px] absolute';
-                                                    violetSlot.innerText = outgoingDelivery;
-                                                    violetSlot.style.left = `${relLeft}px`;
-                                                    violetSlot.style.top = `${relTop}px`;
-                                                    violetSlot.style.width = `${cloneRect.width}px`;
-                                                    violetSlot.style.zIndex = '50';
+                                                    const orangeSlot = document.createElement('div');
+                                                    orangeSlot.className = 'bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px] absolute';
+                                                    orangeSlot.innerText = outgoingDelivery;
+                                                    orangeSlot.style.left = `${relLeft}px`;
+                                                    orangeSlot.style.top = `${relTop}px`;
+                                                    orangeSlot.style.width = `${cloneRect.width}px`;
+                                                    orangeSlot.style.zIndex = '50';
 
                                                     orderClone.remove();
-                                                    factoryInventoryMobileEl.appendChild(violetSlot);
+                                                    factoryInventoryMobileEl.appendChild(orangeSlot);
 
-                                                    console.log(`Phase 2b complete: Order morphed to outgoing delivery (${outgoingDelivery}), Inventory: ${newFactoryInv}`);
-                                                    // Store reference for Phase 3 in gameState
-                                                    gameState.phase2.outgoingClone = violetSlot;
+                                                    console.log(`Phase 2b complete: Order morphed to outgoing delivery (${outgoingDelivery})`);
+                                                    gameState.phase2.outgoingClone = orangeSlot;
                                                 }, 500);
                                             };
                                         }
-                                    }, 3000); // 2s for Phase 1 animations + 1s pause
+                                    }, 3000); 
 
-                                    // --- Phase 3: Orange delivery slot -> Week 1 slot (RIGHT then UP) ---
+                                    // --- Phase 3: Deliveries move to first week slots ---
                                     setTimeout(() => {
                                         console.log("Starting Phase 3...");
 
-                                        const orangeSlot = gameState.phase2.deliveryClone;
+                                        // 3a: Cyan delivery slot -> Week 1 slot (RIGHT then UP? No, Production is Bottom)
+                                        // Production (Bottom) -> Factory (Middle).
+                                        // Week 1 is between them.
+                                        // So move from Inventory (Middle) -> Week 1 (Below).
+                                        // Flow: Inventory -> Week 1. Direction: DOWN.
+                                        const cyanSlot = gameState.phase2.deliveryClone;
                                         const week1Target = els.mobileDeliveryWeek1;
 
-                                        if (orangeSlot && week1Target) {
-                                            // Get current position of orange slot (inside factory inventory)
-                                            const orangeRect = orangeSlot.getBoundingClientRect();
-                                            // Get target Week 1 slot position
+                                        if (cyanSlot && week1Target) {
+                                            const cyanRect = cyanSlot.getBoundingClientRect();
                                             const week1Rect = week1Target.getBoundingClientRect();
-
-                                            // Calculate pipe center (horizontal center between factory inventory and week boxes)
-                                            // The pipe is roughly at the same X as the week boxes
+                                            
+                                            // Pipe center is roughly aligned with Week 1 box
                                             const pipeCenterX = week1Rect.left + (week1Rect.width / 2);
+                                            const horizDist = pipeCenterX - cyanRect.left - (cyanRect.width / 2);
+                                            // Vertical distance DOWN to Week 1
+                                            const vertDist = week1Rect.top - cyanRect.top;
 
-                                            // Horizontal distance to pipe center
-                                            const horizDist = pipeCenterX - orangeRect.left - (orangeRect.width / 2);
-                                            // Vertical distance up to Week 1
-                                            const vertDist = week1Rect.top - orangeRect.top;
-
-                                            // Create a fixed-position clone for animation
                                             const animClone = document.createElement('div');
                                             animClone.className = 'lg:hidden bg-production/10 px-3 py-1 rounded border border-production/20 text-production font-sans font-bold text-center min-w-[55px]';
-                                            animClone.innerText = orangeSlot.innerText;
+                                            animClone.innerText = cyanSlot.innerText;
                                             animClone.style.position = 'fixed';
-                                            animClone.style.left = `${orangeRect.left}px`;
-                                            animClone.style.top = `${orangeRect.top}px`;
-                                            animClone.style.width = `${orangeRect.width}px`;
-                                            animClone.style.height = `${orangeRect.height}px`;
+                                            animClone.style.left = `${cyanRect.left}px`;
+                                            animClone.style.top = `${cyanRect.top}px`;
+                                            animClone.style.width = `${cyanRect.width}px`;
+                                            animClone.style.height = `${cyanRect.height}px`;
                                             animClone.style.zIndex = '9999';
                                             animClone.style.pointerEvents = 'none';
                                             document.body.appendChild(animClone);
 
-                                            // Hide original orange slot
-                                            orangeSlot.style.opacity = '0';
+                                            cyanSlot.style.opacity = '0';
 
-                                            // Animate: RIGHT to pipe center, then UP to Week 1
                                             const animation = animClone.animate([
                                                 { transform: 'translate(0, 0)', opacity: 1 },
                                                 { transform: `translate(${horizDist}px, 0)`, opacity: 1, offset: 0.4 },
@@ -982,53 +978,44 @@
 
                                             animation.onfinish = () => {
                                                 animClone.remove();
-                                                // Update Week 1 slot with the delivery value from gameState
-                                                gameState.orangeWeek1 = gameState.factoryDelivery;
+                                                gameState.orangeWeek1 = gameState.productionDelivery; // Cyan
                                                 week1Target.innerText = gameState.orangeWeek1;
                                                 week1Target.style.opacity = '1';
-                                                // Remove the original orange slot from inventory
-                                                orangeSlot.remove();
-                                                // Sync to desktop
+                                                cyanSlot.remove();
                                                 syncStateToDOM();
-                                                console.log("Phase 3a complete: Orange delivery moved to Week 1 slot");
+                                                console.log("Phase 3a complete: Cyan delivery moved to Week 1 slot");
                                             };
                                         }
 
-                                        // --- Phase 3b: Violet outgoing slot -> Factory Outgoing Week 1 (RIGHT then UP) ---
-                                        const violetSlot = gameState.phase2.outgoingClone;
+                                        // 3b: Orange outgoing slot -> Distributor Week 1 (RIGHT then UP)
+                                        // Factory (Middle) -> Distributor (Top).
+                                        // Week 1 is Above.
+                                        // Flow: Inventory (Middle) -> Week 1 (Above). Direction: UP.
+                                        const orangeSlot = gameState.phase2.outgoingClone;
                                         const outgoingWeek1Target = els.mobileOutgoingWeek1;
 
-                                        if (violetSlot && outgoingWeek1Target) {
-                                            // Get current position of violet slot (inside distributor inventory)
-                                            const violetRect = violetSlot.getBoundingClientRect();
-                                            // Get target Week 1 slot position
+                                        if (orangeSlot && outgoingWeek1Target) {
+                                            const orangeRect = orangeSlot.getBoundingClientRect();
                                             const outWeek1Rect = outgoingWeek1Target.getBoundingClientRect();
 
-                                            // Calculate pipe center (horizontal center of week boxes)
                                             const pipeCenterX = outWeek1Rect.left + (outWeek1Rect.width / 2);
+                                            const horizDistG = pipeCenterX - orangeRect.left - (orangeRect.width / 2);
+                                            const vertDistG = outWeek1Rect.top - orangeRect.top; // Negative (Up)
 
-                                            // Horizontal distance to pipe center
-                                            const horizDistG = pipeCenterX - violetRect.left - (violetRect.width / 2);
-                                            // Vertical distance up to Week 1
-                                            const vertDistG = outWeek1Rect.top - violetRect.top;
-
-                                            // Create a fixed-position clone for animation
                                             const animCloneG = document.createElement('div');
                                             animCloneG.className = 'lg:hidden bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]';
-                                            animCloneG.innerText = violetSlot.innerText;
+                                            animCloneG.innerText = orangeSlot.innerText;
                                             animCloneG.style.position = 'fixed';
-                                            animCloneG.style.left = `${violetRect.left}px`;
-                                            animCloneG.style.top = `${violetRect.top}px`;
-                                            animCloneG.style.width = `${violetRect.width}px`;
-                                            animCloneG.style.height = `${violetRect.height}px`;
+                                            animCloneG.style.left = `${orangeRect.left}px`;
+                                            animCloneG.style.top = `${orangeRect.top}px`;
+                                            animCloneG.style.width = `${orangeRect.width}px`;
+                                            animCloneG.style.height = `${orangeRect.height}px`;
                                             animCloneG.style.zIndex = '9999';
                                             animCloneG.style.pointerEvents = 'none';
                                             document.body.appendChild(animCloneG);
 
-                                            // Hide original violet slot
-                                            violetSlot.style.opacity = '0';
+                                            orangeSlot.style.opacity = '0';
 
-                                            // Animate: RIGHT to pipe center, then UP to Week 1
                                             const animationG = animCloneG.animate([
                                                 { transform: 'translate(0, 0)', opacity: 1 },
                                                 { transform: `translate(${horizDistG}px, 0)`, opacity: 1, offset: 0.4 },
@@ -1041,20 +1028,16 @@
 
                                             animationG.onfinish = () => {
                                                 animCloneG.remove();
-                                                // Update Week 1 slot with the outgoing delivery value from gameState
-                                                gameState.violetWeek1 = gameState.distributorOutgoing;
+                                                gameState.violetWeek1 = gameState.factoryOutgoing; // Orange
                                                 outgoingWeek1Target.innerText = gameState.violetWeek1;
                                                 outgoingWeek1Target.style.opacity = '1';
-                                                // Remove the original violet slot from inventory
-                                                violetSlot.remove();
-                                                // Sync to desktop
+                                                orangeSlot.remove();
                                                 syncStateToDOM();
-                                                console.log("Phase 3b complete: Violet outgoing moved to Week 1 slot");
+                                                console.log("Phase 3b complete: Orange outgoing moved to Week 1 slot");
                                             };
                                         }
-                                    }, 6000); // 2s Phase 1 + 1s pause + 2s Phase 2 + 1s pause
+                                    }, 6000); 
 
-                                    // Re-enable interface after all phases complete
                                     setTimeout(() => {
                                         if (mobileOrderInput) mobileOrderInput.disabled = false;
                                         if (mobileBtnUp) mobileBtnUp.disabled = false;
@@ -1065,7 +1048,7 @@
                                             mobileBtnSend.classList.remove('opacity-50', 'cursor-not-allowed');
                                             validateInput();
                                         }
-                                    }, 9000); // Wait for Phase 1 (2s) + pause (1s) + Phase 2 (2s) + pause (1s) + Phase 3 (2s) + buffer
+                                    }, 9000);
                                 };
 
                                 // --- Desktop Animation Function ---
@@ -1073,53 +1056,58 @@
                                     console.log("Starting Desktop Animations (Horizontal)...");
 
                                     // 1. Factory Order -> Production Order (Direct)
-                                    animateClone(els.factoryOrderInner, els.productionOrderInner, null, 'direct', () => {
-                                        // PHASE 2: Production Order -> Middle of Inventory (Vertical Align Y)
-                                        setTimeout(() => {
-                                            if (els.productionOrderInner && els.productionInventory) {
-                                                animateClone(els.productionOrderInner, els.productionInventory, null, 'vertical-align-y', (persistedClone) => {
-                                                    // PHASE 3: Morph & Move to Week 1
-                                                    setTimeout(() => {
-                                                        if (!persistedClone) return;
+                                    // Factory (Center) -> Production (Left). DeltaX negative.
+                                    if (els.factoryOrderInner && els.productionOrderInner) {
+                                        animateClone(els.factoryOrderInner, els.productionOrderInner, null, 'direct', () => {
+                                            // PHASE 2: Production Order -> Middle of Inventory (Vertical Align Y)
+                                            setTimeout(() => {
+                                                if (els.productionOrderInner && els.productionInventory) {
+                                                    animateClone(els.productionOrderInner, els.productionInventory, null, 'vertical-align-y', (persistedClone) => {
+                                                        // PHASE 3: Morph & Move to Week 1
+                                                        setTimeout(() => {
+                                                            if (!persistedClone) return;
 
-                                                        // Morph into Cyan (Production) Delivery
-                                                        persistedClone.classList.remove('bg-accent/10', 'border-accent/20', 'text-accent');
-                                                        persistedClone.classList.add('bg-production/10', 'border-production/20', 'text-production');
+                                                            // Morph into Cyan (Production) Delivery
+                                                            persistedClone.classList.remove('bg-accent/10', 'border-accent/20', 'text-accent');
+                                                            persistedClone.classList.add('bg-production/10', 'border-production/20', 'text-production');
 
-                                                        const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
-                                                        const orderVal = parseInt(valSpan.innerText) || 0;
-                                                        // Use gameState for delivery calculation
-                                                        const deliverVal = gameState.processProductionOrder(orderVal);
-                                                        valSpan.innerText = deliverVal;
+                                                            const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
+                                                            const orderVal = parseInt(valSpan.innerText) || 0;
+                                                            // Use gameState for delivery calculation
+                                                            const deliverVal = gameState.processProductionOrder(orderVal);
+                                                            valSpan.innerText = deliverVal;
 
-                                                        if (els.orangeWeek1) {
-                                                            animateClone(persistedClone, els.orangeWeek1, deliverVal, 'vertical-dogleg', () => {
-                                                                gameState.orangeWeek1 = deliverVal;
-                                                                els.orangeWeek1.innerText = gameState.orangeWeek1;
-                                                                els.orangeWeek1.style.opacity = '1';
-                                                                syncStateToDOM();
-                                                            });
-                                                            persistedClone.remove();
-                                                        }
-                                                    }, 1000);
-                                                }, true);
-                                            }
-                                        }, 1000);
-                                    }, false, true);
+                                                            // Move to OrangeWeek1 (which is actually Production delivery slot)
+                                                            if (els.orangeWeek1) {
+                                                                animateClone(persistedClone, els.orangeWeek1, deliverVal, 'vertical-dogleg', () => {
+                                                                    gameState.orangeWeek1 = deliverVal;
+                                                                    els.orangeWeek1.innerText = gameState.orangeWeek1;
+                                                                    els.orangeWeek1.style.opacity = '1';
+                                                                    syncStateToDOM();
+                                                                });
+                                                                persistedClone.remove();
+                                                            }
+                                                        }, 1000);
+                                                    }, true);
+                                                }
+                                            }, 1000);
+                                        }, false, true);
+                                    }
 
                                     // Clear source Factory Order
-                                    const desktopOrderInput = els.factoryOrderInner.querySelector('input');
+                                    const desktopOrderInput = els.factoryOrderInner?.querySelector('input');
                                     if (desktopOrderInput) desktopOrderInput.value = '';
 
-                                    // 2. Orange Week 2 -> Factory Inventory
-                                    animateClone(els.orangeWeek2, els.factoryInventory, null, 'dogleg', () => {
-                                        // Use gameState to receive delivery
-                                        gameState.receiveDelivery(gameState.orangeWeek2);
-                                        syncStateToDOM();
-                                    });
-                                    els.orangeWeek2.style.opacity = '0';
+                                    // 2. Production Delivery (Cyan) Week 2 -> Factory Inventory
+                                    if (els.orangeWeek2 && els.factoryInventory) {
+                                        animateClone(els.orangeWeek2, els.factoryInventory, null, 'dogleg', () => {
+                                            gameState.receiveDelivery(gameState.orangeWeek2);
+                                            syncStateToDOM();
+                                        });
+                                        els.orangeWeek2.style.opacity = '0';
+                                    }
 
-                                    // 3. Orange Week 1 -> Orange Week 2
+                                    // 3. Production Delivery Week 1 -> Week 2
                                     if (els.orangeWeek1 && els.orangeWeek2) {
                                         const val = gameState.orangeWeek1;
                                         animateClone(els.orangeWeek1, els.orangeWeek2, null, 'direct', () => {
@@ -1130,13 +1118,13 @@
                                         els.orangeWeek1.style.opacity = '0';
                                     }
 
-                                    // 4. Violet Week 2 -> Distributor
+                                    // 4. Factory Outgoing (Orange) Week 2 -> Distributor
                                     if (els.violetWeek2 && els.distributorInventory) {
                                         animateClone(els.violetWeek2, els.distributorInventory, null, 'dogleg');
                                         els.violetWeek2.style.opacity = '0';
                                     }
 
-                                    // 5. Violet Week 1 -> Violet Week 2
+                                    // 5. Factory Outgoing Week 1 -> Week 2
                                     if (els.violetWeek1 && els.violetWeek2) {
                                         const val = gameState.violetWeek1;
                                         animateClone(els.violetWeek1, els.violetWeek2, null, 'direct', () => {
@@ -1147,9 +1135,8 @@
                                         els.violetWeek1.style.opacity = '0';
                                     }
 
-                                    // 6. Distributor Order -> Factory Order Received
+                                    // 6. Distributor Order (Violet) -> Factory Order Received
                                     if (els.distributorOrder && els.factoryOrderReceived) {
-                                        // Use gameState for order generation (shared with mobile)
                                         const randomIncomingOrder = gameState.generateIncomingOrder();
 
                                         animateClone(els.distributorOrder, els.factoryOrderReceived, randomIncomingOrder.toString(), 'horizontal', () => {
@@ -1162,16 +1149,15 @@
                                                         setTimeout(() => {
                                                             if (!persistedClone) return;
 
+                                                            // Morph Violet -> Orange (Accent)
                                                             persistedClone.classList.remove('bg-violet-500/10', 'border-violet-500/20', 'text-violet-400');
                                                             persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
 
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
 
-                                                            // Use gameState for order processing
                                                             const { outgoing: deliverVal, newInventory } = gameState.processFactoryOrder(gameState.incomingOrder);
                                                             valSpan.innerText = deliverVal;
 
-                                                            // Sync DOM with gameState
                                                             syncStateToDOM();
 
                                                             if (els.violetWeek1) {
@@ -1729,7 +1715,7 @@
                         {/* Service Level */}
                         <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
                             <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Service Level</h4>
-                            <div className="text-3xl font-bold" style={{color: metrics.serviceLevel >= 80 ? '#a78bfa' : metrics.serviceLevel >= 50 ? '#8B5CF6' : '#f87171'}}>
+                            <div className="text-3xl font-bold" style={{color: metrics.serviceLevel >= 80 ? '#fb923c' : metrics.serviceLevel >= 50 ? '#F97316' : '#f87171'}}>
                                 {metrics.serviceLevel.toFixed(1)}%
                             </div>
                             <p className="text-[10px] text-mono-light mt-1">Fully delivered orders / total orders</p>
@@ -1738,7 +1724,7 @@
                         {/* Fill Rate */}
                         <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
                             <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Fill Rate</h4>
-                            <div className="text-3xl font-bold" style={{color: metrics.fillRate >= 90 ? '#a78bfa' : metrics.fillRate >= 70 ? '#8B5CF6' : '#f87171'}}>
+                            <div className="text-3xl font-bold" style={{color: metrics.fillRate >= 90 ? '#fb923c' : metrics.fillRate >= 70 ? '#F97316' : '#f87171'}}>
                                 {metrics.fillRate.toFixed(1)}%
                             </div>
                             <p className="text-[10px] text-mono-light mt-1">Delivered quantity / ordered quantity</p>
@@ -1774,7 +1760,7 @@
                                             onChange={(e) => setShowInventory(e.target.checked)}
                                             className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-[10px] sm:text-xs" style={{color: '#8B5CF6'}}>Inventory</span>
+                                        <span className="text-[10px] sm:text-xs" style={{color: '#F97316'}}>Inventory</span>
                                     </label>
                                     <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
                                         <input
@@ -1803,9 +1789,9 @@
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Units', position: 'insideTopLeft', fill: '#808080', fontSize: 10, dy: -15 }} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        {showOrders && <Bar dataKey="outgoingOrders" name="Orders" fill="rgba(139, 92, 246, 0.1)" barSize={12} radius={[2, 2, 0, 0]} />}
-                                        {showInventory && <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#8B5CF6" strokeWidth={3} dot={{r: 3, fill: '#8B5CF6'}} activeDot={{r: 6}} />}
-                                        {showBackorders && <Line type="monotone" dataKey="backorders" name="Backorders" stroke="rgba(139, 92, 246, 0.9)" strokeWidth={2} dot={{r: 3, fill: 'rgba(139, 92, 246, 0.9)'}} activeDot={{r: 5}} />}
+                                        {showOrders && <Bar dataKey="outgoingOrders" name="Orders" fill="rgba(249, 115, 22, 0.1)" barSize={12} radius={[2, 2, 0, 0]} />}
+                                        {showInventory && <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#F97316" strokeWidth={3} dot={{r: 3, fill: '#F97316'}} activeDot={{r: 6}} />}
+                                        {showBackorders && <Line type="monotone" dataKey="backorders" name="Backorders" stroke="rgba(249, 115, 22, 0.9)" strokeWidth={2} dot={{r: 3, fill: 'rgba(249, 115, 22, 0.9)'}} activeDot={{r: 5}} />}
                                     </ComposedChart>
                                 </ResponsiveContainer>
                             </div>
@@ -1824,7 +1810,7 @@
                                             onChange={(e) => setShowHoldingCost(e.target.checked)}
                                             className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-[10px] sm:text-xs" style={{color: '#8B5CF6'}}>Holding</span>
+                                        <span className="text-[10px] sm:text-xs" style={{color: '#F97316'}}>Holding</span>
                                     </label>
                                     <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
                                         <input
@@ -1842,20 +1828,20 @@
                                     <AreaChart data={data} margin={{ top: 20, right: 15, left: 5, bottom: 20 }}>
                                         <defs>
                                             <linearGradient id="colorHoldingCostFactory" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.2}/>
+                                                <stop offset="5%" stopColor="#F97316" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="#F97316" stopOpacity={0.2}/>
                                             </linearGradient>
                                             <linearGradient id="colorBackorderCostFactory" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="rgba(139, 92, 246, 0.9)" stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor="rgba(139, 92, 246, 0.9)" stopOpacity={0.2}/>
+                                                <stop offset="5%" stopColor="rgba(249, 115, 22, 0.9)" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="rgba(249, 115, 22, 0.9)" stopOpacity={0.2}/>
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Cost ($)', position: 'insideTopLeft', fill: '#808080', fontSize: 10, dy: -15 }} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#8B5CF6" fillOpacity={1} fill="url(#colorHoldingCostFactory)" />}
-                                        {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(139, 92, 246, 0.9)" fillOpacity={1} fill="url(#colorBackorderCostFactory)" />}
+                                        {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#F97316" fillOpacity={1} fill="url(#colorHoldingCostFactory)" />}
+                                        {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(249, 115, 22, 0.9)" fillOpacity={1} fill="url(#colorBackorderCostFactory)" />}
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
