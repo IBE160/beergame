@@ -216,10 +216,10 @@
                     <!-- Mobile: Title (centered) + Order slot at top right -->
                     <div class="lg:hidden p-3 pb-0 relative">
                         <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Distributor</h3>
-                        <!-- Mobile Order Box - aligned with right pipe at top (incoming orders from Wholesaler) -->
-                        <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-amber-400/30 p-2 rounded shadow-lg z-10">
+                        <!-- Mobile Order Box - aligned with right pipe at top (incoming orders from Wholesaler) - GREEN (Wholesaler color) -->
+                        <div class="absolute top-3 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-dashed border-emerald-500/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-distributor-order-value bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                            <div class="mobile-distributor-order-value bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20 text-emerald-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>
 
@@ -1161,7 +1161,7 @@
                                                         setTimeout(() => {
                                                             if (!persistedClone) return;
 
-                                                            persistedClone.classList.remove('bg-amber-400/10', 'border-amber-400/20', 'text-amber-400');
+                                                            persistedClone.classList.remove('bg-emerald-500/10', 'border-emerald-500/20', 'text-emerald-400');
                                                             persistedClone.classList.add('bg-accent/10', 'border-accent/20', 'text-accent');
 
                                                             const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
@@ -1262,10 +1262,10 @@
                             });
                         </script>
 
-                        <!-- Order Received Box (Right, Dashed) - incoming orders from Wholesaler - AMBER -->
-                         <div id="distributor-order-received" class="bg-mono-surface border border-dashed border-amber-400/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                        <!-- Order Received Box (Right, Dashed) - incoming orders from Wholesaler - GREEN (Wholesaler color) -->
+                         <div id="distributor-order-received" class="bg-mono-surface border border-dashed border-emerald-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div id="distributor-order-received-value" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
+                            <div id="distributor-order-received-value" class="bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20 text-emerald-400 font-sans font-bold text-center min-w-[55px]">&nbsp;</div>
                         </div>
                     </div>
 
@@ -1355,10 +1355,10 @@
                     </div>
 
                     <div class="flex-1 flex flex-col items-center justify-center p-3 lg:p-4 space-y-2 relative">
-                        <!-- Mobile Order Box - aligned with right pipe, centered with inventory -->
-                        <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-amber-400/30 p-2 rounded shadow-lg z-10">
+                        <!-- Mobile Order Box - aligned with right pipe, centered with inventory - GREEN (Wholesaler color) -->
+                        <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-emerald-500/30 p-2 rounded shadow-lg z-10">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div class="mobile-wholesaler-order bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                            <div class="mobile-wholesaler-order bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20 text-emerald-400 font-sans font-bold text-center min-w-[55px]">?</div>
                         </div>
                         <!-- Hidden Inventory Box (Wholesaler - downstream) -->
                         <div id="wholesaler-inventory" class="bg-mono-bg/30 p-4 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] cursor-help" title="Hidden Information">
@@ -1366,11 +1366,11 @@
                             <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
                     </div>
-                    <!-- Order Box (Bottom) - tablet/desktop only - AMBER -->
+                    <!-- Order Box (Bottom) - tablet/desktop only - GREEN (Wholesaler color) -->
                     <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-start">
-                        <div class="bg-mono-surface border border-amber-400/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                        <div class="bg-mono-surface border border-emerald-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div id="wholesaler-order" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                            <div id="wholesaler-order" class="bg-emerald-500/10 px-3 py-1 rounded border border-emerald-500/20 text-emerald-400 font-sans font-bold text-center min-w-[55px]">?</div>
                         </div>
                     </div>
                 </div>
