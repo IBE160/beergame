@@ -557,14 +557,14 @@
                         </div>
                     </div>                                                      
                 </div>
-                <!-- PIPE SECTION 2: Retailer -> Customer -->
-                <div class="flex-1 flex flex-col justify-between py-4 relative min-w-[200px]">
-                     <!-- Top Pipe: Deliveries (Rightward) -->
+                <!-- PIPE SECTION 2: Distributor -> Wholesaler (Hidden on mobile) -->
+                <div class="hidden lg:flex flex-1 flex-col justify-between py-4 relative min-w-[200px]">
+                     <!-- Top Pipe: Deliveries (Rightward) - PURPLE/ACCENT -->
                      <div class="relative h-16 top-[40px] w-full flex items-center">
                         <!-- Pipe Background -->
                         <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 mt-[2px] h-[40px] bg-mono-surface rounded-none"></div>
 
-                        <!-- Delay Boxes (Deliveries to Customer) -->
+                        <!-- Delay Boxes (Deliveries to Wholesaler) - PURPLE/ACCENT -->
                         <div class="absolute w-full flex justify-evenly px-4 z-10 top-0 -mt-[11px]">
                             <!-- Week 1 -->
                              <div class="bg-mono-surface border border-accent/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
@@ -579,30 +579,68 @@
                        </div>
                     </div>
 
-                    <!-- Bottom Pipe: Demand (Leftward) -->
+                    <!-- Bottom Pipe: Orders (Leftward) -->
                     <div class="relative h-16 w-full flex items-center top-[5px]">
                          <!-- Pipe Background -->
                          <div class="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[40px] bg-mono-surface rounded-none"></div>
                     </div>
                 </div>
 
-                <!-- 3. RIGHT NODE: CUSTOMERS -->
-                <div class="w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
-                    <div class="p-4 border-b  border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
+                <!-- MOBILE VERTICAL CONNECTOR 2: Distributor -> Wholesaler -->
+                <div class="flex lg:hidden flex-row items-stretch justify-between w-full px-[calc(25%-60px)] -my-5">
+                    <!-- Left pipe with Week 1/Week 2 boxes (outgoing deliveries flowing down) - PURPLE/ACCENT -->
+                    <div class="flex flex-col items-center justify-evenly">
+                        <!-- Vertical pipe line (top) - reaches role box -->
+                        <div class="w-[70px] h-8 bg-mono-surface"></div>
+                        <!-- Week 2 box -->
+                        <div id="mobile-outgoing-week-2-box" class="bg-mono-surface border border-accent/30 rounded p-2">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 2</div>
+                            <div id="mobile-outgoing-week-2" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">20</div>
+                        </div>
+                        <!-- Pipe between Week 2 and Week 1 -->
+                        <div class="w-[70px] flex-1 min-h-[16px] bg-mono-surface"></div>
+                        <!-- Week 1 box -->
+                        <div id="mobile-outgoing-week-1-box" class="bg-mono-surface border border-accent/30 rounded p-2">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Week 1</div>
+                            <div id="mobile-outgoing-week-1" class="bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]">25</div>
+                        </div>
+                        <!-- Vertical pipe line (bottom) - reaches role box -->
+                        <div class="w-[70px] h-8 bg-mono-surface"></div>
+                    </div>
+                    <!-- Right pipe - continuous (orders flowing up) -->
+                    <div id="mobile-order-pipe" class="w-[70px] self-stretch bg-mono-surface"></div>
+                </div>
+
+                <!-- 3. RIGHT NODE: WHOLESALER -->
+                <div class="w-full lg:w-56 bg-mono-surface border border-mono-surface rounded-xl flex flex-col shadow-xl relative z-20">
+                    <!-- Header - hidden on mobile -->
+                    <div class="hidden lg:block p-4 border-b border-mono-light/10 bg-mono-bg/30 rounded-t-xl">
                         <h3 class="text-mono-text text-sm uppercase tracking-widest font-bold text-center">Wholesaler</h3>
                     </div>
-                    <!-- Downstream Inventory Display -->
-                    <div class="flex-1 flex items-center justify-center pt-[34px] p-6">
-                        <div id="downstream-inventory" class="bg-mono-bg/30 p-4 mt-[15px] rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[120px] min-h-[100px]">
+
+                    <!-- Mobile: Title (centered) in top row -->
+                    <div class="lg:hidden p-3 pb-0">
+                        <h3 class="text-mono-text text-xs uppercase tracking-widest font-bold text-center">Wholesaler</h3>
+                    </div>
+
+                    <div class="flex-1 flex flex-col items-center justify-center p-3 lg:p-4 space-y-2 relative">
+                        <!-- Mobile Order Box - aligned with right pipe, centered with inventory -->
+                        <div class="lg:hidden absolute top-1/2 -translate-y-1/2 right-[calc(25%-28px)] translate-x-1/2 bg-mono-surface border border-amber-400/30 p-2 rounded shadow-lg z-10">
+                            <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
+                            <div class="mobile-wholesaler-order bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                        </div>
+                        <!-- Hidden Inventory Box (Wholesaler - downstream) -->
+                        <div id="wholesaler-inventory-downstream" class="bg-mono-bg/30 p-4 rounded-lg shadow-inner flex flex-col items-center justify-center min-w-[100px] lg:min-w-[120px] min-h-[80px] lg:min-h-[100px] cursor-help" title="Hidden Information">
                             <h4 class="text-mono-text text-[10px] uppercase tracking-widest mb-1">Inventory</h4>
-                            <div class="text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
+                            <div class="text-3xl lg:text-5xl font-sans font-bold text-white tracking-tighter drop-shadow-lg">&nbsp;</div>
                         </div>
                     </div>
-                    <!-- Order Box (Bottom) - from Wholesaler (green) -->
-                    <div class="p-4 bg-mono-surface rounded-b-xl flex justify-start">
-                        <div class="bg-mono-surface border border-green-500/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
+                    <!-- Order Box (Bottom) - tablet/desktop only - AMBER -->
+                    <div class="hidden lg:flex p-4 bg-mono-surface rounded-b-xl justify-start">
+                        <div class="bg-mono-surface border border-amber-400/30 p-2 rounded shadow-lg transform hover:scale-110 transition-transform">
                             <div class="text-[10px] text-mono-text uppercase text-center mb-1">Order</div>
-                            <div id="customer-demand" class="bg-green-500/10 px-3 py-1 rounded border border-green-500/20 text-green-400 font-sans font-bold text-center min-w-[55px]">?</div>                        </div>
+                            <div id="wholesaler-order-downstream" class="bg-amber-400/10 px-3 py-1 rounded border border-amber-400/20 text-amber-400 font-sans font-bold text-center min-w-[55px]">?</div>
+                        </div>
                     </div>
                 </div>
 
@@ -632,21 +670,164 @@
     </div>
 
     <script type="text/babel">
-        const { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
+        const { LineChart, Line, BarChart, Bar, ComposedChart, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } = Recharts;
 
-        // Mock Data for Beer Game (Retailer Perspective - Customer Demand Spikes)
-        const data = [
-            { week: 'W1', orders: 12, inventory: 40, cost: 60 },
-            { week: 'W2', orders: 15, inventory: 35, cost: 130 },
-            { week: 'W3', orders: 25, inventory: 25, cost: 210 },
-            { week: 'W4', orders: 40, inventory: 5, cost: 320 },
-            { week: 'W5', orders: 35, inventory: -10, cost: 480 },
-            { week: 'W6', orders: 30, inventory: -25, cost: 700 },
-            { week: 'W7', orders: 20, inventory: -15, cost: 850 },
-            { week: 'W8', orders: 15, inventory: 0, cost: 950 },
-            { week: 'W9', orders: 12, inventory: 10, cost: 1000 },
-            { week: 'W10', orders: 12, inventory: 15, cost: 1050 },
+        // Statistics Calculator Utility
+        const StatisticsCalculator = {
+            calculate(values) {
+                if (!values || values.length === 0) return this.getEmptyStats();
+
+                const n = values.length;
+                const sorted = [...values].sort((a, b) => a - b);
+
+                // Central tendency
+                const sum = values.reduce((a, b) => a + b, 0);
+                const mean = sum / n;
+                const median = this.calculateMedian(sorted);
+                const mode = this.calculateMode(values);
+
+                // Dispersion
+                const min = sorted[0];
+                const max = sorted[n - 1];
+                const range = max - min;
+                const variance = n > 1 ? values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / (n - 1) : 0;
+                const stdDev = Math.sqrt(variance);
+
+                // Distribution shape
+                const coeffVar = mean !== 0 ? (stdDev / Math.abs(mean)) * 100 : null;
+                const skewness = this.calculateSkewness(values, mean, stdDev, n);
+                const kurtosis = this.calculateKurtosis(values, mean, stdDev, n);
+                const iqr = this.calculateIQR(sorted);
+
+                // Inference (95% CI using CLT)
+                const sem = n > 0 ? stdDev / Math.sqrt(n) : 0;
+                const tCritical = this.getTCritical(n - 1);
+                const marginError = tCritical * sem;
+                const ci95Lower = mean - marginError;
+                const ci95Upper = mean + marginError;
+
+                return { n, min, max, mean, stdDev, coeffVar, mode, median, range, iqr, skewness, kurtosis, sem, marginError, ci95Lower, ci95Upper };
+            },
+
+            calculateMedian(sorted) {
+                const n = sorted.length;
+                const mid = Math.floor(n / 2);
+                return n % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+            },
+
+            calculateMode(values) {
+                const freq = {};
+                values.forEach(v => freq[v] = (freq[v] || 0) + 1);
+                const maxFreq = Math.max(...Object.values(freq));
+                if (maxFreq === 1) return 'None';
+                const modes = Object.keys(freq).filter(k => freq[k] === maxFreq).map(Number);
+                return modes.length === values.length ? 'None' : modes.join(', ');
+            },
+
+            calculateSkewness(values, mean, stdDev, n) {
+                if (stdDev === 0 || n < 3) return null;
+                const m3 = values.reduce((s, v) => s + Math.pow(v - mean, 3), 0) / n;
+                const m2 = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n;
+                return (m3 / Math.pow(m2, 1.5)) * Math.sqrt(n * (n - 1)) / (n - 2);
+            },
+
+            calculateKurtosis(values, mean, stdDev, n) {
+                if (stdDev === 0 || n < 4) return null;
+                const m4 = values.reduce((s, v) => s + Math.pow(v - mean, 4), 0) / n;
+                const m2 = values.reduce((s, v) => s + Math.pow(v - mean, 2), 0) / n;
+                const g2 = (m4 / Math.pow(m2, 2)) - 3;
+                return ((n + 1) * g2 + 6) * (n - 1) / ((n - 2) * (n - 3));
+            },
+
+            calculateIQR(sorted) {
+                const n = sorted.length;
+                const q1 = sorted[Math.floor(n * 0.25)];
+                const q3 = sorted[Math.floor(n * 0.75)];
+                return q3 - q1;
+            },
+
+            getTCritical(df) {
+                const tTable = {1:12.706,2:4.303,3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,
+                                11:2.201,12:2.179,13:2.160,14:2.145,15:2.131,20:2.086,25:2.060,29:2.045};
+                if (df >= 30) return 1.96;
+                return tTable[df] || tTable[Math.max(...Object.keys(tTable).map(Number).filter(k => k <= df))] || 2.0;
+            },
+
+            getEmptyStats() {
+                return { n:0, min:'-', max:'-', mean:'-', stdDev:'-', coeffVar:'-', mode:'-', median:'-',
+                         range:'-', iqr:'-', skewness:'-', kurtosis:'-', sem:'-', marginError:'-', ci95Lower:'-', ci95Upper:'-' };
+            }
+        };
+
+        // Cost rates
+        const HOLDING_COST_RATE = 10;   // $ per unit of inventory per week
+        const BACKORDER_COST_RATE = 20; // $ per unit of backorder per week
+
+        // Initial conditions
+        const INITIAL_INVENTORY = 50;
+
+        // External inputs: orders (from retailer) and deliveries (from distributor)
+        const weeklyInputs = [
+            { week: '1', orders: 10, deliveries: 0 },
+            { week: '2', orders: 12, deliveries: 10 },
+            { week: '3', orders: 15, deliveries: 10 },
+            { week: '4', orders: 25, deliveries: 12 },
+            { week: '5', orders: 40, deliveries: 15 },
+            { week: '6', orders: 35, deliveries: 20 },
+            { week: '7', orders: 30, deliveries: 25 },
+            { week: '8', orders: 20, deliveries: 30 },
+            { week: '9', orders: 15, deliveries: 25 },
+            { week: '10', orders: 12, deliveries: 20 },
         ];
+
+        // Simulate the game: compute inventory, backorders, outgoing orders
+        let inventory = INITIAL_INVENTORY;
+        let backorders = 0;
+        let cumHolding = 0;
+        let cumBackorder = 0;
+
+        const data = weeklyInputs.map(input => {
+            // Available stock = current inventory + incoming deliveries
+            const available = inventory + input.deliveries;
+
+            // Total orders = new orders + any backorders from previous weeks
+            const totalOrders = input.orders + backorders;
+
+            // Outgoing deliveries (what we actually ship) = min(available, totalOrders)
+            const outgoingDeliveries = Math.min(available, totalOrders);
+
+            // New inventory = max(0, available - totalOrders)
+            const newInventory = Math.max(0, available - totalOrders);
+
+            // New backorders = max(0, totalOrders - available)
+            const newBackorders = Math.max(0, totalOrders - available);
+
+            // Costs based on END-of-period inventory/backorders
+            const holdingCost = newInventory * HOLDING_COST_RATE;
+            const backorderCost = newBackorders * BACKORDER_COST_RATE;
+            cumHolding += holdingCost;
+            cumBackorder += backorderCost;
+
+            const row = {
+                week: input.week,
+                incomingOrders: input.orders,         // Orders from retailer
+                deliveries: input.deliveries,         // Deliveries from distributor
+                outgoingOrders: outgoingDeliveries,   // What we ship = min(available, orders)
+                inventory: newInventory,              // End-of-period inventory
+                backorders: newBackorders,            // End-of-period backorders
+                holdingCost,
+                backorderCost,
+                cumHoldingCost: cumHolding,
+                cumBackorderCost: cumBackorder,
+                totalCost: cumHolding + cumBackorder
+            };
+
+            // Update state for next week
+            inventory = newInventory;
+            backorders = newBackorders;
+
+            return row;
+        });
 
         const CustomTooltip = ({ active, payload, label }) => {
             if (active && payload && payload.length) {
@@ -664,46 +845,300 @@
             return null;
         };
 
-        const DashboardCharts = () => {
+        // StatItem - individual stat display
+        const StatItem = ({ label, value }) => (
+            <div className="flex justify-between items-center">
+                <span className="text-xs text-mono-light">{label}</span>
+                <span className="font-mono text-sm font-medium text-mono-text">{value}</span>
+            </div>
+        );
+
+        // StatGroup - grouped statistics with header
+        const StatGroup = ({ title, children }) => (
+            <div className="bg-mono-bg/30 rounded-xl p-3 border border-mono-light/10">
+                <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">{title}</h4>
+                <div className="space-y-1.5">{children}</div>
+            </div>
+        );
+
+        // Metrics configuration
+        const METRICS = [
+            { id: 'inventory', label: 'Inventory' },
+            { id: 'backorders', label: 'Backorders' },
+            { id: 'incomingOrders', label: 'Incoming' },
+            { id: 'outgoingOrders', label: 'Outgoing' },
+            { id: 'holdingCost', label: 'Hold $' },
+            { id: 'backorderCost', label: 'Back $' },
+            { id: 'totalCost', label: 'Total $' },
+        ];
+
+        // StatisticsPanel - main statistics component with tabs
+        const StatisticsPanel = ({ gameData }) => {
+            const [activeMetric, setActiveMetric] = React.useState('inventory');
+            const tabsRef = React.useRef(null);
+
+            const metricValues = React.useMemo(() =>
+                gameData.map(week => week[activeMetric] ?? 0), [gameData, activeMetric]);
+
+            const stats = React.useMemo(() =>
+                StatisticsCalculator.calculate(metricValues), [metricValues]);
+
+            const fmt = (v, d = 2) => {
+                if (v === '-' || v === 'None' || v === null) return v ?? '-';
+                return typeof v === 'number' ? (Number.isInteger(v) ? v : v.toFixed(d)) : v;
+            };
+
+            const scrollTabs = (direction) => {
+                const container = tabsRef.current;
+                if (!container) return;
+                const scrollAmount = 80;
+                const newPos = direction === 'left'
+                    ? Math.max(0, container.scrollLeft - scrollAmount)
+                    : container.scrollLeft + scrollAmount;
+                container.scrollTo({ left: newPos, behavior: 'smooth' });
+            };
+
             return (
-                <div className="grid grid-cols-2 gap-6 w-full h-full">
-                    {/* Orders vs Inventory Chart */}
-                    <div className="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
-                        <h3 className="font-semibold mb-4 text-mono-text">Orders vs. Inventory</h3>
-                        <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded overflow-hidden">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                    <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                    <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Legend verticalAlign="top" height={36} />
-                                    <Line type="monotone" dataKey="orders" name="Orders" stroke="#E0E0E0" strokeWidth={2} dot={{r: 3, fill: '#E0E0E0'}} activeDot={{r: 5}} />
-                                    <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#8B5CF6" strokeWidth={3} dot={{r: 3, fill: '#8B5CF6'}} activeDot={{r: 6}} />
-                                </LineChart>
-                            </ResponsiveContainer>
+                <div className="flex flex-col w-full">
+                    {/* Header with title and sample size */}
+                    <div className="flex items-center justify-between mb-3 flex-shrink-0 gap-2">
+                        <h3 className="font-semibold text-mono-text text-sm sm:text-base truncate">Statistics</h3>
+                        <span className="text-[10px] text-mono-light uppercase tracking-wider whitespace-nowrap">n={gameData.length}</span>
+                    </div>
+
+                    {/* Metric Tabs - Single Row with Arrow Navigation */}
+                    <div className="flex items-center gap-1 mb-4 pb-2 border-b border-mono-light/10 overflow-hidden flex-shrink-0">
+                        <button onClick={() => scrollTabs('left')} className="p-0.5 text-mono-light hover:text-mono-text hover:bg-mono-bg/30 rounded transition-all flex-shrink-0">
+                            <span className="material-symbols-outlined text-base">chevron_left</span>
+                        </button>
+                        <div ref={tabsRef} className="flex gap-1 overflow-x-scroll flex-1 min-w-0" style={{scrollbarWidth: 'none', msOverflowStyle: 'none', scrollBehavior: 'smooth'}}>
+                            {METRICS.map(m => (
+                                <button key={m.id} onClick={() => setActiveMetric(m.id)}
+                                    className={`px-2 py-1 text-xs font-medium rounded transition-all whitespace-nowrap flex-shrink-0
+                                        ${activeMetric === m.id
+                                            ? 'bg-accent/20 text-accent border-b-2 border-accent'
+                                            : 'text-mono-light hover:text-mono-text hover:bg-mono-bg/30'}`}>
+                                    {m.label}
+                                </button>
+                            ))}
+                        </div>
+                        <button onClick={() => scrollTabs('right')} className="p-0.5 text-mono-light hover:text-mono-text hover:bg-mono-bg/30 rounded transition-all flex-shrink-0">
+                            <span className="material-symbols-outlined text-base">chevron_right</span>
+                        </button>
+                    </div>
+
+                    {/* Statistics Grid - Single Column */}
+                    <div className="grid grid-cols-1 gap-3">
+                        <StatGroup title="Central Tendency">
+                            <StatItem label="Mean" value={fmt(stats.mean)} />
+                            <StatItem label="Median" value={fmt(stats.median)} />
+                            <StatItem label="Mode" value={stats.mode} />
+                        </StatGroup>
+
+                        <StatGroup title="Dispersion">
+                            <StatItem label="Min" value={fmt(stats.min, 0)} />
+                            <StatItem label="Max" value={fmt(stats.max, 0)} />
+                            <StatItem label="Range" value={fmt(stats.range, 0)} />
+                            <StatItem label="Std Dev" value={fmt(stats.stdDev)} />
+                        </StatGroup>
+
+                        <StatGroup title="Distribution">
+                            <StatItem label="CV" value={stats.coeffVar !== null ? `${fmt(stats.coeffVar)}%` : '-'} />
+                            <StatItem label="Skewness" value={fmt(stats.skewness)} />
+                            <StatItem label="Kurtosis" value={fmt(stats.kurtosis)} />
+                            <StatItem label="IQR" value={fmt(stats.iqr)} />
+                        </StatGroup>
+
+                        <StatGroup title="Inference (95% CI)">
+                            <StatItem label="Std Error" value={fmt(stats.sem)} />
+                            <StatItem label="Margin" value={fmt(stats.marginError)} />
+                            <StatItem label="CI Lower" value={fmt(stats.ci95Lower)} />
+                            <StatItem label="CI Upper" value={fmt(stats.ci95Upper)} />
+                        </StatGroup>
+                    </div>
+                </div>
+            );
+        };
+
+        // MetricsPanel - KPI component showing key performance indicators
+        const MetricsPanel = ({ gameData }) => {
+            // Calculate metrics
+            const metrics = React.useMemo(() => {
+                if (!gameData || gameData.length === 0) return { totalCost: 0, serviceLevel: 0, fillRate: 0 };
+
+                // Total Cost: final cumulative cost
+                const totalCost = gameData[gameData.length - 1].totalCost;
+
+                // Service Level: ratio of fully delivered orders to total orders
+                // A fully delivered order is when outgoingOrders >= incomingOrders (orders)
+                const fullyDeliveredOrders = gameData.filter(w => w.outgoingOrders >= w.incomingOrders).length;
+                const serviceLevel = (fullyDeliveredOrders / gameData.length) * 100;
+
+                // Fill Rate: ratio of total delivered to total ordered
+                const totalDelivered = gameData.reduce((sum, w) => sum + w.outgoingOrders, 0);
+                const totalOrdered = gameData.reduce((sum, w) => sum + w.incomingOrders, 0);
+                const fillRate = totalOrdered > 0 ? (totalDelivered / totalOrdered) * 100 : 0;
+
+                return { totalCost, serviceLevel, fillRate };
+            }, [gameData]);
+
+            return (
+                <div className="flex flex-col h-full">
+                    <h3 className="font-semibold mb-3 text-mono-text">Metrics</h3>
+
+                    <div className="flex flex-col gap-4 flex-1">
+                        {/* Total Cost */}
+                        <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
+                            <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Total Cost</h4>
+                            <div className="text-3xl font-bold text-accent">${metrics.totalCost.toLocaleString()}</div>
+                            <p className="text-[10px] text-mono-light mt-1">Cumulative holding + backorder costs</p>
+                        </div>
+
+                        {/* Service Level */}
+                        <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
+                            <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Service Level</h4>
+                            <div className="text-3xl font-bold" style={{color: metrics.serviceLevel >= 80 ? '#4ade80' : metrics.serviceLevel >= 50 ? '#10B981' : '#f87171'}}>
+                                {metrics.serviceLevel.toFixed(1)}%
+                            </div>
+                            <p className="text-[10px] text-mono-light mt-1">Fully delivered orders / total orders</p>
+                        </div>
+
+                        {/* Fill Rate */}
+                        <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
+                            <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Fill Rate</h4>
+                            <div className="text-3xl font-bold" style={{color: metrics.fillRate >= 90 ? '#4ade80' : metrics.fillRate >= 70 ? '#10B981' : '#f87171'}}>
+                                {metrics.fillRate.toFixed(1)}%
+                            </div>
+                            <p className="text-[10px] text-mono-light mt-1">Delivered quantity / ordered quantity</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const DashboardCharts = () => {
+            // Orders vs Inventory chart toggles
+            const [showOrders, setShowOrders] = React.useState(true);
+            const [showInventory, setShowInventory] = React.useState(true);
+            const [showBackorders, setShowBackorders] = React.useState(true);
+            // Cost chart toggles
+            const [showHoldingCost, setShowHoldingCost] = React.useState(true);
+            const [showBackorderCost, setShowBackorderCost] = React.useState(true);
+
+            return (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full h-full">
+                    {/* LEFT COLUMN - Charts stacked vertically */}
+                    <div className="flex flex-col gap-6">
+                        {/* Orders vs Inventory Chart */}
+                        <div className="bg-mono-surface p-2 sm:p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1">
+                            {/* Header with title and toggles */}
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2 sm:mb-4">
+                                <h3 className="font-semibold text-mono-text text-sm sm:text-base">Orders vs. Inventory</h3>
+                                <div className="flex items-center gap-2 sm:gap-3">
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showInventory}
+                                            onChange={(e) => setShowInventory(e.target.checked)}
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-[10px] sm:text-xs" style={{color: '#8B5CF6'}}>Inventory</span>
+                                    </label>
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showBackorders}
+                                            onChange={(e) => setShowBackorders(e.target.checked)}
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/90 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-[10px] sm:text-xs text-accent/90">Backorders</span>
+                                    </label>
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer sm:ml-auto">
+                                        <input
+                                            type="checkbox"
+                                            checked={showOrders}
+                                            onChange={(e) => setShowOrders(e.target.checked)}
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/10 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-[10px] sm:text-xs text-accent/30">Orders</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="flex-1 w-full min-h-[180px] sm:min-h-[200px] bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <ComposedChart data={data} margin={{ top: 20, right: 15, left: 5, bottom: 20 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
+                                        <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Units', position: 'insideTopLeft', fill: '#808080', fontSize: 10, dy: -15 }} />
+                                        <Tooltip content={<CustomTooltip />} />
+                                        {showOrders && <Bar dataKey="outgoingOrders" name="Orders" fill="rgba(139, 92, 246, 0.1)" barSize={12} radius={[2, 2, 0, 0]} />}
+                                        {showInventory && <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#8B5CF6" strokeWidth={3} dot={{r: 3, fill: '#8B5CF6'}} activeDot={{r: 6}} />}
+                                        {showBackorders && <Line type="monotone" dataKey="backorders" name="Backorders" stroke="rgba(139, 92, 246, 0.9)" strokeWidth={2} dot={{r: 3, fill: 'rgba(139, 92, 246, 0.9)'}} activeDot={{r: 5}} />}
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
+
+                        {/* Cost Accumulation Chart - Stacked */}
+                        <div className="bg-mono-surface p-2 sm:p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1">
+                            {/* Header with title and toggles */}
+                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2 sm:mb-4">
+                                <h3 className="font-semibold text-mono-text text-sm sm:text-base">Cost Accumulation</h3>
+                                <div className="flex items-center gap-2 sm:gap-4">
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showHoldingCost}
+                                            onChange={(e) => setShowHoldingCost(e.target.checked)}
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-[10px] sm:text-xs" style={{color: '#8B5CF6'}}>Holding</span>
+                                    </label>
+                                    <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
+                                        <input
+                                            type="checkbox"
+                                            checked={showBackorderCost}
+                                            onChange={(e) => setShowBackorderCost(e.target.checked)}
+                                            className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/90 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
+                                        />
+                                        <span className="text-[10px] sm:text-xs text-accent/90">Backorder</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div className="flex-1 w-full min-h-[180px] sm:min-h-[200px] bg-accent/5 border border-accent/10 rounded-lg overflow-hidden">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={data} margin={{ top: 20, right: 15, left: 5, bottom: 20 }}>
+                                        <defs>
+                                            <linearGradient id="colorHoldingCostDistributor" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.2}/>
+                                            </linearGradient>
+                                            <linearGradient id="colorBackorderCostDistributor" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="rgba(139, 92, 246, 0.9)" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="rgba(139, 92, 246, 0.9)" stopOpacity={0.2}/>
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+                                        <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
+                                        <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Cost ($)', position: 'insideTopLeft', fill: '#808080', fontSize: 10, dy: -15 }} />
+                                        <Tooltip content={<CustomTooltip />} />
+                                        {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#8B5CF6" fillOpacity={1} fill="url(#colorHoldingCostDistributor)" />}
+                                        {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(139, 92, 246, 0.9)" fillOpacity={1} fill="url(#colorBackorderCostDistributor)" />}
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Cost Accumulation Chart */}
-                    <div className="bg-mono-surface p-4 rounded-DEFAULT border border-mono-light/20 shadow-lg flex flex-col h-80">
-                        <h3 className="font-semibold mb-4 text-mono-text">Cost Accumulation</h3>
-                        <div className="flex-1 w-full bg-accent/5 border border-accent/10 rounded overflow-hidden">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="colorCostRetailer" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
-                                            <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
-                                    <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                    <YAxis stroke="#808080" tick={{fill: '#808080'}} tickLine={false} axisLine={{stroke: '#404040'}} />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <Area type="monotone" dataKey="cost" name="Total Cost ($)" stroke="#8B5CF6" fillOpacity={1} fill="url(#colorCostRetailer)" />
-                                </AreaChart>
-                            </ResponsiveContainer>
+                    {/* RIGHT COLUMN - Metrics and Statistics Panels side-by-side */}
+                    <div className="flex flex-col md:flex-row gap-4">
+                        {/* Metrics Panel - Half Width */}
+                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1 min-w-0 overflow-hidden">
+                            <MetricsPanel gameData={data} />
+                        </div>
+                        {/* Statistics Panel - Half Width */}
+                        <div className="bg-mono-surface p-4 rounded-xl border border-mono-light/20 shadow-lg flex flex-col flex-1 min-w-0">
+                            <StatisticsPanel gameData={data} />
                         </div>
                     </div>
                 </div>
