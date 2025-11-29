@@ -1728,7 +1728,7 @@
                         {/* Service Level */}
                         <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
                             <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Service Level</h4>
-                            <div className="text-3xl font-bold" style={{color: metrics.serviceLevel >= 80 ? '#4ade80' : metrics.serviceLevel >= 50 ? '#10B981' : '#f87171'}}>
+                            <div className="text-3xl font-bold" style={{color: metrics.serviceLevel >= 80 ? '#a78bfa' : metrics.serviceLevel >= 50 ? '#8B5CF6' : '#f87171'}}>
                                 {metrics.serviceLevel.toFixed(1)}%
                             </div>
                             <p className="text-[10px] text-mono-light mt-1">Fully delivered orders / total orders</p>
@@ -1737,7 +1737,7 @@
                         {/* Fill Rate */}
                         <div className="bg-mono-bg/30 rounded-xl p-4 border border-mono-light/10 flex-1 flex flex-col justify-center">
                             <h4 className="text-[10px] uppercase tracking-wider text-mono-text/80 mb-2 font-medium">Fill Rate</h4>
-                            <div className="text-3xl font-bold" style={{color: metrics.fillRate >= 90 ? '#4ade80' : metrics.fillRate >= 70 ? '#10B981' : '#f87171'}}>
+                            <div className="text-3xl font-bold" style={{color: metrics.fillRate >= 90 ? '#a78bfa' : metrics.fillRate >= 70 ? '#8B5CF6' : '#f87171'}}>
                                 {metrics.fillRate.toFixed(1)}%
                             </div>
                             <p className="text-[10px] text-mono-light mt-1">Delivered quantity / ordered quantity</p>
@@ -1773,7 +1773,7 @@
                                             onChange={(e) => setShowInventory(e.target.checked)}
                                             className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-[10px] sm:text-xs" style={{color: '#10B981'}}>Inventory</span>
+                                        <span className="text-[10px] sm:text-xs" style={{color: '#8B5CF6'}}>Inventory</span>
                                     </label>
                                     <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
                                         <input
@@ -1802,9 +1802,9 @@
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Units', position: 'insideTopLeft', fill: '#808080', fontSize: 10, dy: -15 }} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        {showOrders && <Bar dataKey="outgoingOrders" name="Orders" fill="rgba(16, 185, 129, 0.1)" barSize={12} radius={[2, 2, 0, 0]} />}
-                                        {showInventory && <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#10B981" strokeWidth={3} dot={{r: 3, fill: '#10B981'}} activeDot={{r: 6}} />}
-                                        {showBackorders && <Line type="monotone" dataKey="backorders" name="Backorders" stroke="rgba(16, 185, 129, 0.9)" strokeWidth={2} dot={{r: 3, fill: 'rgba(16, 185, 129, 0.9)'}} activeDot={{r: 5}} />}
+                                        {showOrders && <Bar dataKey="outgoingOrders" name="Orders" fill="rgba(139, 92, 246, 0.1)" barSize={12} radius={[2, 2, 0, 0]} />}
+                                        {showInventory && <Line type="monotone" dataKey="inventory" name="Inventory" stroke="#8B5CF6" strokeWidth={3} dot={{r: 3, fill: '#8B5CF6'}} activeDot={{r: 6}} />}
+                                        {showBackorders && <Line type="monotone" dataKey="backorders" name="Backorders" stroke="rgba(139, 92, 246, 0.9)" strokeWidth={2} dot={{r: 3, fill: 'rgba(139, 92, 246, 0.9)'}} activeDot={{r: 5}} />}
                                     </ComposedChart>
                                 </ResponsiveContainer>
                             </div>
@@ -1823,7 +1823,7 @@
                                             onChange={(e) => setShowHoldingCost(e.target.checked)}
                                             className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded border-accent/50 bg-mono-bg text-accent focus:ring-accent focus:ring-offset-0 cursor-pointer"
                                         />
-                                        <span className="text-[10px] sm:text-xs" style={{color: '#10B981'}}>Holding</span>
+                                        <span className="text-[10px] sm:text-xs" style={{color: '#8B5CF6'}}>Holding</span>
                                     </label>
                                     <label className="flex items-center gap-1 sm:gap-1.5 cursor-pointer">
                                         <input
@@ -1840,21 +1840,21 @@
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={data} margin={{ top: 20, right: 15, left: 5, bottom: 20 }}>
                                         <defs>
-                                            <linearGradient id="colorHoldingCostWholesaler" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#10B981" stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor="#10B981" stopOpacity={0.2}/>
+                                            <linearGradient id="colorHoldingCostDistributor" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.2}/>
                                             </linearGradient>
-                                            <linearGradient id="colorBackorderCostWholesaler" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="rgba(16, 185, 129, 0.9)" stopOpacity={0.8}/>
-                                                <stop offset="95%" stopColor="rgba(16, 185, 129, 0.9)" stopOpacity={0.2}/>
+                                            <linearGradient id="colorBackorderCostDistributor" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="rgba(139, 92, 246, 0.9)" stopOpacity={0.8}/>
+                                                <stop offset="95%" stopColor="rgba(139, 92, 246, 0.9)" stopOpacity={0.2}/>
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
                                         <XAxis dataKey="week" stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Week', position: 'bottom', offset: 0, fill: '#808080', fontSize: 10 }} />
                                         <YAxis stroke="#808080" tick={{fill: '#808080', fontSize: 10}} tickLine={false} axisLine={{stroke: '#404040'}} label={{ value: 'Cost ($)', position: 'insideTopLeft', fill: '#808080', fontSize: 10, dy: -15 }} />
                                         <Tooltip content={<CustomTooltip />} />
-                                        {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#10B981" fillOpacity={1} fill="url(#colorHoldingCostWholesaler)" />}
-                                        {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(16, 185, 129, 0.9)" fillOpacity={1} fill="url(#colorBackorderCostWholesaler)" />}
+                                        {showHoldingCost && <Area type="monotone" dataKey="cumHoldingCost" name="Holding Cost ($)" stackId="1" stroke="#8B5CF6" fillOpacity={1} fill="url(#colorHoldingCostDistributor)" />}
+                                        {showBackorderCost && <Area type="monotone" dataKey="cumBackorderCost" name="Backorder Cost ($)" stackId="1" stroke="rgba(139, 92, 246, 0.9)" fillOpacity={1} fill="url(#colorBackorderCostDistributor)" />}
                                     </AreaChart>
                                 </ResponsiveContainer>
                             </div>
