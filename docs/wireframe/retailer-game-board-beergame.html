@@ -623,17 +623,36 @@
                                     const mobileOrderValueBox = mobileOrderInput?.parentElement;
 
                                     if (mobileOrderValueBox && mobileWholesalerOrder) {
-                                        // Animate the order value box downward to wholesaler order slot
-                                        // Direction: vertical-down (retailer is above wholesaler in mobile layout)
-                                        animateClone(mobileOrderValueBox, mobileWholesalerOrder, orderVal, 'vertical-down', () => {
-                                            // Update wholesaler order slot - value stays visible here
+                                        // Clone from target to get correct size, position at source
+                                        const orderBoxRect = mobileOrderValueBox.getBoundingClientRect();
+                                        const targetRect = mobileWholesalerOrder.getBoundingClientRect();
+
+                                        const clone = mobileWholesalerOrder.cloneNode(true);
+                                        clone.id = '';
+                                        clone.innerText = orderVal;
+                                        clone.style.position = 'fixed';
+                                        clone.style.left = `${orderBoxRect.left + (orderBoxRect.width - targetRect.width) / 2}px`;
+                                        clone.style.top = `${orderBoxRect.top + (orderBoxRect.height - targetRect.height) / 2}px`;
+                                        clone.style.width = `${targetRect.width}px`;
+                                        clone.style.height = `${targetRect.height}px`;
+                                        clone.style.margin = '0';
+                                        clone.style.zIndex = '9999';
+                                        clone.style.pointerEvents = 'none';
+                                        document.body.appendChild(clone);
+
+                                        const deltaY = targetRect.top - orderBoxRect.top;
+                                        const animation = clone.animate([
+                                            { transform: 'translate(0, 0)', opacity: 1 },
+                                            { transform: `translate(0, ${deltaY}px)`, opacity: 1 }
+                                        ], { duration: 2000, easing: 'linear', fill: 'forwards' });
+
+                                        animation.onfinish = () => {
+                                            clone.remove();
                                             mobileWholesalerOrder.innerText = orderVal;
                                             if (els.wholesalerOrderInner) els.wholesalerOrderInner.innerText = orderVal;
                                             console.log("Phase 1b complete: Order arrived at wholesaler order slot");
-
-                                            // Clear the retailer order input after animation
                                             if (mobileOrderInput) mobileOrderInput.value = '';
-                                        }, false, true);
+                                        };
                                     }
 
                                     // --- Animation 3: Outgoing Week 2 inner -> Customer (UP along pipe, then RIGHT into customer icons) ---
