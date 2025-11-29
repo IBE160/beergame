@@ -1047,43 +1047,80 @@
                                 const startDesktopAnimation = () => {
                                     console.log("Starting Desktop Animations (Horizontal)...");
 
-                                    // 1. Factory Order -> Production Order (Direct)
-                                    // Factory (Center) -> Production (Left). DeltaX negative.
-                                    if (els.factoryOrderInner && els.productionOrderInner) {
-                                        animateClone(els.factoryOrderInner, els.productionOrderInner, null, 'direct', () => {
-                                            // PHASE 2: Production Order -> Middle of Inventory (Vertical Align Y)
-                                            setTimeout(() => {
-                                                if (els.productionOrderInner && els.productionInventory) {
-                                                    animateClone(els.productionOrderInner, els.productionInventory, null, 'vertical-align-y', (persistedClone) => {
-                                                        // PHASE 3: Morph & Move to Week 1
-                                                        setTimeout(() => {
-                                                            if (!persistedClone) return;
+                                    // 1. Factory Order -> Production Week 1 (Desktop)
+                                    // Path: LEFT horizontally to center of Week 2, then UP into Week 1 slot
+                                    if (els.factoryOrderInner && els.productionWeek1 && els.productionWeek2) {
+                                        const orderRect = els.factoryOrderInner.getBoundingClientRect();
+                                        const week1Rect = els.productionWeek1.getBoundingClientRect();
+                                        const week2Rect = els.productionWeek2.getBoundingClientRect();
 
-                                                            // Morph into Cyan (Production) Delivery
-                                                            persistedClone.classList.remove('bg-accent/10', 'border-accent/20', 'text-accent');
-                                                            persistedClone.classList.add('bg-production/10', 'border-production/20', 'text-production');
+                                        // Get order value
+                                        const orderInput = els.factoryOrderInner.querySelector('input');
+                                        const orderVal = orderInput ? orderInput.value : '0';
 
-                                                            const valSpan = persistedClone.querySelector('span') || persistedClone.querySelector('.font-bold') || persistedClone;
-                                                            const orderVal = parseInt(valSpan.innerText) || 0;
-                                                            // Use gameState for delivery calculation
-                                                            const deliverVal = gameState.processProductionOrder(orderVal);
-                                                            valSpan.innerText = deliverVal;
+                                        // Clone and setup
+                                        const clone = els.factoryOrderInner.cloneNode(true);
+                                        clone.id = '';
+                                        // Replace input with span showing value
+                                        const cloneInput = clone.querySelector('input');
+                                        if (cloneInput) {
+                                            const span = document.createElement('span');
+                                            span.innerText = orderVal;
+                                            span.className = cloneInput.className.replace('bg-transparent', '');
+                                            cloneInput.replaceWith(span);
+                                            // Remove buttons
+                                            clone.querySelectorAll('button').forEach(b => b.remove());
+                                        }
+                                        clone.style.position = 'fixed';
+                                        clone.style.left = `${orderRect.left}px`;
+                                        clone.style.top = `${orderRect.top}px`;
+                                        clone.style.width = `${orderRect.width}px`;
+                                        clone.style.height = `${orderRect.height}px`;
+                                        clone.style.margin = '0';
+                                        clone.style.zIndex = '9999';
+                                        clone.style.pointerEvents = 'none';
+                                        // Start with Factory color (orange)
+                                        clone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                        clone.style.borderColor = 'rgba(249, 115, 22, 0.2)';
+                                        clone.style.transition = 'background-color 0.5s, border-color 0.5s, color 0.5s';
+                                        document.body.appendChild(clone);
 
-                                                            // Move to OrangeWeek1 (which is actually Production delivery slot)
-                                                            if (els.orangeWeek1) {
-                                                                animateClone(persistedClone, els.orangeWeek1, deliverVal, 'vertical-dogleg', () => {
-                                                                    gameState.orangeWeek1 = deliverVal;
-                                                                    els.orangeWeek1.innerText = gameState.orangeWeek1;
-                                                                    els.orangeWeek1.style.opacity = '1';
-                                                                    syncStateToDOM();
-                                                                });
-                                                                persistedClone.remove();
-                                                            }
-                                                        }, 1000);
-                                                    }, true);
-                                                }
-                                            }, 1000);
-                                        }, false, true);
+                                        // Calculate waypoints
+                                        // Step 1: LEFT to center of Week 2 (horizontal only)
+                                        const week2CenterX = week2Rect.left + week2Rect.width / 2;
+                                        const deltaX1 = week2CenterX - (orderRect.left + orderRect.width / 2);
+                                        // Step 2: UP to Week 1 slot
+                                        const week1CenterX = week1Rect.left + week1Rect.width / 2;
+                                        const week1CenterY = week1Rect.top + week1Rect.height / 2;
+                                        const deltaX2 = week1CenterX - (orderRect.left + orderRect.width / 2);
+                                        const deltaY2 = week1CenterY - (orderRect.top + orderRect.height / 2);
+
+                                        // 2-step animation: LEFT to Week 2 center, then UP to Week 1
+                                        const animation = clone.animate([
+                                            { transform: 'translate(0, 0)', opacity: 1 },
+                                            { transform: `translate(${deltaX1}px, 0)`, opacity: 1, offset: 0.5 },
+                                            { transform: `translate(${deltaX2}px, ${deltaY2}px)`, opacity: 1 }
+                                        ], {
+                                            duration: 2000,
+                                            easing: 'linear',
+                                            fill: 'forwards'
+                                        });
+
+                                        // Morph to cyan (production color) near end
+                                        setTimeout(() => {
+                                            clone.style.backgroundColor = 'rgba(6, 182, 212, 0.1)';
+                                            clone.style.borderColor = 'rgba(6, 182, 212, 0.2)';
+                                            const cloneSpan = clone.querySelector('span');
+                                            if (cloneSpan) cloneSpan.style.color = 'rgb(34, 211, 238)';
+                                        }, 1500);
+
+                                        animation.onfinish = () => {
+                                            clone.remove();
+                                            gameState.productionWeek1 = parseInt(orderVal);
+                                            els.productionWeek1.innerText = orderVal;
+                                            els.productionWeek1.style.opacity = '1';
+                                            console.log("Desktop: Factory Order moved to Production Week 1");
+                                        };
                                     }
 
                                     // Clear source Factory Order
