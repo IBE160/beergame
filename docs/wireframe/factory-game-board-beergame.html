@@ -103,8 +103,9 @@
         }
     </style>
 </head>
-<body class="font-sans bg-mono-bg text-mono-text antialiased overflow-x-auto">
-    <div class="w-full min-w-[400px] h-screen p-6 overflow-auto">
+<body class="font-sans bg-mono-bg text-mono-text antialiased overflow-hidden">
+    <!-- Added ID and relative positioning to the scroll container -->
+    <div id="main-scroll-container" class="w-full min-w-[400px] h-screen p-6 overflow-auto relative">
         <div class="flex-1 flex flex-col w-full max-w-[1600px] mx-auto relative z-10 space-y-6 px-6">
 
             <!-- MAIN GAME BOARD (Sketch Implementation) -->
@@ -233,6 +234,9 @@
                         <!-- Script for Order Input Logic & Animations -->
                         <script>
                             document.addEventListener('DOMContentLoaded', () => {
+                                // Scroll container identification
+                                const mainContainer = document.getElementById('main-scroll-container');
+
                                 // Desktop elements
                                 const orderInput = document.getElementById('orderInput');
                                 const btnUp = document.getElementById('btnUp');
@@ -436,6 +440,20 @@
 
                                 // --- Animation Logic ---
 
+                                // Helper function to set position relative to scroll container
+                                const setClonePosition = (clone, rect, container) => {
+                                    const containerRect = container.getBoundingClientRect();
+                                    // Calculate relative position + scroll offset
+                                    const left = rect.left - containerRect.left + container.scrollLeft;
+                                    const top = rect.top - containerRect.top + container.scrollTop;
+
+                                    clone.style.position = 'absolute';
+                                    clone.style.left = `${left}px`;
+                                    clone.style.top = `${top}px`;
+                                    clone.style.width = `${rect.width}px`;
+                                    clone.style.height = `${rect.height}px`;
+                                };
+
                                 // Helper to clone and animate (defined outside so both mobile and desktop can use it)
                                     const animateClone = (sourceEl, targetEl, textOverride = null, pathType = 'direct', onComplete = null, persist = false, overwrite = false) => {
                                         if (!sourceEl || !targetEl) {
@@ -469,19 +487,18 @@
                                             else clone.innerText = textOverride;
                                         }
 
-                                        // Style Ghost
-                                        clone.style.position = 'fixed';
-                                        clone.style.left = `${rectSource.left}px`;
-                                        clone.style.top = `${rectSource.top}px`;
-                                        clone.style.width = `${rectSource.width}px`;
-                                        clone.style.height = `${rectSource.height}px`;
+                                        // Style Ghost - POSITION RELATIVE TO CONTAINER
+                                        setClonePosition(clone, rectSource, mainContainer);
+
                                         clone.style.margin = '0';
                                         clone.style.zIndex = '9999';
                                         clone.style.pointerEvents = 'none';
                                         clone.style.transition = 'none';
-                                        document.body.appendChild(clone);
 
-                                        // Calculate Keyframes
+                                        // Append to SCROLL CONTAINER, not body
+                                        mainContainer.appendChild(clone);
+
+                                        // Calculate Keyframes (delta logic remains same as getBoundingClientRect is viewport based)
                                         let keyframes;
                                         const deltaX = rectTarget.left - rectSource.left;
                                         const deltaY = rectTarget.top - rectSource.top;
@@ -630,15 +647,14 @@
                                         const clone = els.mobileOutgoingWeek2.cloneNode(true);
                                         clone.id = '';
                                         clone.innerText = outgoingWeek2Val;
-                                        clone.style.position = 'fixed';
-                                        clone.style.left = `${week2Rect.left}px`;
-                                        clone.style.top = `${week2Rect.top}px`;
-                                        clone.style.width = `${week2Rect.width}px`;
-                                        clone.style.height = `${week2Rect.height}px`;
+
+                                        // Position inside scroll container
+                                        setClonePosition(clone, week2Rect, mainContainer);
+
                                         clone.style.margin = '0';
                                         clone.style.zIndex = '9999';
                                         clone.style.pointerEvents = 'none';
-                                        document.body.appendChild(clone);
+                                        mainContainer.appendChild(clone);
 
                                         // Single smooth animation: UP then RIGHT, with fade at end
                                         // Note: on mobile with flex-col-reverse, 'Top' is visual Top (Distributor). 
@@ -724,15 +740,14 @@
                                         const clone = els.mobileProductionWeek2.cloneNode(true);
                                         clone.id = '';
                                         clone.innerText = productionWeek2Val;
-                                        clone.style.position = 'fixed';
-                                        clone.style.left = `${week2Rect.left}px`;
-                                        clone.style.top = `${week2Rect.top}px`;
-                                        clone.style.width = `${week2Rect.width}px`;
-                                        clone.style.height = `${week2Rect.height}px`;
+
+                                        // Position inside scroll container
+                                        setClonePosition(clone, week2Rect, mainContainer);
+
                                         clone.style.margin = '0';
                                         clone.style.zIndex = '9999';
                                         clone.style.pointerEvents = 'none';
-                                        document.body.appendChild(clone);
+                                        mainContainer.appendChild(clone);
 
                                         // Three-step animation: LEFT to pipe, UP along pipe, RIGHT to inventory value
                                         const animation = clone.animate([
@@ -772,15 +787,14 @@
                                         const clone = els.mobileProductionWeek1.cloneNode(true);
                                         clone.id = '';
                                         clone.innerText = productionWeek1Val;
-                                        clone.style.position = 'fixed';
-                                        clone.style.left = `${week1Rect.left}px`;
-                                        clone.style.top = `${week1Rect.top}px`;
-                                        clone.style.width = `${week1Rect.width}px`;
-                                        clone.style.height = `${week1Rect.height}px`;
+
+                                        // Position inside scroll container
+                                        setClonePosition(clone, week1Rect, mainContainer);
+
                                         clone.style.margin = '0';
                                         clone.style.zIndex = '9999';
                                         clone.style.pointerEvents = 'none';
-                                        document.body.appendChild(clone);
+                                        mainContainer.appendChild(clone);
 
                                         // Simple horizontal animation from Week 1 to Week 2
                                         const animation = clone.animate([
@@ -824,12 +838,10 @@
                                         const clone = els.mobileProductionWeek1.cloneNode(true);
                                         clone.id = '';
                                         clone.innerText = orderVal;
-                                        clone.style.position = 'fixed';
-                                        // Start at the order box position but with Week 1 slot size
-                                        clone.style.left = `${orderRect.left + (orderRect.width - week1Rect.width) / 2}px`;
-                                        clone.style.top = `${orderRect.top + (orderRect.height - week1Rect.height) / 2}px`;
-                                        clone.style.width = `${week1Rect.width}px`;
-                                        clone.style.height = `${week1Rect.height}px`;
+
+                                        // Position inside scroll container
+                                        setClonePosition(clone, orderRect, mainContainer);
+
                                         clone.style.margin = '0';
                                         clone.style.zIndex = '9999';
                                         clone.style.pointerEvents = 'none';
@@ -844,7 +856,7 @@
                                         clone.style.borderRadius = '0.25rem';
                                         clone.style.fontWeight = 'bold';
                                         clone.style.transition = 'background-color 0.5s, border-color 0.5s, color 0.5s';
-                                        document.body.appendChild(clone);
+                                        mainContainer.appendChild(clone);
 
                                         // Two-step animation: DOWN to Week 1 level, then LEFT into slot
                                         const animation = clone.animate([
@@ -907,15 +919,14 @@
                                             const orderClone = mobileFactoryOrder.cloneNode(true);
                                             orderClone.id = '';
                                             orderClone.innerText = orderValue;
-                                            orderClone.style.position = 'fixed';
-                                            orderClone.style.left = `${orderRect.left}px`;
-                                            orderClone.style.top = `${orderRect.top}px`;
-                                            orderClone.style.width = `${orderRect.width}px`;
-                                            orderClone.style.height = `${orderRect.height}px`;
+
+                                            // Position inside scroll container
+                                            setClonePosition(orderClone, orderRect, mainContainer);
+
                                             orderClone.style.margin = '0';
                                             orderClone.style.zIndex = '9999';
                                             orderClone.style.pointerEvents = 'none';
-                                            document.body.appendChild(orderClone);
+                                            mainContainer.appendChild(orderClone);
 
                                             mobileFactoryOrder.innerText = orderValue;
 
@@ -985,14 +996,13 @@
                                             const animCloneG = document.createElement('div');
                                             animCloneG.className = 'lg:hidden bg-accent/10 px-3 py-1 rounded border border-accent/20 text-accent font-sans font-bold text-center min-w-[55px]';
                                             animCloneG.innerText = orangeSlot.innerText;
-                                            animCloneG.style.position = 'fixed';
-                                            animCloneG.style.left = `${orangeRect.left}px`;
-                                            animCloneG.style.top = `${orangeRect.top}px`;
-                                            animCloneG.style.width = `${orangeRect.width}px`;
-                                            animCloneG.style.height = `${orangeRect.height}px`;
+
+                                            // Position inside scroll container
+                                            setClonePosition(animCloneG, orangeRect, mainContainer);
+
                                             animCloneG.style.zIndex = '9999';
                                             animCloneG.style.pointerEvents = 'none';
-                                            document.body.appendChild(animCloneG);
+                                            mainContainer.appendChild(animCloneG);
 
                                             orangeSlot.style.opacity = '0';
 
@@ -1059,11 +1069,10 @@
                                             // Remove buttons
                                             clone.querySelectorAll('button').forEach(b => b.remove());
                                         }
-                                        clone.style.position = 'fixed';
-                                        clone.style.left = `${orderRect.left}px`;
-                                        clone.style.top = `${orderRect.top}px`;
-                                        clone.style.width = `${orderRect.width}px`;
-                                        clone.style.height = `${orderRect.height}px`;
+
+                                        // Position inside scroll container
+                                        setClonePosition(clone, orderRect, mainContainer);
+
                                         clone.style.margin = '0';
                                         clone.style.zIndex = '9999';
                                         clone.style.pointerEvents = 'none';
@@ -1071,7 +1080,7 @@
                                         clone.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
                                         clone.style.borderColor = 'rgba(249, 115, 22, 0.2)';
                                         clone.style.transition = 'background-color 0.5s, border-color 0.5s, color 0.5s';
-                                        document.body.appendChild(clone);
+                                        mainContainer.appendChild(clone);
 
                                         // Calculate waypoints
                                         // Step 1: LEFT to center of Week 2 (horizontal only)
@@ -1139,15 +1148,14 @@
                                         const clone = els.productionWeek2.cloneNode(true);
                                         clone.id = '';
                                         clone.innerText = productionWeek2Val;
-                                        clone.style.position = 'fixed';
-                                        clone.style.left = `${week2Rect.left}px`;
-                                        clone.style.top = `${week2Rect.top}px`;
-                                        clone.style.width = `${week2Rect.width}px`;
-                                        clone.style.height = `${week2Rect.height}px`;
+
+                                        // Position inside scroll container
+                                        setClonePosition(clone, week2Rect, mainContainer);
+
                                         clone.style.margin = '0';
                                         clone.style.zIndex = '9999';
                                         clone.style.pointerEvents = 'none';
-                                        document.body.appendChild(clone);
+                                        mainContainer.appendChild(clone);
 
                                         // Calculate animation waypoints
                                         // Step 1: UP to pipe center (same X, move Y to pipe)
