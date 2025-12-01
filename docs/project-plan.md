@@ -5,7 +5,7 @@
 1. Der hvor det står {prompt / user-input-file}, kan dere legge inn en egen prompt eller filnavn for å gi ekstra instruksjoner. Hvis dere ikke ønsker å legge til ekstra instruksjoner, kan dere bare fjerne denne delen.
 2. Hvis jeg har skrevet noe der allerede, f.eks. "Root Cause Analysis and Solution Design for Player Inactivity", så kan dere bytte ut min prompt med deres egen.
 
-## Fase 0
+## Fase 1
 
 - [X] /run-agent-task analyst *workflow-init
   - [X] File: bmm-workflow-status.yaml
@@ -23,7 +23,7 @@
   - [X] /run-agent-task analyst *product-brief "Read the two brainstorming sessions the research session and the @proposal.md file, and create a product brief for the project."
     - [X] File: product-brief.md
 
-## Fase 1
+## Fase 2
 
 - [ ] Planning
   - [X] /run-agent-task pm *prd
@@ -36,7 +36,7 @@
     - [ ] File: ux-design-directions.html
   - [ ] /run-agent-task ux-designer *validate-ux-design {prompt / user-input-file}
 
-## Fase 2
+## Fase 3
 
 - [ ] Solutioning
   - [ ] /run-agent-task architect *create-architecture {prompt / user-input-file}
@@ -46,7 +46,7 @@
   - [ ] /run-agent-task tea *test-design {prompt / user-input-file}
   - [ ] /run-agent-task architect *solutioning-gate-check {prompt / user-input-file}
 
-## Fase 3
+## Fase 4
 
 - [ ] Implementation
 

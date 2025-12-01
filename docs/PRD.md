@@ -187,7 +187,7 @@ The MVP delivers the full value proposition for all user types, proving both the
 - Permanent data retention for longitudinal analytics
 
 **Technical Foundation:**
-- Next.js 14+ frontend with TypeScript and Tailwind CSS
+- Next.js frontend with TypeScript and Tailwind CSS
 - FastAPI backend with Pydantic AI integration
 - Supabase database with Row Level Security
 - Stripe payment integration (subscriptions + one-time purchases)
@@ -480,9 +480,8 @@ Requirements are organized by capability area, connecting to user value and the 
 
 **FR-3.3: Game State Management**
 - Real-time game state persistence (every action saved immediately)
-- Save/Resume functionality (Paid Students only)
-- Game state includes: current week, all orders, inventory levels, costs, player decisions
-- Pause/Resume with timestamp tracking
+- Pause/Resume with timestamp tracking functionality (Paid Students or instructors only)
+- Game state includes all necessary data to continue a paused game, for instance: current week, all orders, inventory levels, costs, player decisions
 - State synchronization for multiplayer games
 - **User Value**: Never lose progress, resume games across sessions
 - **Acceptance Criteria**: Game state updates <500ms, resume loads exact state from save point, no data loss on disconnect
@@ -490,41 +489,47 @@ Requirements are organized by capability area, connecting to user value and the 
 **FR-3.4: Turn Processing**
 - Player order entry (numeric input with validation)
 - AI opponent move generation (asynchronous)
-- Turn completion triggers state updates (orders fulfilled, shipments arrive, costs accrue)
+- Each order from all the players must have been registered before the turn processing can start
+- Each human player (most single and multiplayer games), must be able to track who has sent their order and who has not sent their order
+- When an order is registered, it cannot be undone
+- Turn completion triggers state updates (fir instance orders fulfilled, shipments arrive, costs accrue, metrics, statistics etc)
+- When turn is triggered, users see an animation resembling the movement of pieces on a board
 - Turn history recorded for analysis
 - **User Value**: Smooth turn progression, clear feedback on decisions
-- **Acceptance Criteria**: Turn processing completes within 2 seconds, all state updates atomic (no partial turns)
+- **Acceptance Criteria**: Turn processing completes within 10 seconds, all state updates atomic (no partial turns)
 
 ### FR-4: AI Integration
 
 **FR-4.1: AI Opponent System**
 - Two AI quality tiers: Gemini Flash (Free), Gemini Pro (Paid)
 - AI opponents demonstrate realistic supply chain behavior (overreaction, gradual adjustment, cognitive biases)
+- The AI must not know that its playing a game
+- The AI has the exact same game information as a human player
 - AI decision-making considers: current inventory, recent orders, perceived demand, position-specific constraints
-- AI generates orders that produce bullwhip effect
-- Fallback to rule-based AI if LLM fails (95% uptime requirement)
+- Fallback to rule-based AI if LLM fails after a certain number of retries (95% uptime requirement)
 - **User Value**: Realistic gameplay against human-like opponents, educational bullwhip effect demonstration
 - **Magic Moment**: AI opponents make the same mistakes humans make, teaching supply chain psychology
 - **Acceptance Criteria**: AI opponents produce bullwhip effect 90%+ of games, decision consistency 95%+, response time <3 seconds per turn
 
 **FR-4.2: AI Assessment Generation**
-- Generate 8-12 questions per game covering supply chain concepts
+- Generate 8-12 questions per game covering supply chain concepts. This number should be configurable by the instructor.
 - Question types: Multiple choice (4 options), short text (1-2 sentences), long text (paragraph), numeric (calculations)
 - Questions personalized to player's specific decisions and game outcomes
-- Question distribution: 40% multiple choice, 30% short text, 20% long text, 10% numeric
-- Cognitive levels: 30% recall, 40% application, 30% analysis
+- Question distribution: 40% multiple choice, 30% short text, 20% long text, 10% numeric. These values should be configurable by the instructor
+- Cognitive levels: 30% recall, 40% application, 30% analysis. These values should be configurable by the instructor.
 - **User Value**: Personalized assessments test understanding, not memorization
 - **Magic Moment**: Questions like "In round 7, you ordered 15 units when your backlog was only 8. How did this decision contribute to the bullwhip effect?"
 - **Acceptance Criteria**: Assessments generated within 10 seconds, questions reference actual gameplay, relevance rating 4.0+ out of 5.0
 
 **FR-4.3: AI Feedback & Scoring**
 - Automated grading using AI for text responses, rule-based for multiple choice/numeric
-- Weighted scoring: Multiple choice (1 point), short text (2 points), long text (3 points), numeric (2 points)
+- Weighted scoring: Multiple choice (1 point), short text (2 points), long text (3 points), numeric (2 points). These numbers should be configurable by the instructor.
 - Instant feedback with explanations connecting decisions to outcomes
-- Pass/fail determination based on configurable threshold (default 70%)
+- Pass/fail determination based on configurable threshold (default 70%). Instructor should be able to switch to grades A, B, C, D, E and F based on points earned and grade intervals.
 - Instructor review and override capability
+- Instructor can add suggested answers to short and long text questions for AI to use when grading and giving feedback
 - **User Value**: Instant, detailed feedback reinforcing learning
-- **Acceptance Criteria**: Scoring completes within 5 seconds, feedback explains concepts clearly, grading accuracy 85%+ matches instructor review
+- **Acceptance Criteria**: Scoring completes within 10 seconds, feedback explains concepts clearly, grading accuracy 85%+ matches instructor review
 
 **FR-4.4: AI Cost Management**
 - Tier-based AI model selection (Flash for Free, Pro for Paid)
@@ -537,20 +542,24 @@ Requirements are organized by capability area, connecting to user value and the 
 ### FR-5: Single-Player Game Experience (Tiers 0 & 1)
 
 **FR-5.1: Game Dashboard**
-- Current game status: Week number, position, inventory levels, costs
-- Order entry interface with validation (0-99 units)
+- Current game status: Week number, position, inventory levels, costs, statistics, metrics and full history
+- Game flow board imitating a physical game board
+- Order entry interface with validation (0-> units)
 - Real-time visualization of inventory, costs, orders over time (Recharts)
 - Turn history table showing past decisions
-- Game controls: Submit order, Pause/Save (Paid only), End Game
+- Turn processing happens when user and all AI players have submitted their orders successfully.
+- Game controls: Send order, Pause/Save (Paid only), Leave Game. Leaving a game set up by instructor with grading, will result in a not passed/F.
+- Animation during turn processing
 - **User Value**: Clear game state visibility, easy decision-making
 - **Acceptance Criteria**: Dashboard loads in <2 seconds, visualizations update in real-time, validation prevents invalid orders
 
 **FR-5.2: Game Flow**
 - Role selection: Choose one of four positions (Retailer, Wholesaler, Distributor, Factory)
 - Game initialization with configured parameters
-- Turn-based progression (player submits order → AI opponents play → turn advances)
+- Turn-based progression (player sends order → AI opponents play → turn advances)
+- The user sees live when the other players have successfully sent orders.
 - Game completion after configured weeks
-- Post-game summary screen
+- Post-game summary
 - **User Value**: Structured gameplay flow, clear progression
 - **Acceptance Criteria**: Game completes all weeks without errors, post-game summary displays within 3 seconds
 
@@ -565,10 +574,11 @@ Requirements are organized by capability area, connecting to user value and the 
 
 **FR-5.4: Game History (Paid Students)**
 - Personal game history accessible from dashboard
-- Filter and sort by date, score, difficulty
+- Filter and sort by date, score, difficulty and other configuration parameters
 - Replay capability (view past games turn-by-turn)
 - Delete games from history
-- Export game data (CSV)
+- Export game report (pdf)
+- Export game data (excel)
 - **User Value**: Track improvement over time, review past decisions
 - **Acceptance Criteria**: History loads within 2 seconds, export includes all game data
 
@@ -587,22 +597,27 @@ Requirements are organized by capability area, connecting to user value and the 
 - Each player assigned one position (Retailer, Wholesaler, Distributor, Factory)
 - Turn-based synchronous gameplay (all players submit orders before turn advances)
 - Real-time presence indicators (online/offline, active/idle)
-- Game proceeds only when all players (or AI replacements) submit orders
+- Game proceeds only when all players (or AI replacements) successfully have submitted their orders
 - **User Value**: Collaborative learning with peers, realistic multi-party supply chain
 - **Acceptance Criteria**: Games support 4 concurrent players, presence updates within 2 seconds, turn synchronization accurate
 
 **FR-6.2: Player Activity Management**
-- AFK detection: 2-minute timer per turn
+- AFK detection: 2-minute timer per turn, configurable by instructor
 - Warning at 30 seconds remaining
-- Temporary AI takeover after 2 minutes (AI submits order for inactive player)
+- Option to temporarily ley AI takeover after 2 minutes (AI submits order for inactive player), configurable by instructor. If grading, the student will get not passed/F, if too many of the steps were taken by AI. The threshold is set by the instructor.
 - "Nudge" feature to notify inactive players
 - Manual instructor intervention capability (Classroom mode)
 - Consensual "Pause & Save" feature (all players must agree)
 - **User Value**: Games complete even with inactive players, fair progression
 - **Acceptance Criteria**: AFK timer accurate to second, AI takeover seamless, nudge notification delivered within 5 seconds
 
-**FR-6.3: In-Game Communication (If Enabled)**
-- Text chat between players in same game
+**FR-6.3: In-Game Communication**
+- This is a multi player feature
+- Text chat channels in the game:
+  - between players within the same role, always activated, no configuration
+  - between players with adjacent roles, configurable by instructor, off by default
+  - between player and AI
+  - between player and instructor
 - Basic profanity filtering
 - Chat history persisted with game
 - Instructor can disable chat per game
@@ -612,7 +627,7 @@ Requirements are organized by capability area, connecting to user value and the 
 **FR-6.4: Multiplayer Assessment**
 - AI assessments tailored to each player's role and decisions
 - Individual grading based on position-specific performance
-- Pass/fail status based on instructor threshold
+- Pass/fail status or grade based on instructor threshold
 - Resubmission capability with limits (configurable by instructor)
 - **User Value**: Fair assessment of individual contribution in team setting
 - **Acceptance Criteria**: Assessments reflect role-specific decisions, grading accounts for position differences
@@ -649,9 +664,10 @@ Requirements are organized by capability area, connecting to user value and the 
 **FR-7.4: Real-Time Monitoring Dashboard**
 - View all active games in class simultaneously
 - Game status indicators: Not started, In progress (week X/Y), Completed
-- Quick metrics: Current week, total costs, player activity
+- Quick metrics per game: Current week, total costs, player activity
 - Drill-down to individual game details
 - Refresh rate: 5 seconds (configurable)
+- Class metrics, across all games
 - **User Value**: At-a-glance class progress, identify struggling students
 - **Acceptance Criteria**: Dashboard loads within 3 seconds, displays 50+ games, updates every 5 seconds
 
@@ -666,13 +682,14 @@ Requirements are organized by capability area, connecting to user value and the 
 **FR-7.6: Individual Game Actions**
 - View detailed game progress (turn-by-turn history)
 - Remove student from game (AI replaces player)
-- Send direct message to specific student
+- Send direct message to specific student or role
 - Override game configuration (if not yet started)
 - **User Value**: Handle individual student issues without disrupting class
 - **Acceptance Criteria**: Game details load within 2 seconds, student removal immediate
 
 **FR-7.7: Assessment Management**
-- Configure assessment threshold (default 70% pass)
+- Configure assessment threshold (default 70% pass or grade thresholds)
+- Configure exercises, levels, topics etc, changing the system prompts.
 - Review AI-generated assessments before student access (optional)
 - Override AI grading (change score or pass/fail status)
 - Configure resubmission limits (default: 2 attempts)
